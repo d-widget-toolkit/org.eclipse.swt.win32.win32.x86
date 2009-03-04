@@ -13,6 +13,7 @@
 module org.eclipse.swt.internal.SWTEventListener;
 
 import java.lang.all;
+import java.util.EventListener;
 
 /**
  * This interface is the cross-platform version of the

@@ -21,8 +21,6 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.dnd.DND;
 
 import java.lang.all;
-static import tango.text.Text;
-alias tango.text.Text.Text!(char) StringBuffer;
 
 /**
  * The class <code>HTMLTransfer</code> provides a platform specific mechanism
@@ -104,29 +102,21 @@ public void javaToNative (Object object, TransferData transferData){
     //startHTML
     int start = buffer.toString().indexOf(NUMBER);
     String temp = Integer.toString(startHTML);
-    buffer.select(start + maxLength-temp.length, temp.length);
-    buffer.replace(temp);
-    buffer.select();
+    buffer.replace(start + maxLength-temp.length(), start + maxLength, temp);
 
     //endHTML
     start = buffer.toString().indexOf(NUMBER, start);
     temp = Integer.toString(endHTML);
-    buffer.select(start + maxLength-temp.length, temp.length);
-    buffer.replace( temp);
-    buffer.select();
+    buffer.replace(start + maxLength-temp.length(), start + maxLength, temp);
 
     //startFragment
     start = buffer.toString().indexOf(NUMBER, start);
     temp = Integer.toString(startFragment);
-    buffer.select(start + maxLength-temp.length, temp.length);
-    buffer.replace(temp);
-    buffer.select();
+    buffer.replace(start + maxLength-temp.length(), start + maxLength, temp);
     //endFragment
     start = buffer.toString().indexOf(NUMBER, start);
     temp = Integer.toString(endFragment);
-    buffer.select(start + maxLength-temp.length, temp.length);
-    buffer.replace(temp);
-    buffer.select();
+    buffer.replace(start + maxLength-temp.length(), start + maxLength, temp);
 
     buffer.append(PREFIX);
     buffer.append(string);

@@ -2,6 +2,7 @@ module org.eclipse.swt.internal.mozilla.nsID;
 
 import org.eclipse.swt.internal.mozilla.Common;
 import java.lang.all;
+import java.text.ParseException;
 
 align(1)
 struct nsID

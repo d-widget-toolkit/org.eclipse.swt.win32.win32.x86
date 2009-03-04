@@ -17,9 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.win32.OS;
 
 import java.lang.all;
-static import tango.text.Text;
 import tango.util.Convert;
-alias tango.text.Text.Text!(char) StringBuffer;
 
 /**
  * Instances of this class describe operating system fonts.

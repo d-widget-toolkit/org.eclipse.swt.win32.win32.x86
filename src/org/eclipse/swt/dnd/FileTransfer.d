@@ -21,8 +21,6 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.dnd.DND;
 
 import java.lang.all;
-static import tango.text.Text;
-alias tango.text.Text.Text!(char) StringBuffer;
 
 /**
  * The class <code>FileTransfer</code> provides a platform specific mechanism

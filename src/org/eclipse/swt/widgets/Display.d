@@ -54,8 +54,6 @@ import tango.core.Thread;
 import tango.stdc.stringz;
 import tango.util.Convert;
 static import tango.text.convert.Utf;
-static import tango.text.Text;
-alias tango.text.Text.Text!(char) StringBuffer;
 
 /**
  * Instances of this class are responsible for managing the

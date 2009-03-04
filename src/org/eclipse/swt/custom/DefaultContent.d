@@ -26,8 +26,6 @@ import java.lang.all;
 static import tango.io.model.IFile;
 static import tango.text.Text;
 
-alias tango.text.Text.Text!(char) StringBuffer;
-
 class DefaultContent : StyledTextContent {
     private final static String LineDelimiter = tango.io.model.IFile.FileConst.NewlineString;
 
@@ -502,13 +500,13 @@ public String getLine(int index) {
         // gap is in the specified range, strip out the gap
         StringBuffer buf = new StringBuffer();
         int gapLength = gapEnd - gapStart;
-        buf.append(textStore[ start .. gapStart ] );
-        buf.append(textStore[ gapEnd .. gapEnd + length_ - gapLength - (gapStart - start) ]);
-        length_ = buf.length;
-        while ((length_ - 1 >=0) && isDelimiter(buf.slice[length_ - 1])) {
+        buf.append(textStore, start, gapStart - start);
+        buf.append(textStore, gapEnd, length_ - gapLength - (gapStart - start));
+        length_ = buf.length();
+        while ((length_ - 1 >=0) && isDelimiter(buf.charAt(length_ - 1))) {
             length_--;
         }
-        return buf.toString()[ 0 .. length_ ].dup;
+        return buf.toString().substring(0, length_);
     }
 }
 /**

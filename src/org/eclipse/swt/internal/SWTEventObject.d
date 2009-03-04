@@ -13,9 +13,9 @@
 module org.eclipse.swt.internal.SWTEventObject;
 
 
-//import java.util.EventObject;
 import tango.core.Exception;
 import java.lang.all;
+import java.util.EventObject;
 
 /**
  * This class is the cross-platform version of the

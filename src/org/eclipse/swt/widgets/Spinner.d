@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Shell;
 
 import java.lang.all;
 import tango.text.convert.Integer : toString;
-static import tango.text.Text;
-alias tango.text.Text.Text!(char) StringBuffer;
 import tango.util.Convert;
 
 /**

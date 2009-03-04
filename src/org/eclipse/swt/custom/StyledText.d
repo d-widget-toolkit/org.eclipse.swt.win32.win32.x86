@@ -90,8 +90,6 @@ static import tango.text.convert.Utf;
 import tango.util.Convert;
 import java.lang.all;
 
-alias tango.text.Text.Text!(char) StringBuffer;
-
 /**
  * A StyledText is an editable user interface object that displays lines
  * of text.  The following style attributes can be defined for the text:
@@ -1225,8 +1223,7 @@ public class StyledText : Canvas {
         if (offset < 0 || offset > buffer.length()) {
             return;
         }
-        buffer.select( offset );
-        buffer.prepend( string );
+        buffer.insert(offset, string);
     }
     /**
      * Appends the given int to the data.

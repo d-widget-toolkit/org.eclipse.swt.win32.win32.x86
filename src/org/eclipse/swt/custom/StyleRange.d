@@ -23,9 +23,6 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.TextChangedEvent;
 import org.eclipse.swt.custom.TextChangingEvent;
 
-static import tango.text.Text;
-alias tango.text.Text.Text!(char) StringBuffer;
-
 /**
  * <code>StyleRange</code> defines a set of styles for a specified
  * range of text.

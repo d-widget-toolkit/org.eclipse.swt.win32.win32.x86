@@ -40,9 +40,6 @@ import org.eclipse.swt.widgets.Event;
 
 import java.lang.all;
 
-static import tango.text.Text;
-alias tango.text.Text.Text!(char) StringBuffer;
-
 /**
  * Instances of this class represent a selectable
  * user interface object that displays a text with

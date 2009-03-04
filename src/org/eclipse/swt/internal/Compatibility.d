@@ -12,20 +12,17 @@
  *******************************************************************************/
 module org.eclipse.swt.internal.Compatibility;
 
-/+
-import java.io.*;
 import java.io.File;
-import java.text.MessageFormat;
+//import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.zip.DeflaterOutputStream;
+//import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-+/
+
 
 import org.eclipse.swt.SWT;
 public import java.io.FileInputStream;
 public import java.io.FileOutputStream;
-public import java.util.zip.InflaterInputStream;
 
 import Math = tango.math.Math;
 import Unicode = tango.text.Unicode;
