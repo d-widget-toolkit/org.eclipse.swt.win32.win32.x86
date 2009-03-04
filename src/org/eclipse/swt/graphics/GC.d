@@ -2138,7 +2138,7 @@ public void drawString (String string, int x, int y, bool isTransparent) {
         if (!isTransparent) {
             Gdip.RectF bounds;
             Gdip.Graphics_MeasureString(gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
-            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
+            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, Math.round(bounds.Width), Math.round(bounds.Height));
         }
         int gstate = 0;
         auto brush = getFgBrush();
@@ -2330,7 +2330,7 @@ public void drawText (String string, int x, int y, int flags) {
         if ((flags & SWT.DRAW_TRANSPARENT) is 0) {
             Gdip.RectF bounds;
             Gdip.Graphics_MeasureString(gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
-            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
+            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, Math.round(bounds.Width), Math.round(bounds.Height));
         }
         int gstate = 0;
         auto brush = getFgBrush();
@@ -4752,7 +4752,7 @@ public Point stringExtent(String string) {
         Gdip.StringFormat_SetFormatFlags(format, formatFlags);
         Gdip.Graphics_MeasureString(data.gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
         Gdip.StringFormat_delete(format);
-        return new Point(length_ is 0 ? 0 : cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
+        return new Point(length_ is 0 ? 0 : Math.round(bounds.Width), Math.round(bounds.Height));
     }
     SIZE size;
     if (length_ is 0) {
