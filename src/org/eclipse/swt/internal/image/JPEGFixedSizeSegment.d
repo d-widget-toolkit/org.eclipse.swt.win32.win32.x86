@@ -17,7 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.image.JPEGSegment;
 import org.eclipse.swt.internal.image.LEDataInputStream;
 
-import tango.core.Exception;
 
 
 abstract class JPEGFixedSizeSegment : JPEGSegment {

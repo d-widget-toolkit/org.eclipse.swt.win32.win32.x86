@@ -13,7 +13,6 @@
 module org.eclipse.swt.internal.SWTEventObject;
 
 
-import tango.core.Exception;
 import java.lang.all;
 import java.util.EventObject;
 

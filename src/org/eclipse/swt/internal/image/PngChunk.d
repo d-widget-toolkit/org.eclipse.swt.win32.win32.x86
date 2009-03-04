@@ -23,7 +23,6 @@ import org.eclipse.swt.internal.image.PngIendChunk;
 import org.eclipse.swt.internal.image.PngTrnsChunk;
 import java.lang.all;
 
-import tango.core.Exception;
 
 class PngChunk {
     byte[] reference;

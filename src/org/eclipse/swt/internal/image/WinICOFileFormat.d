@@ -18,7 +18,6 @@ import org.eclipse.swt.internal.image.WinBMPFileFormat;
 import org.eclipse.swt.SWT;
 import java.lang.all;
 
-import tango.core.Exception;
 
 public final class WinICOFileFormat : FileFormat {
 

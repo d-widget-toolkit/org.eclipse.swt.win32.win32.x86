@@ -19,7 +19,6 @@ import org.eclipse.swt.internal.Platform;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
 
-import tango.core.Exception;
 import java.lang.all;
 
 version(build){

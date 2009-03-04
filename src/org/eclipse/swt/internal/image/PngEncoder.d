@@ -12,6 +12,8 @@
  *******************************************************************************/
 module org.eclipse.swt.internal.image.PngEncoder;
 
+import java.lang.all;
+
 import org.eclipse.swt.internal.image.LEDataOutputStream;
 import org.eclipse.swt.internal.image.PngDeflater;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +25,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.Compatibility;
 import org.eclipse.swt.internal.image.PngChunk;
 
-import tango.core.Exception;
 
 final class PngEncoder {
 

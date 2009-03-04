@@ -21,7 +21,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoaderEvent;
 import org.eclipse.swt.graphics.ImageLoader;
-import tango.core.Exception;
 import java.lang.all;
 
 

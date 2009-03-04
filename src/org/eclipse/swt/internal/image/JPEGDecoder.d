@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import java.lang.all;
 
-import tango.core.Exception;
 import tango.util.Convert;
 
 public class JPEGDecoder {

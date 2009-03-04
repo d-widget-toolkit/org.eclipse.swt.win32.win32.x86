@@ -30,7 +30,6 @@ import java.lang.all;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.PaletteData;
 
-import tango.core.Exception;
 
 final class JPEGFileFormat : FileFormat {
     int restartInterval;

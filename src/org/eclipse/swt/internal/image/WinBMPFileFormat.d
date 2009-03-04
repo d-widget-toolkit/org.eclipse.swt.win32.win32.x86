@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import org.eclipse.swt.SWT;
 import java.lang.all;
 
-import tango.core.Exception;
 
 final class WinBMPFileFormat : FileFormat {
 

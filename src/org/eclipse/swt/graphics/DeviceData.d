@@ -12,7 +12,6 @@
  *******************************************************************************/
 module org.eclipse.swt.graphics.DeviceData;
 
-import tango.core.Exception;
 
 public class DeviceData {
     /*

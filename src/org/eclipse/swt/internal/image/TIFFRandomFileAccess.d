@@ -13,7 +13,6 @@
 module org.eclipse.swt.internal.image.TIFFRandomFileAccess;
 
 import org.eclipse.swt.internal.image.LEDataInputStream;
-import tango.core.Exception;
 import java.lang.all;
 
 final class TIFFRandomFileAccess {

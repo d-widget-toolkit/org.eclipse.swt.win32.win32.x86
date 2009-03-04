@@ -32,7 +32,6 @@ import org.eclipse.swt.internal.image.OS2BMPFileFormat;
 import org.eclipse.swt.internal.image.JPEGFileFormat;
 import org.eclipse.swt.internal.image.PNGFileFormat;
 
-import tango.core.Exception;
 import tango.core.Tuple;
 
 /**

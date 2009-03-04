@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.ImageLoaderEvent;
 import java.lang.all;
 
-import tango.core.Exception;
 
 final class LZWCodec {
     int bitsPerPixel, blockSize, blockIndex, currentByte, bitsLeft,

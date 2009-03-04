@@ -14,8 +14,7 @@ module org.eclipse.swt.internal.image.LEDataInputStream;
 
 
 import java.io.InputStream;
-import java.lang.System;
-import tango.core.Exception;
+import java.lang.all;
 
 final class LEDataInputStream : InputStream{
 

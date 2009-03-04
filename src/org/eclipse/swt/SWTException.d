@@ -14,7 +14,6 @@ module org.eclipse.swt.SWTException;
 
 import org.eclipse.swt.SWT;
 
-import tango.core.Exception;
 import tango.io.Stdout;
 import java.lang.all;
 

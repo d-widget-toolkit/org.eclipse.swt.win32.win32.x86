@@ -22,7 +22,6 @@ import org.eclipse.swt.internal.image.FileFormat;
 import java.io.ByteArrayOutputStream;
 import java.lang.all;
 
-import tango.core.Exception;
 
 final class OS2BMPFileFormat : FileFormat {
     static final int BMPFileHeaderSize = 14;

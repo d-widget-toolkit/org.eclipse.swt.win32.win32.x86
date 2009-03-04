@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyledTextContent;
 
-static import tango.core.Exception;
 import java.lang.all;
 
 /**

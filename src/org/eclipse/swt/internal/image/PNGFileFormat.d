@@ -33,7 +33,6 @@ import java.lang.all;
 
 import java.io.BufferedInputStream;
 
-import tango.core.Exception;
 
 final class PNGFileFormat : FileFormat {
     static final int SIGNATURE_LENGTH = 8;
