@@ -15,8 +15,6 @@ module org.eclipse.swt.graphics.RGB;
 public import org.eclipse.swt.internal.SerializableCompatibility;
 
 import org.eclipse.swt.SWT;
-import Math = tango.math.Math : min, max;
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

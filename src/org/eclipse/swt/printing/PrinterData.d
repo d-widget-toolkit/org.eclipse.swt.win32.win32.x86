@@ -15,7 +15,6 @@ module org.eclipse.swt.printing.PrinterData;
 
 import org.eclipse.swt.graphics.DeviceData;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

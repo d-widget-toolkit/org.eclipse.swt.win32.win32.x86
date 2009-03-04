@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.GCData;
 import org.eclipse.swt.graphics.PathData;
 
 import java.lang.System;
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**
@@ -135,7 +134,7 @@ public this (Device device, Path path, float flatness) {
     super(device);
     if (path is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (path.isDisposed()) SWT.error(SWT.ERROR_INVALID_ARGUMENT);
-    flatness = Math.max(0, flatness);
+    flatness = Math.max(0.0f, flatness);
     handle = Gdip.GraphicsPath_Clone(path.handle);
     if (flatness !is 0) Gdip.GraphicsPath_Flatten(handle, null, flatness);
     if (handle is null) SWT.error(SWT.ERROR_NO_HANDLES);

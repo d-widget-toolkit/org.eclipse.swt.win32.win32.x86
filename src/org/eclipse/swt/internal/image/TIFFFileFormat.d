@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.internal.image.FileFormat;
 
+import java.lang.all;
 import tango.core.Exception;
 
 /**

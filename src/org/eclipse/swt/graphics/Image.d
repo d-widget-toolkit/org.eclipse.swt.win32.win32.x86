@@ -33,7 +33,6 @@ import org.eclipse.swt.graphics.Resource;
 import java.io.InputStream;
 import java.lang.all;
 
-import tango.text.convert.Format;
 //import tango.stdc.string;
 //import tango.stdc.stringz;
 

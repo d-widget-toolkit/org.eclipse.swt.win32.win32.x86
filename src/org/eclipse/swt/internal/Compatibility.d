@@ -24,13 +24,11 @@ import org.eclipse.swt.SWT;
 public import java.io.FileInputStream;
 public import java.io.FileOutputStream;
 
-import Math = tango.math.Math;
 import Unicode = tango.text.Unicode;
 import tango.sys.Process;
 import java.lang.all;
 import java.util.ResourceBundle;
 import tango.io.Path;
-import tango.text.convert.Format;
 
 /**
  * This class is a placeholder for utility methods commonly

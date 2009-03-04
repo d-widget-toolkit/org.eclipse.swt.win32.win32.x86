@@ -24,7 +24,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

@@ -22,7 +22,6 @@ import org.eclipse.swt.internal.image.PngChunk;
 import org.eclipse.swt.internal.image.PngFileReadState;
 import org.eclipse.swt.internal.image.PngIhdrChunk;
 
-import tango.text.convert.Format;
 
 class PngPlteChunk : PngChunk {
 

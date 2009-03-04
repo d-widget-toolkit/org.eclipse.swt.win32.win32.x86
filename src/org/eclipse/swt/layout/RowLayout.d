@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.RowData;
 import tango.util.Convert;
-import Math = tango.math.Math;
 import java.lang.all;
 
 

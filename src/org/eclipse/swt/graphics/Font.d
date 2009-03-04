@@ -21,7 +21,6 @@ import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Device;
 
-import tango.text.convert.Format;
 import java.lang.all;
 //import tango.stdc.stringz;
 

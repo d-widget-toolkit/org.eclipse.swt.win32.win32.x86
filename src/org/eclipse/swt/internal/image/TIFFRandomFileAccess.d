@@ -13,9 +13,8 @@
 module org.eclipse.swt.internal.image.TIFFRandomFileAccess;
 
 import org.eclipse.swt.internal.image.LEDataInputStream;
-import Math = tango.math.Math;
 import tango.core.Exception;
-import java.lang.System;
+import java.lang.all;
 
 final class TIFFRandomFileAccess {
 

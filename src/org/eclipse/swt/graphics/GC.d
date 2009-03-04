@@ -39,7 +39,6 @@ import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.graphics.LineAttributes;
 
 import java.lang.all;
-import tango.text.convert.Format;
 
 /**
  * Class <code>GC</code> is where all of the drawing capabilities that are
@@ -256,10 +255,10 @@ void checkGC(int mask) {
                 case SWT.LINE_DASHDOTDOT: dashStyle = Gdip.DashStyleDashDotDot; if (width is 0) dashes = LINE_DASHDOTDOT_ZERO; break;
                 case SWT.LINE_CUSTOM: {
                     if (data.lineDashes !is null) {
-                        dashOffset = data.lineDashesOffset / Math.max (1, width);
+                        dashOffset = data.lineDashesOffset / Math.max (1.0f, width);
                         dashes = new float[data.lineDashes.length * 2];
                         for (int i = 0; i < data.lineDashes.length; i++) {
-                            float dash = data.lineDashes[i] / Math.max (1, width);
+                            float dash = data.lineDashes[i] / Math.max (1.0f, width);
                             dashes[i] = dash;
                             dashes[i + data.lineDashes.length] = dash;
                         }
@@ -2139,7 +2138,7 @@ public void drawString (String string, int x, int y, bool isTransparent) {
         if (!isTransparent) {
             Gdip.RectF bounds;
             Gdip.Graphics_MeasureString(gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
-            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, Math.rndint(bounds.Width), Math.rndint(bounds.Height));
+            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
         }
         int gstate = 0;
         auto brush = getFgBrush();
@@ -2331,7 +2330,7 @@ public void drawText (String string, int x, int y, int flags) {
         if ((flags & SWT.DRAW_TRANSPARENT) is 0) {
             Gdip.RectF bounds;
             Gdip.Graphics_MeasureString(gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
-            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, Math.rndint(bounds.Width), Math.rndint(bounds.Height));
+            Gdip.Graphics_FillRectangle(gdipGraphics, data.gdipBrush, x, y, cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
         }
         int gstate = 0;
         auto brush = getFgBrush();
@@ -4753,7 +4752,7 @@ public Point stringExtent(String string) {
         Gdip.StringFormat_SetFormatFlags(format, formatFlags);
         Gdip.Graphics_MeasureString(data.gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
         Gdip.StringFormat_delete(format);
-        return new Point(length_ is 0 ? 0 : Math.rndint(bounds.Width), Math.rndint(bounds.Height));
+        return new Point(length_ is 0 ? 0 : cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
     }
     SIZE size;
     if (length_ is 0) {
@@ -4844,7 +4843,7 @@ public Point textExtent(String string, int flags) {
         Gdip.StringFormat_SetHotkeyPrefix(format, (flags & SWT.DRAW_MNEMONIC) !is 0 ? Gdip.HotkeyPrefixShow : Gdip.HotkeyPrefixNone);
         Gdip.Graphics_MeasureString(data.gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
         Gdip.StringFormat_delete(format);
-        return new Point(length_ is 0 ? 0 : Math.rndint(bounds.Width), Math.rndint(bounds.Height));
+        return new Point(length_ is 0 ? 0 : cast(int)Math.rint(bounds.Width), cast(int)Math.rint(bounds.Height));
     }
     if (string.length is 0) {
         SIZE size;

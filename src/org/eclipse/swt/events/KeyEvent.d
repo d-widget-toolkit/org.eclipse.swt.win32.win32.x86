@@ -16,7 +16,6 @@ module org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.events.TypedEvent;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

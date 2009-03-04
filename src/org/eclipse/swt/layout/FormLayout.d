@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scrollable;
 
 import tango.util.Convert;
-import Math = tango.math.Math;
 import java.lang.all;
 
 /**

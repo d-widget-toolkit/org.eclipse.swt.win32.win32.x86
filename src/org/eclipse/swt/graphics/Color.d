@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Device;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

@@ -12,7 +12,7 @@
  *******************************************************************************/
 module org.eclipse.swt.custom.CBanner;
 
-
+import java.lang.all;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.CBannerLayout;
 
-import Math = tango.math.Math;
 
 
 /**

@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Scrollable;
 import java.lang.System;
 
 import tango.util.Convert;
-import Math = tango.math.Math;
 import java.lang.all;
 
 

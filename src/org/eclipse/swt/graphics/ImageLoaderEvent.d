@@ -18,7 +18,6 @@ public import org.eclipse.swt.graphics.ImageLoader;
 public import org.eclipse.swt.graphics.ImageData;
 import java.lang.all;
 
-import tango.text.convert.Format;
 
 /**
  * Instances of this class are sent as a result of the incremental

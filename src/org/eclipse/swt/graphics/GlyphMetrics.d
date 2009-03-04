@@ -13,7 +13,6 @@
 module org.eclipse.swt.graphics.GlyphMetrics;
 
 import org.eclipse.swt.SWT;
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

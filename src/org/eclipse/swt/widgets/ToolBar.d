@@ -233,7 +233,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 info.cbSize = TBBUTTONINFO.sizeof;
                 info.dwMask = OS.TBIF_SIZE;
                 OS.SendMessage (handle, OS.TB_GETBUTTONINFO, lpButton.idCommand, &info);
-                width = Math.max (width, info.cx);
+                width = Math.max (width, cast(int)info.cx);
             } else {
                 width = Math.max (width, rect.right);
             }

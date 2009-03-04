@@ -24,7 +24,6 @@ import org.eclipse.swt.ole.win32.OleAutomation;
 import org.eclipse.swt.ole.win32.OLE;
 
 import tango.util.Convert;
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

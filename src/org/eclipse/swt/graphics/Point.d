@@ -15,7 +15,6 @@ module org.eclipse.swt.graphics.Point;
 
 public import org.eclipse.swt.internal.SerializableCompatibility;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

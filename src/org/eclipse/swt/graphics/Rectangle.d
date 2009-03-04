@@ -17,7 +17,6 @@ public import org.eclipse.swt.internal.SerializableCompatibility;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

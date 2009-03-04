@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.GC;
 
 import org.eclipse.swt.events.TypedEvent;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

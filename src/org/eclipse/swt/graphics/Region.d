@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Device;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**

@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.widgets.Display;
 
-import tango.text.convert.Format;
 import java.lang.all;
 
 

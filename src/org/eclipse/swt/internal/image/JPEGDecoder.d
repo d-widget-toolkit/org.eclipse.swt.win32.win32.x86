@@ -24,7 +24,6 @@ import java.lang.all;
 
 import tango.core.Exception;
 import tango.util.Convert;
-import Math = tango.math.Math;
 
 public class JPEGDecoder {
 

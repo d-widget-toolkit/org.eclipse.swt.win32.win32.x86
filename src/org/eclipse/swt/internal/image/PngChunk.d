@@ -24,7 +24,6 @@ import org.eclipse.swt.internal.image.PngTrnsChunk;
 import java.lang.all;
 
 import tango.core.Exception;
-import tango.text.convert.Format;
 
 class PngChunk {
     byte[] reference;

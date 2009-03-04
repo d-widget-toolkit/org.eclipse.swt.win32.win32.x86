@@ -12,6 +12,7 @@
  *******************************************************************************/
 module org.eclipse.swt.custom.ScrolledCompositeLayout;
 
+import java.lang.all;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -22,7 +23,6 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.custom.ScrolledComposite;
 
-import Math = tango.math.Math;
 
 /**
  * This class provides the layout for ScrolledComposite

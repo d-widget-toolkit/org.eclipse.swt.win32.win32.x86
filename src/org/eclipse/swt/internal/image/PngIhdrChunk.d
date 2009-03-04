@@ -14,14 +14,12 @@ module org.eclipse.swt.internal.image.PngIhdrChunk;
 
 import java.lang.all;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.image.PngFileReadState;
 import org.eclipse.swt.internal.image.PngIhdrChunk;
 import org.eclipse.swt.internal.image.PngChunk;
-import tango.text.convert.Format;
 
 class PngIhdrChunk : PngChunk {
     static const int IHDR_DATA_LENGTH = 13;
@@ -350,7 +348,7 @@ int getSwtBitsPerPixel() {
             return 24;
         case COLOR_TYPE_GRAYSCALE:
         case COLOR_TYPE_PALETTE:
-            return Math.min(bitDepth, 8);
+            return Math.min(cast(int)bitDepth, 8);
         default:
             SWT.error(SWT.ERROR_INVALID_IMAGE);
             return 0;
@@ -375,7 +373,7 @@ bool usesDirectColor() {
 }
 
 PaletteData createGrayscalePalette() {
-    int depth = Math.min(bitDepth, 8);
+    int depth = Math.min(cast(int)bitDepth, 8);
     int max = (1 << depth) - 1;
     int delta = 255 / max;
     int gray = 0;

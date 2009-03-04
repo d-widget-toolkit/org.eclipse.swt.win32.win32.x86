@@ -45,7 +45,6 @@ import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.graphics.TextStyle;
 
-import tango.text.convert.Format;
 import Utf = tango.text.convert.Utf;
 import java.lang.all;
 import java.lang.System;

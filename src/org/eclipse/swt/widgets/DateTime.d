@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.TypedListener;
 import java.lang.all;
 
 import Integer = tango.text.convert.Integer;
-import tango.text.convert.Format;
 
 //TODO - features not yet implemented: read-only, drop-down calendar for date
 //TODO - font, colors, background image not yet implemented (works on some platforms)

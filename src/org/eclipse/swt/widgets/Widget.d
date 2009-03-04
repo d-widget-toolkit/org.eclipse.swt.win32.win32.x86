@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TypedListener;
 
-import tango.text.convert.Format;
 import tango.io.Stdout;
 import tango.core.Thread;
 import java.lang.all;

@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.internal.SWTEventObject;
 
-import tango.text.convert.Format;
 import tango.text.Util : split;
 import java.lang.all;
 

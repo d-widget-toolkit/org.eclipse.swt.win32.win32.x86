@@ -14,7 +14,6 @@ module org.eclipse.swt.accessibility.AccessibleEvent;
 
 
 import org.eclipse.swt.internal.SWTEventObject;
-import tango.text.convert.Format;
 import java.lang.all;
 
 /**
