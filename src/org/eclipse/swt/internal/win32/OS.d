@@ -13,32 +13,24 @@
 module org.eclipse.swt.internal.win32.OS;
 
 public import org.eclipse.swt.internal.win32.WINTYPES;
-version(TANGOSVN){
-    private import org.eclipse.swt.internal.win32.WINAPI;
-    alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
-    private import tango.sys.win32.UserGdi;
-    alias tango.sys.win32.UserGdi WINAPI;
-}
-else{
-    private import org.eclipse.swt.internal.win32.WINAPI;
-    alias org.eclipse.swt.internal.win32.WINAPI WINAPI;
-    alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
-}
+import org.eclipse.swt.internal.win32.WINAPI;
 
 import org.eclipse.swt.internal.C;
 import org.eclipse.swt.internal.Library;
 import java.lang.all;
-import tango.sys.SharedLib : SharedLib;
-import tango.sys.Common : SysError;
+
+static import tango.sys.win32.UserGdi;
+static import tango.sys.SharedLib;
+static import tango.sys.Common;
+
 static import tango.stdc.stdlib;
+static import tango.stdc.string;
+static import tango.text.convert.Utf;
+static import tango.io.Console;
 
-import tango.stdc.string : memset, strlen;
-import tango.stdc.stringz : toString16z;
-import tango.text.convert.Utf : toString16;
-//import tango.io.device.File;
+alias tango.sys.win32.UserGdi WINAPI;
+alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
 
-
-import tango.io.Console;
 void trace(int line ){
     getDwtLogger.trace( "OS {}", line );
 }
@@ -94,7 +86,7 @@ public class OS : C {
         int minor;
     }
     static void loadLib( Symbol[] symbols, char[] libname ){
-        if (auto lib = SharedLib.load(libname)) {
+        if (auto lib = tango.sys.SharedLib.SharedLib.load(libname)) {
             foreach( inout s; symbols ){
                 if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
                     *s.symbol = lib.getSymbol( s.name.ptr );
@@ -369,7 +361,7 @@ BOOL function(
         //PORTING_CHANGE: comctl is loaded automatically
         //TCHAR lpLibFileName = new TCHAR (0, "comctl32.dll", true); //$NON-NLS-1$
         //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
-        if (auto lib = SharedLib.load( `comctl32.dll`) ) {
+        if (auto lib = tango.sys.SharedLib.SharedLib.load( `comctl32.dll`) ) {
             char[] name = "DllGetVersion\0"; //$NON-NLS-1$
             void* DllGetVersion = lib.getSymbol(name.ptr);
             if (DllGetVersion !is null){
@@ -389,7 +381,7 @@ BOOL function(
         dvi.dwMajorVersion = 4;
         //TCHAR lpLibFileName = new TCHAR (0, "Shell32.dll", true); //$NON-NLS-1$
         //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
-        if ( auto lib = SharedLib.load( `Shell32.dll`)) {
+        if ( auto lib = tango.sys.SharedLib.SharedLib.load( `Shell32.dll`)) {
             char[] name = "DllGetVersion\0"; //$NON-NLS-1$
             void* DllGetVersion = lib.getSymbol(name.ptr);
             if (DllGetVersion !is null){
@@ -410,7 +402,7 @@ BOOL function(
 
     public static void enableVisualStyles() {
         void printError( char[] msg ){
-            char[] winMsg = SysError.lastMsg();
+            char[] winMsg = tango.sys.Common.SysError.lastMsg();
             char[2000] buf;
             getDwtLogger.error("{}: {}", msg, CodePage.from( winMsg, buf ) );
         }
@@ -2715,7 +2707,7 @@ static Symbol[] Symbols_UxTheme = [
 ];
 
 static void loadLib_UxTheme(){
-    if (auto lib = SharedLib.load(`uxtheme.dll`)) {
+    if (auto lib = tango.sys.SharedLib.SharedLib.load(`uxtheme.dll`)) {
         foreach( inout s; Symbols_UxTheme ){
             if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
                 *s.symbol = lib.getSymbol( s.name.ptr );
@@ -3624,7 +3616,7 @@ public CHAR[] StrToMBCS(char[] sc, uint codepage = 0) {
             {
                 CHAR[] result;
                 int i;
-                wchar[] ws = .toString16(sc);
+                wchar[] ws = tango.text.convert.Utf.toString16(sc);
                 result.length = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, null, 0, null, null);
                 i = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, result.ptr, result.length, null, null);
                 assert(i == result.length);
@@ -3662,7 +3654,7 @@ public wchar[] StrToWCHARs(uint codepage , char[] sc, bool terminated = false ) 
 public wchar[] StrToWCHARs(char[] sc, bool terminated = false ) {
     wchar[] ret;
     try{
-        ret = toString16(sc);
+        ret = tango.text.convert.Utf.toString16(sc);
     }catch(Exception e){
         // do nothing
         ret = "";

@@ -40,9 +40,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import java.lang.all;
 
-static import tango.text.Unicode;
-static import tango.text.convert.Utf;
-
 /**
  * A Label which supports aligned text and/or an image and different border styles.
  * <p>
@@ -220,11 +217,9 @@ dchar _findMnemonic (String string) {
     do {
         while (index < length && string[index] !is '&') index++;
         if (++index >= length) return '\0';
-        if (string[index] !is '&') {
-            dchar[1] tmp; uint ate;
-            dchar[] tmp2 = tango.text.convert.Utf.toString32( string[index .. Math.min( index + 4, string.length ) ], tmp, &ate );
-            assert( tmp2.length == 1 );
-            return tango.text.Unicode.toLower( tmp2 )[0];
+        dchar d = string[index..$].firstCodePoint();
+        if (d !is '&') {
+            return Character.toLowerCase( d );
         }
         index++;
     } while (index < length);
@@ -312,9 +307,7 @@ private void initAccessible() {
         public void getKeyboardShortcut(AccessibleEvent e) {
             dchar mnemonic = _findMnemonic(this.outer.text);
             if (mnemonic !is '\0') {
-                dchar[1] d;
-                d[0] = mnemonic;
-                e.result = "Alt+" ~ tango.text.convert.Utf.toString(d); //$NON-NLS-1$
+                e.result = "Alt+" ~ dcharToString(mnemonic); //$NON-NLS-1$
             }
         }
     });

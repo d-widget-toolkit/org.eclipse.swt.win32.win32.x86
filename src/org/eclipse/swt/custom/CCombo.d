@@ -47,8 +47,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Widget;
 
-static import tango.text.convert.Utf;
-static import tango.text.Unicode;
 import java.lang.all;
 import java.lang.Runnable;
 
@@ -586,11 +584,9 @@ dchar _findMnemonic (String string) {
     do {
         while (index < length && string[index] !is '&') index++;
         if (++index >= length) return '\0';
-        if (string[index] !is '&') {
-            dchar[1] d; uint ate;
-            auto d2 = tango.text.convert.Utf.toString32( string[ index .. Math.min( index +4, string.length )], d, &ate );
-            auto d3 = tango.text.Unicode.toLower( d2, d2 );
-            return d3[0];
+        dchar c = string[index..$].firstCodePoint();
+        if (c !is '&') {
+            return Character.toLowerCase(c);
         }
         index++;
     } while (index < length);

@@ -21,9 +21,7 @@ import org.eclipse.swt.internal.Platform;
 import org.eclipse.swt.internal.win32.WINTYPES;
 import org.eclipse.swt.internal.win32.WINAPI;
 import org.eclipse.swt.internal.win32.OS;
-version(TANGOSVN){
 import tango.sys.win32.UserGdi;
-}
 
 alias org.eclipse.swt.internal.gdip.native.GdiplusStartupInput  GdiplusStartupInput;
 alias org.eclipse.swt.internal.gdip.native.GdiplusStartupOutput GdiplusStartupOutput;
