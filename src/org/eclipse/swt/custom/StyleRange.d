@@ -14,7 +14,6 @@ module org.eclipse.swt.custom.StyleRange;
 
 import java.lang.all;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.TextStyle;
@@ -217,9 +216,8 @@ public override String toString() {
             buffer.append("normal");
     }
     String str = super.toString();
-    int index = tango.text.Util.locate( str, '{');
-    if( index is str.length ) index = -1;
-    str = str[ index + 1 .. $ ];
+    int index = str.indexOf( '{');
+    str = str.substring( index + 1 );
     if (str.length > 1) buffer.append(", ");
     buffer.append(str);
     return buffer.toString();

@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -121,9 +120,9 @@ String getName () {
  */
 override public String toString () {
     String string = getName ()~" {";
-    if (width !is SWT.DEFAULT) string ~= "width="~to!(String)(width)~" ";
-    if (height !is SWT.DEFAULT) string ~= "height="~to!(String)(height)~" ";
-    if (exclude) string ~= "exclude="~to!(String)(exclude)~" ";
+    if (width !is SWT.DEFAULT) string ~= "width="~String_valueOf(width)~" ";
+    if (height !is SWT.DEFAULT) string ~= "height="~String_valueOf(height)~" ";
+    if (exclude) string ~= "exclude="~String_valueOf(exclude)~" ";
     string = string.trim();
     string ~= "}";
     return string;

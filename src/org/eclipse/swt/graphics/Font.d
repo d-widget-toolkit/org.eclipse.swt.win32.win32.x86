@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Device;
 
 import java.lang.all;
-//import tango.stdc.stringz;
 
 /**
  * Instances of this class manage operating system resources that

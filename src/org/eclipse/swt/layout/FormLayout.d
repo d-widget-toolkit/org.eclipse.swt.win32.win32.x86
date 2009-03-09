@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scrollable;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -382,13 +381,13 @@ Point layout (Composite composite, bool move, int x, int y, int width, int heigh
  */
 override public String toString () {
     String string =  getName ()~" {";
-    if (marginWidth !is 0) string ~= "marginWidth="~to!(String)(marginWidth)~" ";
-    if (marginHeight !is 0) string ~= "marginHeight="~to!(String)(marginHeight)~" ";
-    if (marginLeft !is 0) string ~= "marginLeft="~to!(String)(marginLeft)~" ";
-    if (marginRight !is 0) string ~= "marginRight="~to!(String)(marginRight)~" ";
-    if (marginTop !is 0) string ~= "marginTop="~to!(String)(marginTop)~" ";
-    if (marginBottom !is 0) string ~= "marginBottom="~to!(String)(marginBottom)~" ";
-    if (spacing !is 0) string ~= "spacing="~to!(String)(spacing)~" ";
+    if (marginWidth !is 0) string ~= "marginWidth="~String_valueOf(marginWidth)~" ";
+    if (marginHeight !is 0) string ~= "marginHeight="~String_valueOf(marginHeight)~" ";
+    if (marginLeft !is 0) string ~= "marginLeft="~String_valueOf(marginLeft)~" ";
+    if (marginRight !is 0) string ~= "marginRight="~String_valueOf(marginRight)~" ";
+    if (marginTop !is 0) string ~= "marginTop="~String_valueOf(marginTop)~" ";
+    if (marginBottom !is 0) string ~= "marginBottom="~String_valueOf(marginBottom)~" ";
+    if (spacing !is 0) string ~= "spacing="~String_valueOf(spacing)~" ";
     string = string.trim();
     string ~= "}";
     return string;

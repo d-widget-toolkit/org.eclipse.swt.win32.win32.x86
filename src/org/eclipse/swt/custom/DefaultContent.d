@@ -12,6 +12,8 @@
  *******************************************************************************/
 module org.eclipse.swt.custom.DefaultContent;
 
+import java.lang.all;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;
@@ -21,13 +23,9 @@ import org.eclipse.swt.custom.TextChangeListener;
 import org.eclipse.swt.custom.StyledTextEvent;
 import org.eclipse.swt.custom.StyledTextListener;
 import org.eclipse.swt.custom.StyledText;
-import java.lang.all;
-
-static import tango.io.model.IFile;
-static import tango.text.Text;
 
 class DefaultContent : StyledTextContent {
-    private final static String LineDelimiter = tango.io.model.IFile.FileConst.NewlineString;
+    private final static String LineDelimiter = "\r\n";
 
     StyledTextListener[] textListeners; // stores text listeners for event sending
     char[] textStore; // stores the actual text

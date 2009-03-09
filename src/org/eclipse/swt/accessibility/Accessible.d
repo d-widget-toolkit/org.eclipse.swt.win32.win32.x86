@@ -37,7 +37,6 @@ import org.eclipse.swt.accessibility.AccessibleControlEvent;
 import org.eclipse.swt.accessibility.AccessibleEvent;
 
 import java.lang.all;
-import tango.core.Array;
 import tango.core.Thread;
 
 /**

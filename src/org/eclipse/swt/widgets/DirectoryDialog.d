@@ -22,7 +22,6 @@ import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.internal.C;
 
 import java.lang.all;
-static import tango.text.Text;
 
 /**
  * Instances of this class allow the user to navigate

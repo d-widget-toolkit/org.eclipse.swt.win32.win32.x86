@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.internal.win32.OS;
 
 import org.eclipse.swt.widgets.Control;
-import tango.util.Convert;
 import java.lang.all;
 import java.lang.Runnable;
 
@@ -468,7 +467,7 @@ public static bool isBidiPlatform() {
     if (isBidiPlatform_ is 1) return true;
     // need to look at system code page for NT & 98 platforms since EnumSystemLanguageGroups is
     // not supported for these platforms
-    String codePage = to!(String)(OS.GetACP());
+    String codePage = String_valueOf(OS.GetACP());
     if (CD_PG_ARABIC==/*eq*/codePage || CD_PG_HEBREW==/*eq*/codePage) {
         isBidiPlatform_ = 1;
     }

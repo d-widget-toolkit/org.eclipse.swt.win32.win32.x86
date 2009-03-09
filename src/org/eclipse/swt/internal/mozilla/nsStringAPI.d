@@ -1,6 +1,6 @@
 module org.eclipse.swt.internal.mozilla.nsStringAPI;
 
-import Utf = tango.text.convert.Utf;
+import java.lang.all;
 import org.eclipse.swt.internal.mozilla.Common;
 
 extern (System):
@@ -92,7 +92,7 @@ struct nsAString
     
     static char[] toString( nsAString* str )
     {
-        return Utf.toString( nsAString.toString16( str ) );
+        return String_valueOf( nsAString.toString16( str ) );
     }
 
   private:

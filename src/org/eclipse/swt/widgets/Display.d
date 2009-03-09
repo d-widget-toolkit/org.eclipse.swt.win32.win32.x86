@@ -48,12 +48,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.widgets.TrayItem;
 
 import java.lang.all;
-import java.lang.Runnable;
-import java.lang.System;
 import tango.core.Thread;
-import tango.stdc.stringz;
-import tango.util.Convert;
-static import tango.text.convert.Utf;
 
 /**
  * Instances of this class are responsible for managing the
@@ -2579,8 +2574,8 @@ override protected void init_ () {
     threadId = OS.GetCurrentThreadId ();
 
     /* Use the character encoding for the default locale */
-    windowClass_ = StrToTCHARs ( 0, WindowName ~ to!(String)(WindowClassCount), true );
-    windowShadowClass = StrToTCHARs ( 0, WindowShadowName ~ to!(String)(WindowClassCount), true );
+    windowClass_ = StrToTCHARs ( 0, WindowName ~ String_valueOf(WindowClassCount), true );
+    windowShadowClass = StrToTCHARs ( 0, WindowShadowName ~ String_valueOf(WindowClassCount), true );
     WindowClassCount++;
 
     /* Register the SWT window class */
@@ -4576,7 +4571,7 @@ static int wcsToMbcs (wchar ch, int codePage) {
     if (ch <= 0x7F) return ch;
     wchar[1] wc;
     wc[0] = ch;
-    auto r = StrToMBCSs( tango.text.convert.Utf.toString(wc), codePage );
+    auto r = StrToMBCSs( String_valueOf(wc), codePage );
     return r[0];
 }
 

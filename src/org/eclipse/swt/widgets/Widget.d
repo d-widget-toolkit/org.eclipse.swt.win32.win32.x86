@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TypedListener;
 
-import tango.io.Stdout;
 import tango.core.Thread;
 import java.lang.all;
 
@@ -124,8 +123,8 @@ public abstract class Widget {
             }
             static if (!OS.IsWinCE) {
                 if (OS.COMCTL32_VERSION < OS.VERSION (MAJOR, MINOR)) {
-                    Stdout.formatln ("***WARNING: SWT requires comctl32.dll version {}.{} or greater", MAJOR, MINOR); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    Stdout.formatln ("***WARNING: Detected: {}.{}", OS.COMCTL32_MAJOR, OS.COMCTL32_MINOR); //$NON-NLS-1$ //$NON-NLS-2$
+                    getDwtLogger().warn ("***WARNING: SWT requires comctl32.dll version {}.{} or greater", MAJOR, MINOR); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    getDwtLogger().warn ("***WARNING: Detected: {}.{}", OS.COMCTL32_MAJOR, OS.COMCTL32_MINOR); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             OS.InitCommonControls ();

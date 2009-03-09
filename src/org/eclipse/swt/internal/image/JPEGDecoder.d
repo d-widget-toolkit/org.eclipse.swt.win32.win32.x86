@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import java.lang.all;
 
-import tango.util.Convert;
 
 public class JPEGDecoder {
 
@@ -5831,7 +5830,7 @@ static void initial_setup (jpeg_decompress_struct cinfo)
 
     /* For now, precision must match compiled-in value... */
     if (cinfo.data_precision !is BITS_IN_JSAMPLE)
-        error(" [data precision=" ~ to!(String)(cinfo.data_precision) ~ "]");
+        error(" [data precision=" ~ String_valueOf(cinfo.data_precision) ~ "]");
 //      ERREXIT1(cinfo, JERR_BAD_PRECISION, cinfo.data_precision);
 
     /* Check that number of components won't exceed internal array sizes */

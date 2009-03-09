@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GlyphMetrics;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -330,7 +329,7 @@ override public String toString () {
     if (rise !is 0) {
         if (buffer.length > startLength) buffer ~= ", ";
         buffer ~= "rise=";
-        buffer ~= to!(String)(rise);
+        buffer ~= String_valueOf(rise);
     }
     if (metrics !is null) {
         if (buffer.length > startLength) buffer ~= ", ";

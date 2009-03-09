@@ -12,13 +12,11 @@
  *******************************************************************************/
 module org.eclipse.swt.events.TypedEvent;
 
-
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.internal.SWTEventObject;
 
-import tango.text.Util : split;
 import java.lang.all;
 
 /**
@@ -90,7 +88,9 @@ public this(Event e) {
  */
 String getName () {
     String str = this.classinfo.name;
-    return split( str, "." )[$-1];
+    int index = str.lastIndexOf ('.');
+    if (index is -1) return str;
+    return str.substring (index + 1, str.length );
 }
 
 /**

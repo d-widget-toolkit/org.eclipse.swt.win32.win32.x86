@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -532,7 +531,7 @@ override public String toString () {
         case SWT.RIGHT: hAlign = "SWT.RIGHT"; break;
         case SWT.CENTER: hAlign = "SWT.CENTER"; break;
         case CENTER: hAlign = "GridData.CENTER"; break;
-        default: hAlign = "Undefined "~to!(String)(horizontalAlignment); break;
+        default: hAlign = "Undefined "~String_valueOf(horizontalAlignment); break;
     }
     String vAlign = "";
     switch (verticalAlignment) {
@@ -544,22 +543,22 @@ override public String toString () {
         case SWT.BOTTOM: vAlign = "SWT.BOTTOM"; break;
         case SWT.CENTER: vAlign = "SWT.CENTER"; break;
         case CENTER: vAlign = "GridData.CENTER"; break;
-        default: vAlign = "Undefined "~to!(String)(verticalAlignment); break;
+        default: vAlign = "Undefined "~String_valueOf(verticalAlignment); break;
     }
     String string = getName()~" {";
-    string ~= "horizontalAlignment="~to!(String)(hAlign)~" ";
-    if (horizontalIndent !is 0) string ~= "horizontalIndent="~to!(String)(horizontalIndent)~" ";
-    if (horizontalSpan !is 1) string ~= "horizontalSpan="~to!(String)(horizontalSpan)~" ";
-    if (grabExcessHorizontalSpace) string ~= "grabExcessHorizontalSpace="~to!(String)(grabExcessHorizontalSpace)~" ";
-    if (widthHint !is SWT.DEFAULT) string ~= "widthHint="~to!(String)(widthHint)~" ";
-    if (minimumWidth !is 0) string ~= "minimumWidth="~to!(String)(minimumWidth)~" ";
+    string ~= "horizontalAlignment="~String_valueOf(hAlign)~" ";
+    if (horizontalIndent !is 0) string ~= "horizontalIndent="~String_valueOf(horizontalIndent)~" ";
+    if (horizontalSpan !is 1) string ~= "horizontalSpan="~String_valueOf(horizontalSpan)~" ";
+    if (grabExcessHorizontalSpace) string ~= "grabExcessHorizontalSpace="~String_valueOf(grabExcessHorizontalSpace)~" ";
+    if (widthHint !is SWT.DEFAULT) string ~= "widthHint="~String_valueOf(widthHint)~" ";
+    if (minimumWidth !is 0) string ~= "minimumWidth="~String_valueOf(minimumWidth)~" ";
     string ~= "verticalAlignment="~vAlign~" ";
-    if (verticalIndent !is 0) string ~= "verticalIndent="~to!(String)(verticalIndent)~" ";
-    if (verticalSpan !is 1) string ~= "verticalSpan="~to!(String)(verticalSpan)~" ";
-    if (grabExcessVerticalSpace) string ~= "grabExcessVerticalSpace="~to!(String)(grabExcessVerticalSpace)~" ";
-    if (heightHint !is SWT.DEFAULT) string ~= "heightHint="~to!(String)(heightHint)~" ";
-    if (minimumHeight !is 0) string ~= "minimumHeight="~to!(String)(minimumHeight)~" ";
-    if (exclude) string ~= "exclude="~to!(String)(exclude)~" ";
+    if (verticalIndent !is 0) string ~= "verticalIndent="~String_valueOf(verticalIndent)~" ";
+    if (verticalSpan !is 1) string ~= "verticalSpan="~String_valueOf(verticalSpan)~" ";
+    if (grabExcessVerticalSpace) string ~= "grabExcessVerticalSpace="~String_valueOf(grabExcessVerticalSpace)~" ";
+    if (heightHint !is SWT.DEFAULT) string ~= "heightHint="~String_valueOf(heightHint)~" ";
+    if (minimumHeight !is 0) string ~= "minimumHeight="~String_valueOf(minimumHeight)~" ";
+    if (exclude) string ~= "exclude="~String_valueOf(exclude)~" ";
     string = string.trim();
     string ~= "}";
     return string;

@@ -228,7 +228,7 @@ public void select(String string) {
     // specified string
     if (string !is null){
         for (int i = 0; i < items.length; i++) {
-            if ( tango.text.Util.locatePattern( items[i], string) is 0 ){
+            if (items[i].startsWith(string)){
                 int index = list.indexOf(items[i]);
                 list.select(index);
                 break;

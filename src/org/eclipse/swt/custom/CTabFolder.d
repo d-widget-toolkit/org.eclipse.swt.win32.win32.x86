@@ -48,8 +48,6 @@ import org.eclipse.swt.custom.CTabFolderLayout;
 import org.eclipse.swt.custom.CTabFolderEvent;
 
 import java.lang.all;
-import tango.util.Convert;
-static import tango.text.convert.Utf;
 
 /**
  *
@@ -886,7 +884,7 @@ void drawChevron(GC gc) {
         }
         count = items.length - showCount;
     }
-    String chevronString = count > 99 ? "99+" : to!(String)(count); //$NON-NLS-1$
+    String chevronString = count > 99 ? "99+" : String_valueOf(count); //$NON-NLS-1$
     switch (chevronImageState) {
         case NORMAL: {
             Color chevronBorder = single ? getSelectionForeground() : getForeground();
@@ -1683,7 +1681,7 @@ void initAccessible() {
                 if (text !is null) {
                     dchar mnemonic = _findMnemonic(text);
                     if (mnemonic !is '\0') {
-                        shortcut = "Alt+"~tango.text.convert.Utf.toString([mnemonic]); //$NON-NLS-1$
+                        shortcut = "Alt+"~dcharToString(mnemonic); //$NON-NLS-1$
                     }
                 }
             }

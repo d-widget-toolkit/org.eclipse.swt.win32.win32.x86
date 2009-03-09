@@ -33,8 +33,6 @@ import org.eclipse.swt.graphics.Resource;
 import java.io.InputStream;
 import java.lang.all;
 
-//import tango.stdc.string;
-//import tango.stdc.stringz;
 
 /**
  * Instances of this class are graphics which have been prepared

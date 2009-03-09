@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.swt.layout.FillData;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -238,9 +237,9 @@ override protected void layout (Composite composite, bool flushCache) {
 override public String toString () {
     String string = getName () ~ " {";
     string ~= "type="~((type is SWT.VERTICAL) ? "SWT.VERTICAL" : "SWT.HORIZONTAL")~" ";
-    if (marginWidth !is 0) string ~= "marginWidth="~to!(String)(marginWidth)~" ";
-    if (marginHeight !is 0) string ~= "marginHeight="~to!(String)(marginHeight)~" ";
-    if (spacing !is 0) string ~= "spacing="~to!(String)(spacing)~" ";
+    if (marginWidth !is 0) string ~= "marginWidth="~String_valueOf(marginWidth)~" ";
+    if (marginHeight !is 0) string ~= "marginHeight="~String_valueOf(marginHeight)~" ";
+    if (spacing !is 0) string ~= "spacing="~String_valueOf(spacing)~" ";
     string = string.trim();
     string ~= "}";
     return string;

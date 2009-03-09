@@ -25,8 +25,6 @@ static import tango.sys.Common;
 
 static import tango.stdc.stdlib;
 static import tango.stdc.string;
-static import tango.text.convert.Utf;
-static import tango.io.Console;
 
 alias tango.sys.win32.UserGdi WINAPI;
 alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
@@ -3603,7 +3601,6 @@ alias DWTWINAPI.GetScrollBarInfo GetScrollBarInfo;
 } // END of OS
 //-----------------------------------------------------------------------------
 import tango.sys.win32.CodePage : CodePage;
-private import tango.text.convert.Utf;
 private import tango.stdc.stringz;
 
 // convert UTF-8 to MBCS
@@ -3616,7 +3613,7 @@ public CHAR[] StrToMBCS(char[] sc, uint codepage = 0) {
             {
                 CHAR[] result;
                 int i;
-                wchar[] ws = tango.text.convert.Utf.toString16(sc);
+                wchar[] ws = toWCharArray(sc);
                 result.length = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, null, 0, null, null);
                 i = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, result.ptr, result.length, null, null);
                 assert(i == result.length);
@@ -3654,7 +3651,7 @@ public wchar[] StrToWCHARs(uint codepage , char[] sc, bool terminated = false ) 
 public wchar[] StrToWCHARs(char[] sc, bool terminated = false ) {
     wchar[] ret;
     try{
-        ret = tango.text.convert.Utf.toString16(sc);
+        ret = toWCharArray(sc);
     }catch(Exception e){
         // do nothing
         ret = "";
@@ -3691,7 +3688,7 @@ public char[] MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
     wchar[] wcs = _mbcszToWs(pString, _length, codepage);
     char[] result;
     try{
-        result = .toString(wcs);
+        result = String_valueOf(wcs);
     }catch(Exception e){
     }
     return result;
@@ -3719,7 +3716,7 @@ public char[] WCHARzToStr(wchar* pString, int _length = -1)
 
     char[] result;
     try{
-        result = .toString(wcs);
+        result = String_valueOf(wcs);
     }catch(Exception e){
         // do nothing
     }

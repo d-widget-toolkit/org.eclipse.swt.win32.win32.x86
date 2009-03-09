@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.internal.win32.OS;
 
 import java.lang.all;
-static import tango.text.convert.Utf;
 
 /**
  * Instances of this class represent programs and
@@ -57,12 +56,12 @@ static String assocQueryString (int assocStr, TCHAR[] key, bool expand) {
             if (length_ !is 0) {
                 TCHAR[] lpDst = NewTCHARs (0, length_);
                 OS.ExpandEnvironmentStrings (pszOut.ptr, lpDst.ptr, length_);
-                return tango.text.convert.Utf.toString( lpDst[ 0 .. Math.max (0, length_ - 1) ] );
+                return String_valueOf( lpDst[ 0 .. Math.max (0, length_ - 1) ] );
             } else {
                 return "";
             }
         } else {
-            return tango.text.convert.Utf.toString( pszOut[ 0 .. Math.max (0, pcchOut [0] - 1)]);
+            return String_valueOf( pszOut[ 0 .. Math.max (0, pcchOut [0] - 1)]);
         }
     }
     return null;
@@ -174,11 +173,11 @@ static String getKeyValue (String string, bool expand) {
                     if (length_ !is 0) {
                         TCHAR[] lpDst = NewTCHARs (0, length_);
                         OS.ExpandEnvironmentStrings (lpData.ptr, lpDst.ptr, length_);
-                        result = tango.text.convert.Utf.toString ( lpDst[0 .. Math.max (0, length_ - 1) ] );
+                        result = String_valueOf ( lpDst[0 .. Math.max (0, length_ - 1) ] );
                     }
                 } else {
                     length_ = Math.max (0, lpData.length - 1);
-                    result = tango.text.convert.Utf.toString ( lpData[0 .. length_]);
+                    result = String_valueOf ( lpData[0 .. length_]);
                 }
             }
         }
@@ -232,7 +231,7 @@ public static Program [] getPrograms () {
     FILETIME ft;
     int dwIndex = 0, count = 0;
     while (OS.RegEnumKeyEx (cast(void*)OS.HKEY_CLASSES_ROOT, dwIndex, lpName.ptr, lpcName.ptr, null, null, null, &ft) !is OS.ERROR_NO_MORE_ITEMS) {
-        String path = tango.text.convert.Utf.toString ( lpName[0 .. lpcName [0]]);
+        String path = String_valueOf ( lpName[0 .. lpcName [0]]);
         lpcName [0] = lpName.length ;
         Program program = getProgram (path, null);
         if (program !is null) {

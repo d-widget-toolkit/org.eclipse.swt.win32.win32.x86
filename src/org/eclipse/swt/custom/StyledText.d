@@ -83,11 +83,6 @@ import org.eclipse.swt.custom.StyledTextListener;
 import org.eclipse.swt.custom.ST;
 import java.lang.Runnable;
 
-static import tango.text.Text;
-static import tango.text.Util;
-static import tango.io.model.IFile;
-static import tango.text.convert.Utf;
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -150,7 +145,7 @@ public class StyledText : Canvas {
     alias Canvas.computeSize computeSize;
 
     static const char TAB = '\t';
-    static const String PlatformLineDelimiter = tango.io.model.IFile.FileConst.NewlineString;
+    static const String PlatformLineDelimiter = "\r\n";
     static const int BIDI_CARET_WIDTH = 3;
     static const int DEFAULT_WIDTH  = 64;
     static const int DEFAULT_HEIGHT = 64;
@@ -702,7 +697,7 @@ public class StyledText : Canvas {
                     printLayout.setText("");
                 }
             } else {
-                printLayout.setText(to!(String)(index));
+                printLayout.setText(String_valueOf(index));
             }
             int paintX = x - printMargin - printLayout.getBounds().width;
             printLayout.draw(gc, paintX, y);
@@ -879,7 +874,7 @@ public class StyledText : Canvas {
                     write( string[start .. index ] );
                 }
                 write("\\u");
-                write( to!(String)( cast(short)ch ));
+                write( String_valueOf( cast(short)ch ));
                 write(' ');                     // control word delimiter
                 start = index + incr;
             } else if (ch is '}' || ch is '{' || ch is '\\') {
@@ -3998,8 +3993,8 @@ int getOffsetAtPoint(int x, int y, int lineIndex) {
             String line = content.getLine(lineIndex);
             int level;
             int offset = offsetInLine;
-            while (offset > 0 && tango.text.Unicode.isDigit(line[offset])) offset--;
-            if (offset is 0 && tango.text.Unicode.isDigit(line[offset])) {
+            while (offset > 0 && Character.isDigit(line.dcharAt(offset))) offset--;
+            if (offset is 0 && Character.isDigit(line.dcharAt(offset))) {
                 level = isMirrored() ? 1 : 0;
             } else {
                 level = layout.getLevel(offset) & 0x1;
@@ -4804,8 +4799,8 @@ int getCaretDirection() {
     if (lineLength is 0) return isMirrored() ? SWT.RIGHT : SWT.LEFT;
     if (caretAlignment is PREVIOUS_OFFSET_TRAILING && offset > 0) offset--;
     if (offset is lineLength && offset > 0) offset--;
-    while (offset > 0 && tango.text.Unicode.isDigit(line[offset])) offset--;
-    if (offset is 0 && tango.text.Unicode.isDigit(line[offset])) {
+    while (offset > 0 && Character.isDigit(line.dcharAt(offset))) offset--;
+    if (offset is 0 && Character.isDigit(line.dcharAt(offset))) {
         return isMirrored() ? SWT.RIGHT : SWT.LEFT;
     }
     TextLayout layout = renderer.getTextLayout(caretLine);
@@ -5661,7 +5656,7 @@ void initializeAccessible() {
                 if (text !is null) {
                     dchar mnemonic = _findMnemonic (text);
                     if (mnemonic !is '\0') {
-                        shortcut = "Alt+"~tango.text.convert.Utf.toString( [mnemonic] ); //$NON-NLS-1$
+                        shortcut = "Alt+"~dcharToString(mnemonic); //$NON-NLS-1$
                     }
                 }
             }

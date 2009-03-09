@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.layout.FormAttachment;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -336,12 +335,12 @@ FormAttachment getTopAttachment (Control control, int spacing, bool flushCache) 
  */
 override public String toString () {
     String string = getName()~" {";
-    if (width !is SWT.DEFAULT) string ~= "width="~to!(String)(width)~" ";
-    if (height !is SWT.DEFAULT) string ~= "height="~to!(String)(height)~" ";
-    if (left !is null) string ~= "left="~to!(String)(left)~" ";
-    if (right !is null) string ~= "right="~to!(String)(right)~" ";
-    if (top !is null) string ~= "top="~to!(String)(top)~" ";
-    if (bottom !is null) string ~= "bottom="~to!(String)(bottom)~" ";
+    if (width !is SWT.DEFAULT) string ~= "width="~String_valueOf(width)~" ";
+    if (height !is SWT.DEFAULT) string ~= "height="~String_valueOf(height)~" ";
+    if (left !is null) string ~= "left="~String_valueOf(left)~" ";
+    if (right !is null) string ~= "right="~String_valueOf(right)~" ";
+    if (top !is null) string ~= "top="~String_valueOf(top)~" ";
+    if (bottom !is null) string ~= "bottom="~String_valueOf(bottom)~" ";
     string = string.trim();
     string ~= "}";
     return string;

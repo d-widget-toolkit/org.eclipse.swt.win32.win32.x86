@@ -19,7 +19,6 @@ import java.lang.all;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Widget;
 
-import tango.util.Convert;
 
 /**
  * This event is sent when an event is generated in the CTabFolder.
@@ -88,12 +87,12 @@ this(Widget w) {
 public override String toString() {
     String string = super.toString ();
     return string[0.. $ - 1] // remove trailing '}'
-        ~ " item=" ~ to!(String)(item)
-        ~ " doit=" ~ to!(String)(doit)
-        ~ " x=" ~ to!(String)(x)
-        ~ " y=" ~ to!(String)(y)
-        ~ " width=" ~ to!(String)(width)
-        ~ " height=" ~ to!(String)(height)
+        ~ " item=" ~ String_valueOf(item)
+        ~ " doit=" ~ String_valueOf(doit)
+        ~ " x=" ~ String_valueOf(x)
+        ~ " y=" ~ String_valueOf(y)
+        ~ " width=" ~ String_valueOf(width)
+        ~ " height=" ~ String_valueOf(height)
         ~ "}";
 }
 }

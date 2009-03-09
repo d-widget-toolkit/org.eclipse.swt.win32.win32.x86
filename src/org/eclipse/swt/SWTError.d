@@ -12,10 +12,9 @@
  *******************************************************************************/
 module org.eclipse.swt.SWTError;
 
-import org.eclipse.swt.SWT;
-
-import tango.io.Stdout;
 import java.lang.all;
+
+import org.eclipse.swt.SWT;
 
 /**
  * This error is thrown whenever an unrecoverable error
@@ -148,14 +147,14 @@ public String getMessage () {
  * </p>
  */
 public void printStackTrace () {
-    Stderr.formatln( "stacktrace follows (if feature compiled in)" );
+    getDwtLogger().error( "stacktrace follows (if feature compiled in)" );
     foreach( msg; info ){
-        Stderr.formatln( "{}", msg );
+        getDwtLogger().error( "{}", msg );
     }
     if ( throwable !is null) {
-        Stderr.formatln ("*** Stack trace of contained error ***"); //$NON-NLS-1$
+        getDwtLogger().error ("*** Stack trace of contained error ***"); //$NON-NLS-1$
         foreach( msg; throwable.info ){
-            Stderr.formatln( "{}", msg );
+            getDwtLogger().error( "{}", msg );
         }
     }
 }

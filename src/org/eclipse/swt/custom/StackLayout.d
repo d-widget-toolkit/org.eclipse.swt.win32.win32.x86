@@ -14,17 +14,12 @@ module org.eclipse.swt.custom.StackLayout;
 
 import java.lang.all;
 
-
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
-
-import tango.util.Convert;
-static import tango.text.Util;
 
 /**
  * This Layout stacks all the controls one on top of the other and resizes all controls
@@ -136,9 +131,9 @@ protected override void layout(Composite composite, bool flushCache) {
 
 String getName () {
     String string = this.classinfo.name;
-    int index = tango.text.Util.locatePrior( string ,'.');
-    if (index is string.length ) return string;
-    return string[ index + 1 .. $ ];
+    int index = string.lastIndexOf ('.');
+    if (index is -1 ) return string;
+    return string.substring (index + 1, string.length );
 }
 
 /**
@@ -149,10 +144,10 @@ String getName () {
  */
 public override String toString () {
     String string = getName ()~" {";
-    if (marginWidth !is 0) string ~= "marginWidth="~to!(String)(marginWidth)~" ";
-    if (marginHeight !is 0) string ~= "marginHeight="~to!(String)(marginHeight)~" ";
-    if (topControl !is null) string ~= "topControl="~to!(String)(topControl)~" ";
-    string = tango.text.Util.trim(string);
+    if (marginWidth !is 0) string ~= "marginWidth="~String_valueOf(marginWidth)~" ";
+    if (marginHeight !is 0) string ~= "marginHeight="~String_valueOf(marginHeight)~" ";
+    if (topControl !is null) string ~= "topControl="~String_valueOf(topControl)~" ";
+    string = string.trim();
     string ~= "}";
     return string;
 }

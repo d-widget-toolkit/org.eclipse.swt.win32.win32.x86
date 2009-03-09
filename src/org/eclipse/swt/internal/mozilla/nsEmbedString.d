@@ -1,6 +1,6 @@
 module org.eclipse.swt.internal.mozilla.nsEmbedString;
 
-import Utf = tango.text.convert.Utf;
+import java.lang.all;
 
 import org.eclipse.swt.internal.mozilla.Common;
 import org.eclipse.swt.internal.mozilla.nsStringAPI;
@@ -39,7 +39,7 @@ scope class nsEmbedString
     
     char[] toString()
     {
-        return Utf.toString(this.toString16());
+        return String_valueOf(this.toString16());
     }
     ~this()
 	{

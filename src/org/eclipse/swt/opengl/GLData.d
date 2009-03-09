@@ -12,8 +12,6 @@
  *******************************************************************************/
 module org.eclipse.swt.opengl.GLData;
 
-import tango.text.Util;
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -137,12 +135,12 @@ public class GLData {
 override public String toString() {
     String string = doubleBuffer ? "doubleBuffer," : "";
     string ~= stereo ? "stereo," : "";
-    string ~= "r:" ~     to!(String)(redSize)  ~ " g:" ~ to!(String)(greenSize) ~
-              " b:" ~    to!(String)(blueSize) ~ " a:" ~ to!(String)(alphaSize) ~ "," ~
-              "depth:" ~ to!(String)(depthSize) ~ ",stencil:" ~ to!(String)(stencilSize) ~
-              ",accum r:" ~ to!(String)(accumRedSize) ~ "g:" ~ to!(String)(accumGreenSize) ~
-              "b:" ~ to!(String)(accumBlueSize) ~ "a:" ~ to!(String)(accumAlphaSize) ~
-              ",sampleBuffers:" ~ to!(String)(sampleBuffers) ~ ",samples:" ~ to!(String)(samples);
+    string ~= "r:" ~     String_valueOf(redSize)  ~ " g:" ~ String_valueOf(greenSize) ~
+              " b:" ~    String_valueOf(blueSize) ~ " a:" ~ String_valueOf(alphaSize) ~ "," ~
+              "depth:" ~ String_valueOf(depthSize) ~ ",stencil:" ~ String_valueOf(stencilSize) ~
+              ",accum r:" ~ String_valueOf(accumRedSize) ~ "g:" ~ String_valueOf(accumGreenSize) ~
+              "b:" ~ String_valueOf(accumBlueSize) ~ "a:" ~ String_valueOf(accumAlphaSize) ~
+              ",sampleBuffers:" ~ String_valueOf(sampleBuffers) ~ ",samples:" ~ String_valueOf(samples);
     return string;
 }
 }

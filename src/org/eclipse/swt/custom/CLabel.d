@@ -349,9 +349,7 @@ void onDispose(DisposeEvent event) {
 void onMnemonic(TraverseEvent event) {
     dchar mnemonic = _findMnemonic(text);
     if (mnemonic is '\0') return;
-    dchar[1] d; uint ate;
-    auto r = tango.text.convert.Utf.toString32( [event.character][], d, &ate );
-    if (tango.text.Unicode.toLower(r)[0] !is mnemonic) return;
+    if (Character.toLowerCase(event.character) !is mnemonic) return;
     Composite control = this.getParent();
     while (control !is null) {
         Control [] children = control.getChildren();
@@ -798,7 +796,7 @@ protected String shortenText(GC gc, String t, int width) {
     layout.setText(t);
     mid = validateOffset(layout, mid);
     while (min < mid && mid < max) {
-        String s1 = t[0 .. mid].dup;
+        String s1 = t.substring(0, mid);
         String s2 = t.substring(validateOffset(layout, l-mid), l);
         int l1 = gc.textExtent(s1, DRAW_FLAGS).x;
         int l2 = gc.textExtent(s2, DRAW_FLAGS).x;
@@ -825,18 +823,18 @@ private String[] splitString(String text) {
     String[] lines = new String[1];
     int start = 0, pos;
     do {
-        pos = tango.text.Util.locate( text, '\n', start);
-        if (pos is text.length ) {
-            lines[lines.length - 1] = text[start .. $ ];
+        pos = text.indexOf('\n', start);
+        if (pos is -1) {
+            lines[lines.length - 1] = text.substring(start);
         } else {
-            bool crlf = (pos > 0) && (text[ pos - 1 ] is '\r');
-            lines[lines.length - 1] = text[ start .. pos - (crlf ? 1 : 0)];
+            bool crlf = (pos > 0) && (text.charAt(pos - 1) is '\r');
+            lines[lines.length - 1] = text.substring(start, pos - (crlf ? 1 : 0));
             start = pos + 1;
             String[] newLines = new String[lines.length+1];
             System.arraycopy(lines, 0, newLines, 0, lines.length);
             lines = newLines;
         }
-    } while (pos !is text.length);
+    } while (pos !is -1);
     return lines;
 }
 }

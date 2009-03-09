@@ -24,8 +24,6 @@ import org.eclipse.swt.widgets.TypedListener;
 
 import java.lang.all;
 
-import Integer = tango.text.convert.Integer;
-
 //TODO - features not yet implemented: read-only, drop-down calendar for date
 //TODO - font, colors, background image not yet implemented (works on some platforms)
 
@@ -529,7 +527,7 @@ int getShortDateFormatOrdering () {
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_IDATE, tchar.ptr, 4);
     if (size > 0) {
         String number = TCHARsToStr(tchar[0..size - 1]);
-        return Integer.parse (number);
+        return Integer.parseInt (number);
     }
     return 0;
 }
@@ -545,7 +543,7 @@ bool is24HourTime () {
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_ITIME, tchar.ptr, 4);
     if (size > 0) {
         String number = TCHARsToStr(tchar[0..size - 1]);
-        return Integer.parse (number) !is 0;
+        return Integer.parseInt (number) !is 0;
     }
     return true;
 }

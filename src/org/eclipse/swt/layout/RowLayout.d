@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.RowData;
-import tango.util.Convert;
 import java.lang.all;
 
 
@@ -497,17 +496,17 @@ Point layoutVertical (Composite composite, bool move, bool wrap, int height, boo
 override public String toString () {
     String string = getName ()~" {";
     string ~= "type="~((type !is SWT.HORIZONTAL) ? "SWT.VERTICAL" : "SWT.HORIZONTAL")~" ";
-    if (marginWidth !is 0) string ~= "marginWidth="~to!(String)(marginWidth)~" ";
-    if (marginHeight !is 0) string ~= "marginHeight="~to!(String)(marginHeight)~" ";
-    if (marginLeft !is 0) string ~= "marginLeft="~to!(String)(marginLeft)~" ";
-    if (marginTop !is 0) string ~= "marginTop="~to!(String)(marginTop)~" ";
-    if (marginRight !is 0) string ~= "marginRight="~to!(String)(marginRight)~" ";
-    if (marginBottom !is 0) string ~= "marginBottom="~to!(String)(marginBottom)~" ";
-    if (spacing !is 0) string ~= "spacing="~to!(String)(spacing)~" ";
-    string ~= "wrap="~to!(String)(wrap)~" ";
-    string ~= "pack="~to!(String)(pack)~" ";
-    string ~= "fill="~to!(String)(fill)~" ";
-    string ~= "justify="~to!(String)(justify)~" ";
+    if (marginWidth !is 0) string ~= "marginWidth="~String_valueOf(marginWidth)~" ";
+    if (marginHeight !is 0) string ~= "marginHeight="~String_valueOf(marginHeight)~" ";
+    if (marginLeft !is 0) string ~= "marginLeft="~String_valueOf(marginLeft)~" ";
+    if (marginTop !is 0) string ~= "marginTop="~String_valueOf(marginTop)~" ";
+    if (marginRight !is 0) string ~= "marginRight="~String_valueOf(marginRight)~" ";
+    if (marginBottom !is 0) string ~= "marginBottom="~String_valueOf(marginBottom)~" ";
+    if (spacing !is 0) string ~= "spacing="~String_valueOf(spacing)~" ";
+    string ~= "wrap="~String_valueOf(wrap)~" ";
+    string ~= "pack="~String_valueOf(pack)~" ";
+    string ~= "fill="~String_valueOf(fill)~" ";
+    string ~= "justify="~String_valueOf(justify)~" ";
     string = string.trim();
     string ~= "}";
     return string;

@@ -27,10 +27,7 @@ import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 
-
 import java.lang.all;
-import tango.text.convert.Integer : toString;
-import tango.util.Convert;
 
 /**
  * Instances of this class are selectable user interface
@@ -331,7 +328,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
         RECT rect;
         int max;
         OS.SendMessage (hwndUpDown , OS.UDM_GETRANGE32, null, &max);
-        String string = .toString( max );
+        String string = String_valueOf( max );
         if (digits > 0) {
             StringBuffer buffer = new StringBuffer ();
             buffer.append (string);
@@ -1030,9 +1027,9 @@ void setSelection (int value, bool setPos, bool setText, bool notify) {
     if (setText) {
         String string;
         if (digits is 0) {
-            string = .toString (value);
+            string = String_valueOf (value);
         } else {
-            string = to!(String)(Math.abs (value));
+            string = String_valueOf(Math.abs (value));
             String decimalSeparator = getDecimalSeparator ();
             int index = string.length - digits;
             StringBuffer buffer = new StringBuffer ();

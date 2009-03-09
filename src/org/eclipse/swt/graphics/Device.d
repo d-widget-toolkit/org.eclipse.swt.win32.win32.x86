@@ -37,8 +37,6 @@ import java.lang.Runnable;
 import java.lang.System;
 
 import java.lang.all;
-import tango.util.Convert;
-import tango.io.Stdout;
 
 /**
  * This class is the abstract superclass of all device objects,
@@ -877,22 +875,22 @@ void printErrors () {
             }
             if (objectCount !is 0) {
                 String string = "Summary: ";
-                if (colors !is 0) string ~= to!(String)(colors) ~ " Color(s), ";
-                if (cursors !is 0) string ~= to!(String)(cursors) ~ " Cursor(s), ";
-                if (fonts !is 0) string ~= to!(String)(fonts) ~ " Font(s), ";
-                if (gcs !is 0) string ~= to!(String)(gcs) ~ " GC(s), ";
-                if (images !is 0) string ~= to!(String)(images) ~ " Image(s), ";
-                if (paths !is 0) string ~= to!(String)(paths) ~ " Path(s), ";
-                if (patterns !is 0) string ~= to!(String)(patterns) ~ " Pattern(s), ";
-                if (regions !is 0) string ~= to!(String)(regions) ~ " Region(s), ";
-                if (textLayouts !is 0) string ~= to!(String)(textLayouts) ~ " TextLayout(s), ";
-                if (transforms !is 0) string ~= to!(String)(transforms) ~ " Transforms(s), ";
+                if (colors !is 0) string ~= String_valueOf(colors) ~ " Color(s), ";
+                if (cursors !is 0) string ~= String_valueOf(cursors) ~ " Cursor(s), ";
+                if (fonts !is 0) string ~= String_valueOf(fonts) ~ " Font(s), ";
+                if (gcs !is 0) string ~= String_valueOf(gcs) ~ " GC(s), ";
+                if (images !is 0) string ~= String_valueOf(images) ~ " Image(s), ";
+                if (paths !is 0) string ~= String_valueOf(paths) ~ " Path(s), ";
+                if (patterns !is 0) string ~= String_valueOf(patterns) ~ " Pattern(s), ";
+                if (regions !is 0) string ~= String_valueOf(regions) ~ " Region(s), ";
+                if (textLayouts !is 0) string ~= String_valueOf(textLayouts) ~ " TextLayout(s), ";
+                if (transforms !is 0) string ~= String_valueOf(transforms) ~ " Transforms(s), ";
                 if (string.length !is 0) {
                     string = string.substring (0, string.length - 2);
-                    Stderr.formatln ( "{}", string);
+                    getDwtLogger().error ( "{}", string);
                 }
                 for (int i=0; i<errors.length; i++) {
-                    if (errors [i] !is null) ExceptionPrintStackTrace( errors [i], Stderr);
+                    if (errors [i] !is null) ExceptionPrintStackTrace( errors [i]);
                 }
             }
         }

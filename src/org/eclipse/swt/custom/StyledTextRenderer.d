@@ -38,13 +38,7 @@ import org.eclipse.swt.custom.TextChangingEvent;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledTextEvent;
 
-import java.lang.Runnable;
 import java.lang.all;
-
-static import tango.text.Text;
-static import tango.text.Util;
-static import tango.text.convert.Utf;
-import tango.util.Convert;
 
 /**
  * A StyledTextRenderer renders the content of a StyledText widget.
@@ -363,7 +357,7 @@ void drawBullet(Bullet bullet, GC gc, int paintX, int paintY, int index, int lin
     int type = bullet.type & (ST.BULLET_DOT|ST.BULLET_NUMBER|ST.BULLET_LETTER_LOWER|ST.BULLET_LETTER_UPPER);
     switch (type) {
         case ST.BULLET_DOT: string = "\u2022"; break;
-        case ST.BULLET_NUMBER: string = to!(String)(index); break;
+        case ST.BULLET_NUMBER: string = String_valueOf(index); break;
         case ST.BULLET_LETTER_LOWER: string = [cast(char) (index % 26 + 97)]; break;
         case ST.BULLET_LETTER_UPPER: string = [cast(char) (index % 26 + 65)]; break;
         default:

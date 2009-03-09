@@ -17,7 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.SWTException;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -265,22 +264,22 @@ public static void error (int code, int hresult) {
         /* OS Failure/Limit (fatal, may occur only on some platforms) */
         case DND.ERROR_CANNOT_INIT_DRAG:{
             String msg = DND.INIT_DRAG_MESSAGE;
-            if (hresult !is 0) msg ~= " result = "~to!(String)(hresult); //$NON-NLS-1$
+            if (hresult !is 0) msg ~= " result = "~String_valueOf(hresult); //$NON-NLS-1$
             throw new SWTError (code, msg);
         }
         case DND.ERROR_CANNOT_INIT_DROP:{
             String msg = DND.INIT_DROP_MESSAGE;
-            if (hresult !is 0) msg ~= " result = "~to!(String)(hresult); //$NON-NLS-1$
+            if (hresult !is 0) msg ~= " result = "~String_valueOf(hresult); //$NON-NLS-1$
             throw new SWTError (code, msg);
         }
         case DND.ERROR_CANNOT_SET_CLIPBOARD:{
             String msg = DND.CANNOT_SET_CLIPBOARD_MESSAGE;
-            if (hresult !is 0) msg ~= " result = "~to!(String)(hresult); //$NON-NLS-1$
+            if (hresult !is 0) msg ~= " result = "~String_valueOf(hresult); //$NON-NLS-1$
             throw new SWTError (code, msg);
         }
         case DND.ERROR_INVALID_DATA:{
             String msg = DND.INVALID_DATA_MESSAGE;
-            if (hresult !is 0) msg ~= " result = "~to!(String)(hresult); //$NON-NLS-1$
+            if (hresult !is 0) msg ~= " result = "~String_valueOf(hresult); //$NON-NLS-1$
             throw new SWTException (code, msg);
         }
         default:

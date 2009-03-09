@@ -226,7 +226,7 @@ public static InflaterInputStream newInflaterInputStream(InputStream stream) {
  * @return true when the character is a letter
  */
 public static bool isLetter(dchar c) {
-    return Unicode.isLetter(c);
+    return Character.isLetter(c);
 }
 
 /**
@@ -236,7 +236,7 @@ public static bool isLetter(dchar c) {
  * @return true when the character is a letter or a digit
  */
 public static bool isLetterOrDigit(dchar c) {
-    return Unicode.isLetterOrDigit(c);
+    return Character.isLetterOrDigit(c);
 }
 
 /**
@@ -246,7 +246,7 @@ public static bool isLetterOrDigit(dchar c) {
  * @return true when the character is a Unicode space character
  */
 public static bool isSpaceChar(dchar c) {
-    return Unicode.isSpace(c);
+    return Character.isSpace(c);
 }
 
 /**
@@ -256,7 +256,7 @@ public static bool isSpaceChar(dchar c) {
  * @return true if the character is whitespace
  */
 public static bool isWhitespace(dchar c) {
-    return Unicode.isWhitespace(c);
+    return Character.isWhitespace(c);
 }
 
 /**

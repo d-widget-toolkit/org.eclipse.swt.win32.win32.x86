@@ -23,7 +23,6 @@ import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.ole.win32.OleAutomation;
 import org.eclipse.swt.ole.win32.OLE;
 
-import tango.util.Convert;
 import java.lang.all;
 
 /**
@@ -1017,21 +1016,21 @@ void setData(VARIANT* pData){
 public String toString () {
     switch (type) {
         case COM.VT_BOOL :
-            return "VT_BOOL{"~to!(String)(booleanData)~"}";
+            return "VT_BOOL{"~String_valueOf(booleanData)~"}";
         case COM.VT_I1 :
-            return "VT_I1{"~to!(String)(byteData)~"}";
+            return "VT_I1{"~String_valueOf(byteData)~"}";
         case COM.VT_I2 :
-            return "VT_I2{"~to!(String)(shortData)~"}";
+            return "VT_I2{"~String_valueOf(shortData)~"}";
         case COM.VT_UI2 :
             return "VT_UI2{"~ dcharToString(charData) ~"}";
         case COM.VT_I4 :
-            return "VT_I4{"~to!(String)(intData)~"}";
+            return "VT_I4{"~String_valueOf(intData)~"}";
         case COM.VT_I8 :
-            return "VT_I8{"~to!(String)(longData)~"}";
+            return "VT_I8{"~String_valueOf(longData)~"}";
         case COM.VT_R4 :
-            return "VT_R4{"~to!(String)(floatData)~"}";
+            return "VT_R4{"~String_valueOf(floatData)~"}";
         case COM.VT_R8 :
-            return "VT_R8{"~to!(String)(doubleData)~"}";
+            return "VT_R8{"~String_valueOf(doubleData)~"}";
         case COM.VT_BSTR :
             return "VT_BSTR{"~stringData~"}";
         case COM.VT_DISPATCH :
@@ -1047,6 +1046,6 @@ public String toString () {
     if ((type & COM.VT_BYREF) !is 0) {
         return Format("VT_BYREF|{}{{{}}",(type & ~COM.VT_BYREF), byRefPtr );
     }
-    return "Unsupported Type "~to!(String)(type);
+    return "Unsupported Type "~String_valueOf(type);
 }
 }

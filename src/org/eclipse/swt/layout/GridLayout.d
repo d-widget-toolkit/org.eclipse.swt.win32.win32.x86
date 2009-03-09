@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Scrollable;
 
 import java.lang.System;
 
-import tango.util.Convert;
 import java.lang.all;
 
 
@@ -743,16 +742,16 @@ String getName () {
  */
 override public String toString () {
     String string = getName ()~" {";
-    if (numColumns !is 1) string ~= "numColumns="~to!(String)(numColumns)~" ";
-    if (makeColumnsEqualWidth) string ~= "makeColumnsEqualWidth="~to!(String)(makeColumnsEqualWidth)~" ";
-    if (marginWidth !is 0) string ~= "marginWidth="~to!(String)(marginWidth)~" ";
-    if (marginHeight !is 0) string ~= "marginHeight="~to!(String)(marginHeight)~" ";
-    if (marginLeft !is 0) string ~= "marginLeft="~to!(String)(marginLeft)~" ";
-    if (marginRight !is 0) string ~= "marginRight="~to!(String)(marginRight)~" ";
-    if (marginTop !is 0) string ~= "marginTop="~to!(String)(marginTop)~" ";
-    if (marginBottom !is 0) string ~= "marginBottom="~to!(String)(marginBottom)~" ";
-    if (horizontalSpacing !is 0) string ~= "horizontalSpacing="~to!(String)(horizontalSpacing)~" ";
-    if (verticalSpacing !is 0) string ~= "verticalSpacing="~to!(String)(verticalSpacing)~" ";
+    if (numColumns !is 1) string ~= "numColumns="~String_valueOf(numColumns)~" ";
+    if (makeColumnsEqualWidth) string ~= "makeColumnsEqualWidth="~String_valueOf(makeColumnsEqualWidth)~" ";
+    if (marginWidth !is 0) string ~= "marginWidth="~String_valueOf(marginWidth)~" ";
+    if (marginHeight !is 0) string ~= "marginHeight="~String_valueOf(marginHeight)~" ";
+    if (marginLeft !is 0) string ~= "marginLeft="~String_valueOf(marginLeft)~" ";
+    if (marginRight !is 0) string ~= "marginRight="~String_valueOf(marginRight)~" ";
+    if (marginTop !is 0) string ~= "marginTop="~String_valueOf(marginTop)~" ";
+    if (marginBottom !is 0) string ~= "marginBottom="~String_valueOf(marginBottom)~" ";
+    if (horizontalSpacing !is 0) string ~= "horizontalSpacing="~String_valueOf(horizontalSpacing)~" ";
+    if (verticalSpacing !is 0) string ~= "verticalSpacing="~String_valueOf(verticalSpacing)~" ";
     string = string.trim();
     string ~= "}";
     return string;

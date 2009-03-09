@@ -17,7 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.win32.OS;
 
 import java.lang.all;
-import tango.util.Convert;
 
 /**
  * Instances of this class describe operating system fonts.
@@ -593,36 +592,36 @@ override public String toString() {
     buffer.append("1|"); //$NON-NLS-1$
     buffer.append(getName());
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(getHeightF()));
+    buffer.append(String_valueOf(getHeightF()));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(getStyle()));
+    buffer.append(String_valueOf(getStyle()));
     buffer.append("|"); //$NON-NLS-1$
     buffer.append("WINDOWS|1|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfHeight));
+    buffer.append(String_valueOf(data.lfHeight));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfWidth));
+    buffer.append(String_valueOf(data.lfWidth));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfEscapement));
+    buffer.append(String_valueOf(data.lfEscapement));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfOrientation));
+    buffer.append(String_valueOf(data.lfOrientation));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfWeight));
+    buffer.append(String_valueOf(data.lfWeight));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfItalic));
+    buffer.append(String_valueOf(data.lfItalic));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfUnderline));
+    buffer.append(String_valueOf(data.lfUnderline));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfStrikeOut));
+    buffer.append(String_valueOf(data.lfStrikeOut));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfCharSet));
+    buffer.append(String_valueOf(data.lfCharSet));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfOutPrecision));
+    buffer.append(String_valueOf(data.lfOutPrecision));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfClipPrecision));
+    buffer.append(String_valueOf(data.lfClipPrecision));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfQuality));
+    buffer.append(String_valueOf(data.lfQuality));
     buffer.append("|"); //$NON-NLS-1$
-    buffer.append(to!(String)(data.lfPitchAndFamily));
+    buffer.append(String_valueOf(data.lfPitchAndFamily));
     buffer.append("|"); //$NON-NLS-1$
     buffer.append(getName());
     return buffer.toString();
