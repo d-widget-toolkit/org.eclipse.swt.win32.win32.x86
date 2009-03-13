@@ -37,6 +37,7 @@ import org.eclipse.swt.accessibility.AccessibleControlEvent;
 import org.eclipse.swt.accessibility.AccessibleEvent;
 
 import java.lang.all;
+import java.util.Vector;
 import tango.core.Thread;
 
 /**
@@ -67,13 +68,16 @@ public class Accessible {
     _IAccessibleImpl objIAccessible;
     _IEnumVARIANTImpl objIEnumVARIANT;
     IAccessible iaccessible;
-    SWTEventListener[] accessibleListeners;
-    SWTEventListener[] accessibleControlListeners;
-    SWTEventListener[] textListeners;
+    Vector accessibleListeners;
+    Vector accessibleControlListeners;
+    Vector textListeners;
     Object[] variants;
     Control control;
 
     this(Control control) {
+        accessibleListeners = new Vector();
+        accessibleControlListeners = new Vector();
+        textListeners = new Vector ();
         this.control = control;
         int /*long*/[] ppvObject = new int /*long*/[1];
         /* CreateStdAccessibleObject([in] hwnd, [in] idObject, [in] riidInterface, [out] ppvObject).
@@ -159,7 +163,7 @@ public class Accessible {
     public void addAccessibleListener(AccessibleListener listener) {
         checkWidget();
         if (listener is null) SWT.error(__FILE__, __LINE__, SWT.ERROR_NULL_ARGUMENT);
-        accessibleListeners ~= listener;
+        accessibleListeners.addElement(cast(Object)listener);
     }
 
     /**
@@ -186,7 +190,7 @@ public class Accessible {
     public void addAccessibleControlListener(AccessibleControlListener listener) {
         checkWidget();
         if (listener is null) SWT.error(__FILE__, __LINE__, SWT.ERROR_NULL_ARGUMENT);
-        accessibleControlListeners ~= listener;
+        accessibleControlListeners.addElement(cast(Object)listener);
     }
 
     /**
@@ -215,7 +219,7 @@ public class Accessible {
     public void addAccessibleTextListener (AccessibleTextListener listener) {
         checkWidget ();
         if (listener is null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
-        textListeners ~= listener;
+        textListeners.addElement(cast(Object)listener);
     }
 
     /**
@@ -290,7 +294,7 @@ public class Accessible {
     public void removeAccessibleListener(AccessibleListener listener) {
         checkWidget();
         if (listener is null) SWT.error(__FILE__, __LINE__, SWT.ERROR_NULL_ARGUMENT);
-        accessibleListeners.length = accessibleListeners.remove(listener);
+        accessibleListeners.removeElement(cast(Object)listener);
     }
 
     /**
@@ -315,7 +319,7 @@ public class Accessible {
     public void removeAccessibleControlListener(AccessibleControlListener listener) {
         checkWidget();
         if (listener is null) SWT.error(__FILE__, __LINE__, SWT.ERROR_NULL_ARGUMENT);
-        accessibleControlListeners.length = accessibleControlListeners.remove(listener);
+        accessibleControlListeners.removeElement(cast(Object)listener);
     }
 
     /**
@@ -342,7 +346,7 @@ public class Accessible {
     public void removeAccessibleTextListener (AccessibleTextListener listener) {
         checkWidget ();
         if (listener is null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
-        textListeners.length = textListeners.remove (listener);
+        textListeners.removeElement (cast(Object)listener);
     }
 
     /**
@@ -496,7 +500,7 @@ public class Accessible {
 
     HRESULT accHitTest(LONG xLeft, LONG yTop, VARIANT* pvarChild) {
         if (iaccessible is null) return COM.CO_E_OBJNOTCONNECTED;
-        if (accessibleControlListeners.length is 0) {
+        if (accessibleControlListeners.size() is 0) {
             return iaccessible.accHitTest(xLeft, yTop, pvarChild);
         }
 
@@ -504,8 +508,8 @@ public class Accessible {
         event.childID = ACC.CHILDID_NONE;
         event.x = xLeft;
         event.y = yTop;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getChildAtPoint(event);
         }
         int childID = event.childID;
@@ -528,7 +532,7 @@ public class Accessible {
         int osLeft = 0, osTop = 0, osWidth = 0, osHeight = 0;
         int code = iaccessible.accLocation(pxLeft, pyTop, pcxWidth, pcyHeight, variant);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-        if (accessibleControlListeners.length is 0) return code;
+        if (accessibleControlListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             int[1] pLeft, pTop, pWidth, pHeight;
             COM.MoveMemory(pLeft.ptr, pxLeft, 4);
@@ -544,8 +548,8 @@ public class Accessible {
         event.y = osTop;
         event.width = osWidth;
         event.height = osHeight;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getLocation(event);
         }
         OS.MoveMemory(pxLeft, &event.x, 4);
@@ -580,7 +584,7 @@ public class Accessible {
         VARIANT* v = &variant;
         //COM.MoveMemory(v, variant, VARIANT.sizeof);
         if ((v.vt & 0xFFFF) !is COM.VT_I4) return COM.E_INVALIDARG;
-        if (accessibleControlListeners.length is 0) {
+        if (accessibleControlListeners.size() is 0) {
             int code = iaccessible.get_accChild(variant, ppdispChild);
             if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
             return code;
@@ -588,8 +592,8 @@ public class Accessible {
 
         AccessibleControlEvent event = new AccessibleControlEvent(this);
         event.childID = osToChildID(v.lVal);
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getChild(event);
         }
         Accessible accessible = event.accessible;
@@ -607,7 +611,7 @@ public class Accessible {
         /* Get the default child count from the OS. */
         int osChildCount = 0;
         int code = iaccessible.get_accChildCount(pcountChildren);
-        if (accessibleControlListeners.length is 0) return code;
+        if (accessibleControlListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             int[1] pChildCount;
             COM.MoveMemory(pChildCount.ptr, pcountChildren, 4);
@@ -617,8 +621,8 @@ public class Accessible {
         AccessibleControlEvent event = new AccessibleControlEvent(this);
         event.childID = ACC.CHILDID_SELF;
         event.detail = osChildCount;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getChildCount(event);
         }
 
@@ -636,7 +640,7 @@ public class Accessible {
         String osDefaultAction = null;
         int code = iaccessible.get_accDefaultAction(variant, pszDefaultAction);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-        if (accessibleControlListeners.length is 0) return code;
+        if (accessibleControlListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             osDefaultAction = BSTRToStr( *pszDefaultAction, true );
         }
@@ -644,8 +648,8 @@ public class Accessible {
         AccessibleControlEvent event = new AccessibleControlEvent(this);
         event.childID = osToChildID(v.lVal);
         event.result = osDefaultAction;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getDefaultAction(event);
         }
         if (event.result is null) return code;
@@ -665,7 +669,7 @@ public class Accessible {
         int code = iaccessible.get_accDescription(variant, pszDescription);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
         // TEMPORARY CODE - process tree even if there are no apps listening
-        if (accessibleListeners.length is 0 && !( null is cast(Tree)control )) return code;
+        if (accessibleListeners.size() is 0 && !( null is cast(Tree)control )) return code;
         if (code is COM.S_OK) {
             int size = COM.SysStringByteLen(*pszDescription);
             if (size > 0) {
@@ -704,8 +708,8 @@ public class Accessible {
                 }
             }
         }
-        for (int i = 0; i < accessibleListeners.length; i++) {
-            AccessibleListener listener = cast(AccessibleListener) accessibleListeners[i];
+        for (int i = 0; i < accessibleListeners.size(); i++) {
+            AccessibleListener listener = cast(AccessibleListener) accessibleListeners.elementAt(i);
             listener.getDescription(event);
         }
         if (event.result is null) return code;
@@ -724,7 +728,7 @@ public class Accessible {
         /* Get the default focus child from the OS. */
         int osChild = ACC.CHILDID_NONE;
         int code = iaccessible.get_accFocus(pvarChild);
-        if (accessibleControlListeners.length is 0) return code;
+        if (accessibleControlListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             //TODO - use VARIANT structure
             short[1] pvt;
@@ -738,8 +742,8 @@ public class Accessible {
 
         AccessibleControlEvent event = new AccessibleControlEvent(this);
         event.childID = osChild;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getFocus(event);
         }
         Accessible accessible = event.accessible;
@@ -775,7 +779,7 @@ public class Accessible {
         String osHelp = null;
         int code = iaccessible.get_accHelp(variant, pszHelp);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-        if (accessibleListeners.length is 0) return code;
+        if (accessibleListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             // the original SysString is clearuped and bstr set to null
             osHelp = BSTRToStr(*pszHelp, true);
@@ -784,8 +788,8 @@ public class Accessible {
         AccessibleEvent event = new AccessibleEvent(this);
         event.childID = osToChildID(v.lVal);
         event.result = osHelp;
-        for (int i = 0; i < accessibleListeners.length; i++) {
-            AccessibleListener listener = cast(AccessibleListener) accessibleListeners[i];
+        for (int i = 0; i < accessibleListeners.size(); i++) {
+            AccessibleListener listener = cast(AccessibleListener) accessibleListeners.elementAt(i);
             listener.getHelp(event);
         }
         if (event.result is null) return code;
@@ -812,7 +816,7 @@ public class Accessible {
         String osKeyboardShortcut = null;
         int code = iaccessible.get_accKeyboardShortcut(variant, pszKeyboardShortcut);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-        if (accessibleListeners.length is 0) return code;
+        if (accessibleListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             // the original SysString is clearuped and bstr set to null
             osKeyboardShortcut = BSTRToStr(*pszKeyboardShortcut, true);
@@ -821,8 +825,8 @@ public class Accessible {
         AccessibleEvent event = new AccessibleEvent(this);
         event.childID = osToChildID(v.lVal);
         event.result = osKeyboardShortcut;
-        for (int i = 0; i < accessibleListeners.length; i++) {
-            AccessibleListener listener = cast(AccessibleListener) accessibleListeners[i];
+        for (int i = 0; i < accessibleListeners.size(); i++) {
+            AccessibleListener listener = cast(AccessibleListener) accessibleListeners.elementAt(i);
             listener.getKeyboardShortcut(event);
         }
         if (event.result is null) return code;
@@ -841,7 +845,7 @@ public class Accessible {
         String osName = null;
         int code = iaccessible.get_accName(variant, pszName);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-        if (accessibleListeners.length is 0) return code;
+        if (accessibleListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             // the original SysString is clearuped and bstr set to null
             osName = BSTRToStr(*pszName, true);
@@ -850,8 +854,8 @@ public class Accessible {
         AccessibleEvent event = new AccessibleEvent(this);
         event.childID = osToChildID(v.lVal);
         event.result = osName;
-        for (int i = 0; i < accessibleListeners.length; i++) {
-            AccessibleListener listener = cast(AccessibleListener) accessibleListeners[i];
+        for (int i = 0; i < accessibleListeners.size(); i++) {
+            AccessibleListener listener = cast(AccessibleListener) accessibleListeners.elementAt(i);
             listener.getName(event);
         }
         if (event.result is null) return code;
@@ -881,7 +885,7 @@ public class Accessible {
         int code = iaccessible.get_accRole(variant, pvarRole);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
         // TEMPORARY CODE - process tree and table even if there are no apps listening
-        if (accessibleControlListeners.length is 0 && !( null !is cast(Tree)control || null !is cast(Table)control )) return code;
+        if (accessibleControlListeners.size() is 0 && !( null !is cast(Tree)control || null !is cast(Table)control )) return code;
         if (code is COM.S_OK) {
             //TODO - use VARIANT structure
             short[1] pvt;
@@ -904,8 +908,8 @@ public class Accessible {
                 if ((control.getStyle() & SWT.CHECK) !is 0) event.detail = ACC.ROLE_CHECKBUTTON;
             }
         }
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getRole(event);
         }
         int role = roleToOs(event.detail);
@@ -924,7 +928,7 @@ public class Accessible {
         /* Get the default selection from the OS. */
         int osChild = ACC.CHILDID_NONE;
         int code = iaccessible.get_accSelection(pvarChildren);
-        if (accessibleControlListeners.length is 0) return code;
+        if (accessibleControlListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             //TODO - use VARIANT structure
             short[1] pvt;
@@ -941,8 +945,8 @@ public class Accessible {
 
         AccessibleControlEvent event = new AccessibleControlEvent(this);
         event.childID = osChild;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getSelection(event);
         }
         Accessible accessible = event.accessible;
@@ -985,7 +989,7 @@ public class Accessible {
         int code = iaccessible.get_accState(variant, pvarState);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
         // TEMPORARY CODE - process tree and table even if there are no apps listening
-        if (accessibleControlListeners.length is 0 && !( null !is cast(Tree)control || null !is cast(Table)control )) return code;
+        if (accessibleControlListeners.size() is 0 && !( null !is cast(Tree)control || null !is cast(Table)control )) return code;
         if (code is COM.S_OK) {
             //TODO - use VARIANT structure
             short[1] pvt;
@@ -1028,8 +1032,8 @@ public class Accessible {
                 }
             }
         }
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getState(event);
         }
         int state = stateToOs(event.detail);
@@ -1052,7 +1056,7 @@ public class Accessible {
         String osValue = null;
         int code = iaccessible.get_accValue(variant, pszValue);
         if (code is COM.E_INVALIDARG) code = COM.S_FALSE; // proxy doesn't know about app childID
-        if (accessibleControlListeners.length is 0) return code;
+        if (accessibleControlListeners.size() is 0) return code;
         if (code is COM.S_OK) {
             int size = COM.SysStringByteLen(*pszValue);
             if (size > 0) {
@@ -1063,8 +1067,8 @@ public class Accessible {
         AccessibleControlEvent event = new AccessibleControlEvent(this);
         event.childID = osToChildID(v.lVal);
         event.result = osValue;
-        for (int i = 0; i < accessibleControlListeners.length; i++) {
-            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+        for (int i = 0; i < accessibleControlListeners.size(); i++) {
+            AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
             listener.getValue(event);
         }
         if (event.result is null) return code;
@@ -1107,7 +1111,7 @@ public class Accessible {
         /* If there are no listeners, query the proxy for
          * its IEnumVariant, and get the Next items from it.
          */
-        if (accessibleControlListeners.length is 0) {
+        if (accessibleControlListeners.size() is 0) {
             IEnumVARIANT ienumvariant;
             int code = iaccessible.QueryInterface(&COM.IIDIEnumVARIANT, cast(void**)&ienumvariant);
             if (code !is COM.S_OK) return code;
@@ -1123,8 +1127,8 @@ public class Accessible {
         if (enumIndex is 0) {
             AccessibleControlEvent event = new AccessibleControlEvent(this);
             event.childID = ACC.CHILDID_SELF;
-            for (int i = 0; i < accessibleControlListeners.length; i++) {
-                AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners[i];
+            for (int i = 0; i < accessibleControlListeners.size(); i++) {
+                AccessibleControlListener listener = cast(AccessibleControlListener) accessibleControlListeners.elementAt(i);
                 listener.getChildren(event);
             }
             variants = event.children;
@@ -1178,7 +1182,7 @@ public class Accessible {
         /* If there are no listeners, query the proxy
          * for its IEnumVariant, and tell it to Skip.
          */
-        if (accessibleControlListeners.length is 0) {
+        if (accessibleControlListeners.size() is 0) {
             IEnumVARIANT ienumvariant;
             int code = iaccessible.QueryInterface(&COM.IIDIEnumVARIANT, cast(void**)&ienumvariant);
             if (code !is COM.S_OK) return code;
@@ -1201,7 +1205,7 @@ public class Accessible {
         /* If there are no listeners, query the proxy
          * for its IEnumVariant, and tell it to Reset.
          */
-        if (accessibleControlListeners.length is 0) {
+        if (accessibleControlListeners.size() is 0) {
             IEnumVARIANT ienumvariant;
             int code = iaccessible.QueryInterface(&COM.IIDIEnumVARIANT, cast(void**)&ienumvariant);
             if (code !is COM.S_OK) return code;
@@ -1222,7 +1226,7 @@ public class Accessible {
         /* If there are no listeners, query the proxy for
          * its IEnumVariant, and get the Clone from it.
          */
-        if (accessibleControlListeners.length is 0) {
+        if (accessibleControlListeners.size() is 0) {
             IEnumVARIANT ienumvariant;
             int code = iaccessible.QueryInterface(&COM.IIDIEnumVARIANT, cast(void**)&ienumvariant);
             if (code !is COM.S_OK) return code;

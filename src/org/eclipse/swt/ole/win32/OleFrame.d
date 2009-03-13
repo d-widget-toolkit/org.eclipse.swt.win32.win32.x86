@@ -12,6 +12,8 @@
  *******************************************************************************/
 module org.eclipse.swt.ole.win32.OleFrame;
 
+import java.util.Vector;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.ole.win32.COM;
@@ -31,9 +33,10 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.ole.win32.OleClientSite;
 import org.eclipse.swt.ole.win32.OLE;
 
+import org.eclipse.swt.internal.LONG;
+
 import java.lang.all;
 import java.lang.Runnable;
-import tango.core.Array;
 
 /**
  *
@@ -611,7 +614,7 @@ private int RemoveMenus(HMENU hmenuShared) {
 
     auto hMenu = menubar.handle;
 
-    int[] ids;
+    Vector ids = new Vector();
     if (this.fileMenuItems !is null) {
         for (int i = 0; i < this.fileMenuItems.length; i++) {
             MenuItem item = this.fileMenuItems[i];
@@ -619,7 +622,7 @@ private int RemoveMenus(HMENU hmenuShared) {
                 int index = item.getParent().indexOf(item);
                 // get Id from original menubar
                 int id = getMenuItemID(hMenu, index);
-                ids ~= id;
+                ids.addElement(new org.eclipse.swt.internal.LONG.LONG(id));
             }
         }
     }
@@ -629,7 +632,7 @@ private int RemoveMenus(HMENU hmenuShared) {
             if (item !is null && !item.isDisposed()) {
                 int index = item.getParent().indexOf(item);
                 int id = getMenuItemID(hMenu, index);
-                ids ~= id;
+                ids.addElement(new org.eclipse.swt.internal.LONG.LONG(id));
             }
         }
     }
@@ -639,14 +642,14 @@ private int RemoveMenus(HMENU hmenuShared) {
             if (item !is null && !item.isDisposed()) {
                 int index = item.getParent().indexOf(item);
                 int id = getMenuItemID(hMenu, index);
-                ids ~= id;
+                ids.addElement(new org.eclipse.swt.internal.LONG.LONG(id));
             }
         }
     }
     int index = OS.GetMenuItemCount(hmenuShared) - 1;
     for (int i = index; i >= 0; i--) {
         int id = getMenuItemID(hmenuShared, i);
-        if ( ids.contains(id)){
+        if (ids.contains(new org.eclipse.swt.internal.LONG.LONG(id))){
             OS.RemoveMenu(hmenuShared, i, OS.MF_BYPOSITION);
         }
     }

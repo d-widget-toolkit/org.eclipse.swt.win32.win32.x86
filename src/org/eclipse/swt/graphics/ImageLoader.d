@@ -22,6 +22,7 @@ import org.eclipse.swt.internal.Compatibility;
 import org.eclipse.swt.internal.image.FileFormat;
 
 import tango.core.Array;
+import java.util.Vector;
 import java.lang.all;
 
 
@@ -93,7 +94,7 @@ public class ImageLoader {
     /*
      * the set of ImageLoader event listeners, created on demand
      */
-    ImageLoaderListener[] imageLoaderListeners;
+    Vector imageLoaderListeners;
 
 /**
  * Construct a new empty ImageLoader.
@@ -279,7 +280,10 @@ public void save(String filename, int format) {
  */
 public void addImageLoaderListener(ImageLoaderListener listener) {
     if (listener is null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
-    imageLoaderListeners ~= listener;
+    if (imageLoaderListeners is null) {
+        imageLoaderListeners = new Vector();
+    }
+    imageLoaderListeners.addElement(cast(Object)listener);
 }
 
 /**
@@ -296,8 +300,8 @@ public void addImageLoaderListener(ImageLoaderListener listener) {
  */
 public void removeImageLoaderListener(ImageLoaderListener listener) {
     if (listener is null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
-    if (imageLoaderListeners.length == 0 ) return;
-    imageLoaderListeners.length = tango.core.Array.remove( imageLoaderListeners, listener, delegate bool(ImageLoaderListener l1, ImageLoaderListener l2 ){ return l1 is l2; });
+    if (imageLoaderListeners is null) return;
+    imageLoaderListeners.removeElement(cast(Object)listener);
 }
 
 /**
@@ -310,7 +314,7 @@ public void removeImageLoaderListener(ImageLoaderListener listener) {
  * @see #removeImageLoaderListener(ImageLoaderListener)
  */
 public bool hasListeners() {
-    return imageLoaderListeners.length > 0;
+    return imageLoaderListeners !is null && imageLoaderListeners.size() > 0;
 }
 
 /**
@@ -321,7 +325,9 @@ public bool hasListeners() {
  */
 public void notifyListeners(ImageLoaderEvent event) {
     if (!hasListeners()) return;
-    foreach( listener; imageLoaderListeners ){
+    int size = imageLoaderListeners.size();
+    for (int i = 0; i < size; i++) {
+        ImageLoaderListener listener = cast(ImageLoaderListener) imageLoaderListeners.elementAt(i);
         listener.imageDataLoaded(event);
     }
 }
