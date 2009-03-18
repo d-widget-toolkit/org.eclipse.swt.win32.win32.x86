@@ -28,7 +28,7 @@ import org.eclipse.swt.dnd.OleEnumFORMATETC;
 import org.eclipse.swt.dnd.DND;
 
 import java.lang.all;
-import tango.core.Thread;
+import java.lang.Thread;
 
 /**
  * The <code>Clipboard</code> provides a mechanism for transferring data from one
@@ -74,7 +74,7 @@ public this(Display display) {
             display = Display.getDefault();
         }
     }
-    if (display.getThread() !is Thread.getThis()) {
+    if (display.getThread() !is Thread.currentThread()) {
         DND.error(SWT.ERROR_THREAD_INVALID_ACCESS);
     }
     this.display = display;
@@ -144,7 +144,7 @@ protected void checkSubclass () {
 protected void checkWidget () {
     Display display = this.display;
     if (display is null) DND.error (SWT.ERROR_WIDGET_DISPOSED);
-    if (display.getThread() !is Thread.getThis ()) DND.error (SWT.ERROR_THREAD_INVALID_ACCESS);
+    if (display.getThread() !is Thread.currentThread ()) DND.error (SWT.ERROR_THREAD_INVALID_ACCESS);
     if (display.isDisposed()) DND.error(SWT.ERROR_WIDGET_DISPOSED);
 }
 
@@ -223,7 +223,7 @@ public void clearContents(int clipboards) {
  */
 public void dispose () {
     if (isDisposed()) return;
-    if (display.getThread() !is Thread.getThis ()) DND.error(SWT.ERROR_THREAD_INVALID_ACCESS);
+    if (display.getThread() !is Thread.currentThread ()) DND.error(SWT.ERROR_THREAD_INVALID_ACCESS);
     /* OleIsCurrentClipboard([in] pDataObject)
      * The argument pDataObject is owned by the caller so reference count does not
      * need to be incremented.
@@ -334,7 +334,7 @@ public Object getContents(Transfer transfer, int clipboards) {
      */
     int result = COM.OleGetClipboard(&dataObject);
     while (result !is COM.S_OK && retryCount++ < 10) {
-        try {Thread.sleep(0.050);} catch (Exception t) {}
+        try {Thread.sleep(50);} catch (Exception t) {}
         MSG msg;
         OS.PeekMessage(&msg, null, 0, 0, OS.PM_NOREMOVE | OS.PM_NOYIELD);
         result = COM.OleGetClipboard(&dataObject);
@@ -512,7 +512,7 @@ public void setContents(Object[] data, Transfer[] dataTypes, int clipboards) {
     */
     int retryCount = 0;
     while (result !is COM.S_OK && retryCount++ < 10) {
-        try {Thread.sleep(0.050);} catch (Exception t) {}
+        try {Thread.sleep(50);} catch (Exception t) {}
         MSG msg;
         OS.PeekMessage(&msg, null, 0, 0, OS.PM_NOREMOVE | OS.PM_NOYIELD);
         result = COM.OleSetClipboard(iDataObject);

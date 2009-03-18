@@ -38,7 +38,7 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 
 import java.lang.all;
 import java.util.Vector;
-import tango.core.Thread;
+import java.lang.Thread;
 
 /**
  * Instances of this class provide a bridge between application
@@ -1393,7 +1393,7 @@ public class Accessible {
 
     /* isValidThread was copied from Widget, and rewritten to work in this package */
     WINBOOL isValidThread () {
-        return control.getDisplay ().getThread () is Thread.getThis ();
+        return control.getDisplay ().getThread () is Thread.currentThread ();
     }
 }
 

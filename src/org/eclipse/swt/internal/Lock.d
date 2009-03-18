@@ -12,7 +12,7 @@
  *******************************************************************************/
 module org.eclipse.swt.internal.Lock;
 
-import tango.core.Thread;
+import java.lang.Thread;
 import tango.core.sync.Mutex;
 import tango.core.sync.Condition;
 
@@ -38,7 +38,7 @@ public class Lock {
  */
 public int lock() {
     synchronized (mutex) {
-        Thread current = Thread.getThis();
+        Thread current = Thread.currentThread();
         if (owner !is current) {
             waitCount++;
             while (count > 0) {
@@ -61,7 +61,7 @@ public int lock() {
  */
 public void unlock() {
     synchronized (mutex) {
-        Thread current = Thread.getThis();
+        Thread current = Thread.currentThread();
         if (owner is current) {
             if (--count is 0) {
                 owner = null;

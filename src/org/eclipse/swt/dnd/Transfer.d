@@ -12,14 +12,13 @@
  *******************************************************************************/
 module org.eclipse.swt.dnd.Transfer;
 
-
 import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.internal.ole.win32.COM;
 
 import org.eclipse.swt.dnd.TransferData;
 import java.lang.all;
+import java.lang.Thread;
 import org.eclipse.swt.internal.ole.win32.OBJIDL;
-static import tango.core.Thread;
 
 /**
  * <code>Transfer</code> provides a mechanism for converting between a java
@@ -49,13 +48,13 @@ private static final int RETRY_LIMIT = 10;
  */
 int getData(IDataObject dataObject, FORMATETC* pFormatetc, STGMEDIUM* pmedium) {
     if (dataObject.GetData(pFormatetc, pmedium) is COM.S_OK) return COM.S_OK;
-    try {tango.core.Thread.Thread.sleep(0.050);} catch (Exception t) {}
+    try {tango.core.Thread.Thread.sleep(50);} catch (Exception t) {}
     int result = dataObject.GetData(pFormatetc, pmedium);
     int retryCount = 0;
     while (result !is COM.S_OK && retryCount++ < RETRY_LIMIT) {
         MSG msg;
         OS.PeekMessage(&msg, null, 0, 0, OS.PM_NOREMOVE | OS.PM_NOYIELD);
-        try {tango.core.Thread.Thread.sleep(0.050);} catch (Exception t) {}
+        try {tango.core.Thread.Thread.sleep(50);} catch (Exception t) {}
         result = dataObject.GetData(pFormatetc, pmedium);
     }
     return result;

@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.widgets.TrayItem;
 
 import java.lang.all;
-import tango.core.Thread;
+import java.lang.Thread;
 
 /**
  * Instances of this class are responsible for managing the
@@ -739,7 +739,7 @@ protected void checkSubclass () {
 
 override protected void checkDevice () {
     if (thread is null) error (SWT.ERROR_WIDGET_DISPOSED);
-    if (thread !is Thread.getThis ()) {
+    if (thread !is Thread.currentThread ()) {
         /*
         * Bug in IBM JVM 1.6.  For some reason, under
         * conditions that are yet to be full understood,
@@ -830,7 +830,7 @@ public void close () {
  */
 override protected void create (DeviceData data) {
     checkSubclass ();
-    checkDisplay (thread = Thread.getThis (), true);
+    checkDisplay (thread = Thread.currentThread (), true);
     createDisplay (data);
     register (this);
     if (Default is null) Default = this;
@@ -1455,7 +1455,7 @@ override public Rectangle getBounds () {
  */
 public static Display getCurrent () {
     static_this();
-    return findDisplay (Thread.getThis ());
+    return findDisplay (Thread.currentThread ());
 }
 
 int getClickCount (int type, int button, HWND hwnd, int lParam) {
@@ -2713,7 +2713,7 @@ bool isXMouseActive () {
 }
 
 bool isValidThread () {
-    return thread is Thread.getThis ();
+    return thread is Thread.currentThread ();
 }
 
 /**
@@ -4543,7 +4543,7 @@ void updateImages () {
 public void wake () {
     synchronized (Device.classinfo) {
         if (isDisposed ()) error (SWT.ERROR_DEVICE_DISPOSED);
-        if (thread is Thread.getThis ()) return;
+        if (thread is Thread.currentThread ()) return;
         wakeThread ();
     }
 }
@@ -4635,7 +4635,7 @@ int windowProc (HWND hwnd, uint msg, uint wParam, int lParam) {
     */
     if (msg is OS.WM_NCHITTEST) {
         if (hitCount++ >= 1024) {
-            try {Thread.sleep (0.001);} catch (Exception t) {}
+            try {Thread.sleep (1);} catch (Exception t) {}
         }
     } else {
         hitCount = 0;

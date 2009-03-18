@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TypedListener;
 
-import tango.core.Thread;
 import java.lang.all;
+import java.lang.Thread;
 
 /**
  * This class is the abstract superclass of all user interface objects.
@@ -362,7 +362,7 @@ protected void checkSubclass () {
 void checkWidget () {
     Display display = this.display;
     if (display is null) error (SWT.ERROR_WIDGET_DISPOSED);
-    if (display.thread !is Thread.getThis ()) {
+    if (display.thread !is Thread.currentThread ()) {
         /*
         * Bug in IBM JVM 1.6.  For some reason, under
         * conditions that are yet to be full understood,

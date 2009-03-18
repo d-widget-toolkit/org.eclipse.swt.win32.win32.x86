@@ -12,8 +12,8 @@
  *******************************************************************************/
 module org.eclipse.swt.widgets.RunnableLock;
 
-import tango.core.Thread;
-import java.lang.Runnable;
+import java.lang.all;
+import java.lang.Thread;
 import tango.core.sync.Condition;
 import tango.core.sync.Mutex;
 

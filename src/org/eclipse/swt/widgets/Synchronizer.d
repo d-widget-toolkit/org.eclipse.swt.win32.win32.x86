@@ -14,14 +14,13 @@ module org.eclipse.swt.widgets.Synchronizer;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.RunnableLock;
-import java.lang.Runnable;
-import java.lang.System;
 import org.eclipse.swt.internal.Compatibility;
 
 import org.eclipse.swt.SWT;
-import tango.core.Thread;
+import java.lang.all;
+import java.lang.Thread;
+import tango.core.Exception: SyncException;
 import org.eclipse.swt.graphics.Device;
-import tango.core.Exception;
 
 /**
  * Instances of this class provide synchronization support
@@ -179,7 +178,7 @@ public void syncExec (Runnable runnable) {
             /*
              * Only remember the syncThread for syncExec.
              */
-            lock.thread = Thread.getThis();
+            lock.thread = Thread.currentThread();
             addLast (lock);
         }
     }
