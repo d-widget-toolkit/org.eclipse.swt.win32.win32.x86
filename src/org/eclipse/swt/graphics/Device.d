@@ -887,7 +887,7 @@ void printErrors () {
                 if (transforms !is 0) string ~= String_valueOf(transforms) ~ " Transforms(s), ";
                 if (string.length !is 0) {
                     string = string.substring (0, string.length - 2);
-                    getDwtLogger().error ( "{}", string);
+                    getDwtLogger().error (  __FILE__, __LINE__, "{}", string);
                 }
                 for (int i=0; i<errors.length; i++) {
                     if (errors [i] !is null) ExceptionPrintStackTrace( errors [i]);

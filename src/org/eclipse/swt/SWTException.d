@@ -138,14 +138,14 @@ public String getMessage () {
  * </p>
  */
 public void printStackTrace () {
-    getDwtLogger().error( "stacktrace follows (if feature compiled in)" );
+    getDwtLogger().error(  __FILE__, __LINE__, "stacktrace follows (if feature compiled in)" );
     foreach( msg; info ){
-        getDwtLogger().error( "{}", msg );
+        getDwtLogger().error(  __FILE__, __LINE__, "{}", msg );
     }
     if ( throwable !is null) {
-        getDwtLogger().error ("*** Stack trace of contained exception ***"); //$NON-NLS-1$
+        getDwtLogger().error ( __FILE__, __LINE__, "*** Stack trace of contained exception ***"); //$NON-NLS-1$
         foreach( msg; throwable.info ){
-            getDwtLogger().error( "{}", msg );
+            getDwtLogger().error(  __FILE__, __LINE__, "{}", msg );
         }
     }
 }

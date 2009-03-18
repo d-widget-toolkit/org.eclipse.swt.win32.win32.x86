@@ -30,7 +30,7 @@ alias tango.sys.win32.UserGdi WINAPI;
 alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
 
 void trace(int line ){
-    getDwtLogger.trace( "OS {}", line );
+    getDwtLogger.trace(  __FILE__, __LINE__, "OS {}", line );
 }
 
 // declare of Callback functions
@@ -89,12 +89,12 @@ public class OS : C {
                 if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
                     *s.symbol = lib.getSymbol( s.name.ptr );
                     if( s.symbol is null ){
-                        getDwtLogger.error( "{}: Symbol '{}' not found", libname, s.name );
+                        getDwtLogger.error(  __FILE__, __LINE__, "{}: Symbol '{}' not found", libname, s.name );
                     }
                 }
             }
         } else {
-            getDwtLogger.error( "Could not load the library {}", libname );
+            getDwtLogger.error(  __FILE__, __LINE__, "Could not load the library {}", libname );
         }
     }
 
@@ -402,7 +402,7 @@ BOOL function(
         void printError( char[] msg ){
             char[] winMsg = tango.sys.Common.SysError.lastMsg();
             char[2000] buf;
-            getDwtLogger.error("{}: {}", msg, CodePage.from( winMsg, buf ) );
+            getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, CodePage.from( winMsg, buf ) );
         }
         TCHAR[] buffer = new TCHAR[ MAX_PATH ];
         buffer[] = 0;
@@ -2710,12 +2710,12 @@ static void loadLib_UxTheme(){
             if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
                 *s.symbol = lib.getSymbol( s.name.ptr );
                 if( *s.symbol is null ){
-                    getDwtLogger.error("UxTheme.dll: Symbol '{}' not found", s.name );
+                    getDwtLogger.error( __FILE__, __LINE__, "UxTheme.dll: Symbol '{}' not found", s.name );
                 }
             }
         }
     } else {
-        getDwtLogger.error("Could not load the library UxTheme.dll");
+        getDwtLogger.error( __FILE__, __LINE__, "Could not load the library UxTheme.dll");
     }
 }
 //----------------------------------------------------------------------

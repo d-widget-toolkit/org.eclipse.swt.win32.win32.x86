@@ -1681,11 +1681,11 @@ void loadLib_Gdip(){
         foreach( inout s; symbols ){
             *s.symbol = lib.getSymbol( s.name.ptr );
             if( s.symbol is null ){
-                getDwtLogger.error("gdiplus.dll: Symbol '{}' not found", s.name );
+                getDwtLogger.error( __FILE__, __LINE__, "gdiplus.dll: Symbol '{}' not found", s.name );
             }
         }
     } else {
-        getDwtLogger.error("Could not load the library gdiplus.dll");
+        getDwtLogger.error( __FILE__, __LINE__, "Could not load the library gdiplus.dll");
     }
 }
 

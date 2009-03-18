@@ -123,8 +123,8 @@ public abstract class Widget {
             }
             static if (!OS.IsWinCE) {
                 if (OS.COMCTL32_VERSION < OS.VERSION (MAJOR, MINOR)) {
-                    getDwtLogger().warn ("***WARNING: SWT requires comctl32.dll version {}.{} or greater", MAJOR, MINOR); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    getDwtLogger().warn ("***WARNING: Detected: {}.{}", OS.COMCTL32_MAJOR, OS.COMCTL32_MINOR); //$NON-NLS-1$ //$NON-NLS-2$
+                    getDwtLogger().warn ( __FILE__, __LINE__, "***WARNING: SWT requires comctl32.dll version {}.{} or greater", MAJOR, MINOR); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    getDwtLogger().warn ( __FILE__, __LINE__, "***WARNING: Detected: {}.{}", OS.COMCTL32_MAJOR, OS.COMCTL32_MINOR); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             OS.InitCommonControls ();
