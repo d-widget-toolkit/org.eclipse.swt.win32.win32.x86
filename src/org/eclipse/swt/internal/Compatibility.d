@@ -23,6 +23,7 @@ import java.util.zip.InflaterInputStream;
 import org.eclipse.swt.SWT;
 public import java.io.FileInputStream;
 public import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import Unicode = tango.text.Unicode;
 import tango.sys.Process;

@@ -123,7 +123,7 @@ final class LEDataInputStream : InputStream{
         if (buf is null) throw new IOException("buf is null");
         if (offset < 0 || offset > buffer.length ||
             len < 0 || (len > buffer.length - offset)) {
-            throw new ArrayBoundsException(__FILE__,__LINE__);
+            throw new ArrayIndexOutOfBoundsException(__FILE__,__LINE__);
             }
 
         int cacheCopied = 0;
