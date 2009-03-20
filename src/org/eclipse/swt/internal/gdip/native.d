@@ -13,8 +13,12 @@
 module org.eclipse.swt.internal.gdip.native;
 
 import org.eclipse.swt.internal.win32.WINTYPES;
-import tango.sys.SharedLib : SharedLib;
 import java.lang.all;
+
+version(Tango){
+    static import tango.sys.SharedLib;
+} else { // Phobos
+}
 
 extern(Windows):
 
@@ -1677,7 +1681,7 @@ Symbol[] symbols = [
 
 
 void loadLib_Gdip(){
-    if (auto lib = SharedLib.load(`gdiplus.dll`)) {
+    if (auto lib = tango.sys.SharedLib.SharedLib.load(`gdiplus.dll`)) {
         foreach( inout s; symbols ){
             *s.symbol = lib.getSymbol( s.name.ptr );
             if( s.symbol is null ){

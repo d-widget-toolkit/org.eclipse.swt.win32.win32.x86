@@ -21,7 +21,11 @@ import org.eclipse.swt.internal.Platform;
 import org.eclipse.swt.internal.win32.WINTYPES;
 import org.eclipse.swt.internal.win32.WINAPI;
 import org.eclipse.swt.internal.win32.OS;
-import tango.sys.win32.UserGdi;
+
+version(Tango){
+    import tango.sys.win32.UserGdi;
+} else { // Phobos
+}
 
 alias org.eclipse.swt.internal.gdip.native.GdiplusStartupInput  GdiplusStartupInput;
 alias org.eclipse.swt.internal.gdip.native.GdiplusStartupOutput GdiplusStartupOutput;

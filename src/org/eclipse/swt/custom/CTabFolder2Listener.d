@@ -15,8 +15,13 @@ module org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 
-import tango.core.Traits;
-import tango.core.Tuple;
+version(Tango){
+    import tango.core.Traits;
+    import tango.core.Tuple;
+} else { // Phobos
+    import std.traits;
+    import std.typetuple;
+}
 
 /**
  * Classes which implement this interface provide methods
@@ -129,9 +134,15 @@ public void showList(CTabFolderEvent event);
 /// Helper class for the dgListener template function
 private class _DgCTabFolder2ListenerT(Dg,T...) : CTabFolder2Listener {
 
-    alias ParameterTupleOf!(Dg) DgArgs;
-    static assert( is(DgArgs == Tuple!(CTabFolderEvent,T)),
+    version(Tango){
+        alias ParameterTupleOf!(Dg) DgArgs;
+        static assert( is(DgArgs == Tuple!(CTabFolderEvent,T)),
                 "Delegate args not correct: "~DgArgs.stringof~" vs. (Event,"~T.stringof~")" );
+    } else { // Phobos
+        alias ParameterTypeTuple!(Dg) DgArgs;
+        static assert( is(DgArgs == TypeTuple!(CTabFolderEvent,T)),
+                "Delegate args not correct: "~DgArgs.stringof~" vs. (Event,"~T.stringof~")" );
+    }
 
     Dg dg;
     T  t;

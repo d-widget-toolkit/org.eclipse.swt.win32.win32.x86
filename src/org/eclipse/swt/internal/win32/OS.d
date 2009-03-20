@@ -19,6 +19,7 @@ import org.eclipse.swt.internal.C;
 import org.eclipse.swt.internal.Library;
 import java.lang.all;
 
+version(Tango){
 static import tango.sys.win32.UserGdi;
 static import tango.sys.SharedLib;
 static import tango.sys.Common;
@@ -27,6 +28,9 @@ static import tango.stdc.stdlib;
 static import tango.stdc.string;
 
 alias tango.sys.win32.UserGdi WINAPI;
+} else { // Phobos
+}
+
 alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
 
 void trace(int line ){
@@ -266,7 +270,11 @@ BOOL function(
                     _PCHAR!("SWT Unicode version applications can't run in a non-Unicode platform !"),
                     _PCHAR!("Error"),
                     MB_OK|MB_ICONERROR);
-            tango.stdc.stdlib.exit(-1);
+            version(Tango){
+                tango.stdc.stdlib.exit(-1);
+            } else { // Phobos
+                std.c.stdlib.exit(-1);
+            }
         }
         //OSVERSIONINFO info = new OSVERSIONINFOW ();
         //info.dwOSVersionInfoSize = OSVERSIONINFOW.sizeof;

@@ -25,11 +25,15 @@ public import java.io.FileInputStream;
 public import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import Unicode = tango.text.Unicode;
-import tango.sys.Process;
 import java.lang.all;
 import java.util.ResourceBundle;
-import tango.io.Path;
+
+version(Tango){
+static import tango.text.Unicode;
+static import tango.sys.Process;
+static import tango.io.Path;
+} else { // Phobos
+}
 
 /**
  * This class is a placeholder for utility methods commonly
@@ -117,7 +121,10 @@ public static int ceil(int p, int q) {
  * @return true if the file exists
  */
 public static bool fileExists(String parent, String child) {
-    return FS.exists( FS.join(parent, child));
+    return tango.io.Path.exists(
+            tango.io.Path.join(
+                tango.io.Path.standard(parent),
+                tango.io.Path.standard(child)));
 }
 
 /**
@@ -273,7 +280,7 @@ public static bool isWhitespace(dchar c) {
  *  if the program cannot be executed
  */
 public static void exec(String prog) {
-    auto proc = new Process( prog );
+    auto proc = new tango.sys.Process.Process( prog );
     proc.execute;
 }
 
@@ -290,7 +297,7 @@ public static void exec(String prog) {
  *  if the program cannot be executed
  */
 public static void exec(String[] progArray) {
-    auto proc = new Process( progArray );
+    auto proc = new tango.sys.Process.Process( progArray );
     proc.execute;
 }
 
@@ -412,8 +419,8 @@ public static bool equalsIgnoreCase(String s1, String s2) {
         delete s1b;
         delete s2b;
     }
-    String s1c = Unicode.toFold( s1, s1b );
-    String s2c = Unicode.toFold( s2, s2b );
+    String s1c = tango.text.Unicode.toFold( s1, s1b );
+    String s2c = tango.text.Unicode.toFold( s2, s2b );
     return s1c == s2c;
 }
 

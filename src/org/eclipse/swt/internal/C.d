@@ -12,10 +12,18 @@ module org.eclipse.swt.internal.C;
 
 import org.eclipse.swt.internal.Platform;
 
-static import tango.stdc.string;
+version(Tango){
+    static import tango.stdc.string;
+} else { // Phobos
+    static import std.c.string;
+}
 
 public class C : Platform {
-    alias tango.stdc.string.memmove MoveMemory;
+    version(Tango){
+        alias tango.stdc.string.memmove MoveMemory;
+    } else { // Phobos
+        alias std.c.string.memmove MoveMemory;
+    }
 //public static final native void free (int /*long*/ ptr);
 //public static final native int /*long*/ getenv (byte[] wcsToMbcs);
 //public static final native int /*long*/ malloc (int /*long*/ size);

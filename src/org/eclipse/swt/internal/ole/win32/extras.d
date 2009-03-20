@@ -36,17 +36,7 @@ enum : int
     E_UNEXPECTED  = cast(int)0x8000FFFF,
 }
 
-// in tango types.di
-// struct GUID {          // size is 16
-//     align(1):
-//     DWORD Data1;
-//     WORD  Data2;
-//     WORD  Data3;
-//     BYTE  Data4[8];
-// }
-
-enum
-{
+enum {
     CLSCTX_INPROC_SERVER    = 0x1,
     CLSCTX_INPROC_HANDLER   = 0x2,
     CLSCTX_LOCAL_SERVER = 0x4,
