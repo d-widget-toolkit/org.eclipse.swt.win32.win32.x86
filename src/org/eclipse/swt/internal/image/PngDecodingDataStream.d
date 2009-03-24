@@ -29,8 +29,8 @@ public class PngDecodingDataStream : InputStream {
     PngLzBlockReader lzBlockReader;
     int adlerValue;
 
-    static final int PRIME = 65521;
-    static final int MAX_BIT = 7;
+    static const int PRIME = 65521;
+    static const int MAX_BIT = 7;
 
 this(InputStream stream) {
     super();

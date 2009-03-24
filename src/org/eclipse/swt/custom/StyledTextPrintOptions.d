@@ -41,12 +41,12 @@ public class StyledTextPrintOptions {
      * Page number placeholder constant for use in <code>header</code>
      * and <code>footer</code>. Value is <code>&lt;page&gt;</code>
      */
-    public static final String PAGE_TAG = "<page>";
+    public static const String PAGE_TAG = "<page>";
     /**
      * Separator constant for use in <code>header</code> and
      * <code>footer</code>. Value is <code>\t</code>
      */
-    public static final String SEPARATOR = "\t";
+    public static const String SEPARATOR = "\t";
     /**
      * Formatted text to print in the header of each page.
      * <p>"left '\t' center '\t' right"</p>

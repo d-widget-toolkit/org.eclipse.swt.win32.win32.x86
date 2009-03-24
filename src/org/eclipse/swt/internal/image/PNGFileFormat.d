@@ -35,8 +35,8 @@ import java.io.BufferedInputStream;
 
 
 final class PNGFileFormat : FileFormat {
-    static final int SIGNATURE_LENGTH = 8;
-    static final int PRIME = 65521;
+    static const int SIGNATURE_LENGTH = 8;
+    static const int PRIME = 65521;
     PngIhdrChunk headerChunk;
     PngPlteChunk paletteChunk;
     ImageData imageData;

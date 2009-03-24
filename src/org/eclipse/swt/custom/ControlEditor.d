@@ -117,7 +117,7 @@ public class ControlEditor {
     private Listener controlListener;
     private Listener scrollbarListener;
 
-    private final static int [] EVENTS = [SWT.KeyDown, SWT.KeyUp, SWT.MouseDown, SWT.MouseUp, SWT.Resize];
+    private const static int [] EVENTS = [SWT.KeyDown, SWT.KeyUp, SWT.MouseDown, SWT.MouseUp, SWT.Resize];
 /**
 * Creates a ControlEditor for the specified Composite.
 *

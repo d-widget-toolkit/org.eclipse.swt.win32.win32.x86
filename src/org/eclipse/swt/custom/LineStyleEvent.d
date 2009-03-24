@@ -87,7 +87,7 @@ public class LineStyleEvent : TypedEvent {
      */
     public int bulletIndex;
 
-    static final long serialVersionUID = 3906081274027192884L;
+    static const long serialVersionUID = 3906081274027192884L;
 
 /**
  * Constructs a new instance of this class based on the

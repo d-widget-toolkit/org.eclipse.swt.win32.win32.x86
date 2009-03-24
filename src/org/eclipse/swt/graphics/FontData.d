@@ -287,7 +287,7 @@ public this(String name, int height, int style) {
  *
  * @see #hashCode
  */
-override public int opEquals (Object object) {
+override public equals_t opEquals (Object object) {
     if (object is this) return true;
     if( auto fd = cast(FontData)object ){
         LOGFONT* lf = &fd.data;

@@ -59,8 +59,8 @@ import java.lang.all;
  * @since 3.3
  */
 public class TreeDropTargetEffect : DropTargetEffect {
-    static final int SCROLL_HYSTERESIS = 200; // milli seconds
-    static final int EXPAND_HYSTERESIS = 1000; // milli seconds
+    static const int SCROLL_HYSTERESIS = 200; // milli seconds
+    static const int EXPAND_HYSTERESIS = 1000; // milli seconds
 
     int /*long*/ dropIndex;
     int scrollIndex;

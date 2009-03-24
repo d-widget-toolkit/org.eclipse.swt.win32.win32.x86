@@ -20,14 +20,15 @@ import org.eclipse.swt.internal.Library;
 import java.lang.all;
 
 version(Tango){
-static import tango.sys.win32.UserGdi;
 static import tango.sys.SharedLib;
 static import tango.sys.Common;
 
 static import tango.stdc.stdlib;
 static import tango.stdc.string;
+import tango.sys.win32.CodePage : CodePage;
+private import tango.stdc.stringz;
 
-alias tango.sys.win32.UserGdi WINAPI;
+
 } else { // Phobos
 }
 
@@ -3608,9 +3609,6 @@ static void POINTSTOPOINT( inout POINT pt, int pts) {
 alias DWTWINAPI.GetScrollBarInfo GetScrollBarInfo;
 } // END of OS
 //-----------------------------------------------------------------------------
-import tango.sys.win32.CodePage : CodePage;
-private import tango.stdc.stringz;
-
 // convert UTF-8 to MBCS
 alias StrToMBCS StrToMBCSs;
 public CHAR[] StrToMBCS(char[] sc, uint codepage = 0) {
@@ -3665,7 +3663,7 @@ public wchar[] StrToWCHARs(char[] sc, bool terminated = false ) {
         ret = "";
     }
     if( terminated ){
-        ret ~= \0;
+        ret ~= "\0";
     }
     return ret;
 }

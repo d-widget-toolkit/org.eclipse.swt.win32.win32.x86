@@ -61,9 +61,9 @@ import java.lang.all;
  * @since 3.3
  */
 public class StyledTextDropTargetEffect : DropTargetEffect {
-    static final int CARET_WIDTH = 2;
-    static final int SCROLL_HYSTERESIS = 100; // milli seconds
-    static final int SCROLL_TOLERANCE = 20; // pixels
+    static const int CARET_WIDTH = 2;
+    static const int SCROLL_HYSTERESIS = 100; // milli seconds
+    static const int SCROLL_TOLERANCE = 20; // pixels
 
     int currentOffset = -1;
     long scrollBeginTime;

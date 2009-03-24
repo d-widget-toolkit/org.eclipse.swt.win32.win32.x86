@@ -68,7 +68,7 @@ public class PaintObjectEvent : TypedEvent {
      */
     public int bulletIndex;
 
-    static final long serialVersionUID = 3906081274027192855L;
+    static const long serialVersionUID = 3906081274027192855L;
 
 /**
  * Constructs a new instance of this class based on the

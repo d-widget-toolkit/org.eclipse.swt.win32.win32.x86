@@ -77,20 +77,20 @@ class StyledTextRenderer {
     StyleRange[] styles;
     StyleRange[] stylesSet;
     int stylesSetCount = 0;
-    final static int BULLET_MARGIN = 8;
+    const static int BULLET_MARGIN = 8;
 
-    final static bool COMPACT_STYLES = true;
-    final static bool MERGE_STYLES = true;
+    const static bool COMPACT_STYLES = true;
+    const static bool MERGE_STYLES = true;
 
-    final static int GROW = 32;
-    final static int IDLE_TIME = 50;
-    final static int CACHE_SIZE = 128;
+    const static int GROW = 32;
+    const static int IDLE_TIME = 50;
+    const static int CACHE_SIZE = 128;
 
-    final static int BACKGROUND = 1 << 0;
-    final static int ALIGNMENT = 1 << 1;
-    final static int INDENT = 1 << 2;
-    final static int JUSTIFY = 1 << 3;
-    final static int SEGMENTS = 1 << 5;
+    const static int BACKGROUND = 1 << 0;
+    const static int ALIGNMENT = 1 << 1;
+    const static int INDENT = 1 << 2;
+    const static int JUSTIFY = 1 << 3;
+    const static int SEGMENTS = 1 << 5;
 
     static class LineInfo {
         int flags;

@@ -32,8 +32,8 @@ import org.eclipse.swt.custom.ScrolledComposite;
 class ScrolledCompositeLayout : Layout {
 
     bool inLayout = false;
-    static final int DEFAULT_WIDTH  = 64;
-    static final int DEFAULT_HEIGHT = 64;
+    static const int DEFAULT_WIDTH  = 64;
+    static const int DEFAULT_HEIGHT = 64;
 
 protected override Point computeSize(Composite composite, int wHint, int hHint, bool flushCache) {
     ScrolledComposite sc = cast(ScrolledComposite)composite;

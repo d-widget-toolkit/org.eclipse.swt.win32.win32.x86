@@ -91,7 +91,7 @@ public class TableEditor : ControlEditor {
     int column = -1;
     ControlListener columnListener;
     Runnable timer;
-    static final int TIMEOUT = 1500;
+    static const int TIMEOUT = 1500;
 /**
 * Creates a TableEditor for the specified Table.
 *

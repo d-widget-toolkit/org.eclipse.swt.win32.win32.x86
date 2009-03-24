@@ -32,7 +32,7 @@ class EventTable {
     int [] types;
     Listener [] listeners;
     int level;
-    static final int GROW_SIZE = 4;
+    static const int GROW_SIZE = 4;
     
 public Listener [] getListeners (int eventType) {
     if (types is null) return new Listener [0];

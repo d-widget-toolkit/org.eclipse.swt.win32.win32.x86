@@ -2947,9 +2947,9 @@ static void jinit_inverse_dct (jpeg_decompress_struct cinfo) {
     }
 }
 
-static final int CONST_BITS = 13;
-static final int PASS1_BITS = 2;
-static final int RANGE_MASK =(MAXJSAMPLE * 4 + 3);
+static const int CONST_BITS = 13;
+static const int PASS1_BITS = 2;
+static const int RANGE_MASK =(MAXJSAMPLE * 4 + 3);
 static void jpeg_idct_islow (jpeg_decompress_struct cinfo, jpeg_component_info compptr,
     short[] coef_block,
     byte[][] output_buf, int output_buf_offset, int output_col)

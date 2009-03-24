@@ -147,7 +147,7 @@ public class DragSource : Widget {
 
     static const String DEFAULT_DRAG_SOURCE_EFFECT = "DEFAULT_DRAG_SOURCE_EFFECT"; //$NON-NLS-1$
     static const int CFSTR_PERFORMEDDROPEFFECT;
-    static final TCHAR[] WindowClass = "#32770\0";
+    static const TCHAR[] WindowClass = "#32770\0";
     static this(){
         CFSTR_PERFORMEDDROPEFFECT  = Transfer.registerType("Performed DropEffect");     //$NON-NLS-1$
     }

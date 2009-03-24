@@ -45,9 +45,9 @@ import java.lang.all;
 public class FileTransfer : ByteArrayTransfer {
 
     private static FileTransfer _instance;
-    private static final String CF_HDROP = "CF_HDROP "; //$NON-NLS-1$
-    private static final int CF_HDROPID = COM.CF_HDROP;
-    private static final String CF_HDROP_SEPARATOR = "\0"; //$NON-NLS-1$
+    private static const String CF_HDROP = "CF_HDROP "; //$NON-NLS-1$
+    private static const int CF_HDROPID = COM.CF_HDROP;
+    private static const String CF_HDROP_SEPARATOR = "\0"; //$NON-NLS-1$
 
 private this() {}
 

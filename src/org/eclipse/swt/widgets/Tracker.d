@@ -69,8 +69,8 @@ public class Tracker : Widget {
     /*
     * The following values mirror step sizes on Windows
     */
-    final static int STEPSIZE_SMALL = 1;
-    final static int STEPSIZE_LARGE = 9;
+    const static int STEPSIZE_SMALL = 1;
+    const static int STEPSIZE_LARGE = 9;
 
 /**
  * Constructs a new instance of this class given its parent

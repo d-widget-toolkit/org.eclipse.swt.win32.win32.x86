@@ -25,7 +25,7 @@ import org.eclipse.swt.custom.StyledTextListener;
 import org.eclipse.swt.custom.StyledText;
 
 class DefaultContent : StyledTextContent {
-    private final static String LineDelimiter = "\r\n";
+    private const static String LineDelimiter = "\r\n";
 
     StyledTextListener[] textListeners; // stores text listeners for event sending
     char[] textStore; // stores the actual text

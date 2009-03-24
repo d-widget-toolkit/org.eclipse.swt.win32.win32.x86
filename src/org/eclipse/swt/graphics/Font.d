@@ -170,7 +170,7 @@ void destroy() {
  *
  * @see #hashCode
  */
-public int opEquals(Object object) {
+public equals_t opEquals(Object object) {
     if (object is this) return true;
     if ( auto font = cast(Font)object ){
         return device is font.device && handle is font.handle;

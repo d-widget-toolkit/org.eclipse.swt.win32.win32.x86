@@ -398,7 +398,7 @@ public String getName () {
  *
  * @see #hashCode()
  */
-public override int opEquals(Object other) {
+public override equals_t opEquals(Object other) {
     if (this is other) return true;
     if ( auto program = cast(Program)other ) {
         return name.equals(program.name) && command.equals(program.command)

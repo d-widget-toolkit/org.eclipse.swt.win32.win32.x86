@@ -204,7 +204,7 @@ public this (TextStyle style) {
  *
  * @see #hashCode()
  */
-public override int opEquals(Object object) {
+public override equals_t opEquals(Object object) {
     if (object is this) return true;
     if (object is null) return false;
     if (!(cast(TextStyle)object)) return false;

@@ -249,7 +249,7 @@ void destroy () {
  *
  * @see #hashCode
  */
-override public int opEquals (Object object) {
+override public equals_t opEquals (Object object) {
     if (this is object) return true;
     if (!(cast(Region)object)) return false;
     Region rgn = cast(Region)object;

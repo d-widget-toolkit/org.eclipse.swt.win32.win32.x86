@@ -2368,7 +2368,7 @@ StyleItem[] itemize () {
     int length = segmentsText.length;
     SCRIPT_CONTROL scriptControl;
     SCRIPT_STATE scriptState;
-    final int MAX_ITEM = length + 1;
+    int MAX_ITEM = length + 1;
 
     if ((orientation & SWT.RIGHT_TO_LEFT) !is 0) {
         scriptState.uBidiLevel = 1;

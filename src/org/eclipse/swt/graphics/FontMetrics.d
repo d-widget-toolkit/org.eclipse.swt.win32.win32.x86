@@ -57,7 +57,7 @@ this() {
  *
  * @see #hashCode
  */
-override public int opEquals (Object object) {
+override public equals_t opEquals (Object object) {
     if (object is this) return true;
     if( auto metricObj = cast(FontMetrics)object ){
         auto metric = metricObj.handle;

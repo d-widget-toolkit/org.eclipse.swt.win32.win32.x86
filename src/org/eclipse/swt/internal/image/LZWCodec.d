@@ -35,7 +35,7 @@ final class LZWCodec {
     ImageData image;
     ImageLoader loader;
     bool interlaced;
-    static final int[] MASK_TABLE = [
+    static const int[] MASK_TABLE = [
         0x1, 0x3, 0x7, 0xF, 0x1F, 0x3F, 0x7F,
         0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF
     ];

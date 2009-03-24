@@ -32,15 +32,15 @@ final class GIFFileFormat : FileFormat {
     int transparentPixel = -1;
     int repeatCount = 1;
 
-    static final int GIF_APPLICATION_EXTENSION_BLOCK_ID = 0xFF;
-    static final int GIF_GRAPHICS_CONTROL_BLOCK_ID = 0xF9;
-    static final int GIF_PLAIN_TEXT_BLOCK_ID = 0x01;
-    static final int GIF_COMMENT_BLOCK_ID = 0xFE;
-    static final int GIF_EXTENSION_BLOCK_ID = 0x21;
-    static final int GIF_IMAGE_BLOCK_ID = 0x2C;
-    static final int GIF_TRAILER_ID = 0x3B;
-    static final byte[] GIF89a = cast(byte[])"GIF89a";
-    static final byte[] NETSCAPE2_0 = cast(byte[])"NETSCAPE2.0";
+    static const int GIF_APPLICATION_EXTENSION_BLOCK_ID = 0xFF;
+    static const int GIF_GRAPHICS_CONTROL_BLOCK_ID = 0xF9;
+    static const int GIF_PLAIN_TEXT_BLOCK_ID = 0x01;
+    static const int GIF_COMMENT_BLOCK_ID = 0xFE;
+    static const int GIF_EXTENSION_BLOCK_ID = 0x21;
+    static const int GIF_IMAGE_BLOCK_ID = 0x2C;
+    static const int GIF_TRAILER_ID = 0x3B;
+    static const byte[] GIF89a = cast(byte[])"GIF89a";
+    static const byte[] NETSCAPE2_0 = cast(byte[])"NETSCAPE2.0";
 
     /**
      * Answer a palette containing numGrays

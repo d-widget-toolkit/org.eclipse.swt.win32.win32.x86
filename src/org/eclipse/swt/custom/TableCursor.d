@@ -167,8 +167,8 @@ public class TableCursor : Canvas {
     Color foreground = null;
 
     // By default, invert the list selection colors
-    static final int BACKGROUND = SWT.COLOR_LIST_SELECTION_TEXT;
-    static final int FOREGROUND = SWT.COLOR_LIST_SELECTION;
+    static const int BACKGROUND = SWT.COLOR_LIST_SELECTION_TEXT;
+    static const int FOREGROUND = SWT.COLOR_LIST_SELECTION;
 
 /**
  * Constructs a new instance of this class given its parent

@@ -23,8 +23,8 @@ import java.lang.all;
 
 final class WinBMPFileFormat : FileFormat {
 
-    static final int BMPFileHeaderSize = 14;
-    static final int BMPHeaderFixedSize = 40;
+    static const int BMPFileHeaderSize = 14;
+    static const int BMPHeaderFixedSize = 40;
     int importantColors;
     Point pelsPerMeter;
 

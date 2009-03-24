@@ -405,7 +405,7 @@ void destroy () {
  *
  * @see #hashCode
  */
-public override int opEquals (Object object) {
+public override equals_t opEquals (Object object) {
     if (object is this) return true;
     if (!(cast(Cursor)object)) return false;
     Cursor cursor = cast(Cursor) object;

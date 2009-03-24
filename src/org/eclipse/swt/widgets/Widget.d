@@ -97,13 +97,13 @@ public abstract class Widget {
     static const int DRAG_DETECT    = 1<<15;
 
     /* Move and resize state flags */
-    static final int MOVE_OCCURRED      = 1<<16;
-    static final int MOVE_DEFERRED      = 1<<17;
-    static final int RESIZE_OCCURRED    = 1<<18;
-    static final int RESIZE_DEFERRED    = 1<<19;
+    static const int MOVE_OCCURRED      = 1<<16;
+    static const int MOVE_DEFERRED      = 1<<17;
+    static const int RESIZE_OCCURRED    = 1<<18;
+    static const int RESIZE_DEFERRED    = 1<<19;
 
     /* Ignore WM_CHANGEUISTATE */
-    static final int IGNORE_WM_CHANGEUISTATE = 1<<20;
+    static const int IGNORE_WM_CHANGEUISTATE = 1<<20;
 
     /* Default size for widgets */
     static const int DEFAULT_WIDTH  = 64;

@@ -21,8 +21,8 @@ final class TIFFRandomFileAccess {
     int start, current, next;
     byte[][] buffers;
 
-    static final int CHUNK_SIZE = 8192;
-    static final int LIST_SIZE = 128;
+    static const int CHUNK_SIZE = 8192;
+    static const int LIST_SIZE = 128;
 
 public this(LEDataInputStream stream) {
     inputStream = stream;

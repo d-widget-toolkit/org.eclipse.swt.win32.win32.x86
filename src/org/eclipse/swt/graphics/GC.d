@@ -1219,7 +1219,7 @@ void drawBitmapAlpha(Image srcImage, int srcX, int srcY, int srcWidth, int srcHe
             OS.BitBlt(memHdc, 0, 0, srcWidth, srcHeight, srcHdc, srcX, srcY, OS.SRCCOPY);
             byte[] srcData = new byte[dibBM.bmWidthBytes * dibBM.bmHeight];
             srcData[] = (cast(byte*)dibBM.bmBits)[ 0 .. srcData.length ];
-            final int apinc = imgWidth - srcWidth;
+            int apinc = imgWidth - srcWidth;
             int ap = srcY * imgWidth + srcX, sp = 0;
             byte[] alphaData = srcImage.alphaData;
             for (int y = 0; y < srcHeight; ++y) {
@@ -1298,10 +1298,10 @@ void drawBitmapAlpha(Image srcImage, int srcX, int srcY, int srcWidth, int srcHe
 
     /* Merge the alpha channel in place */
     int alpha = srcImage.alpha;
-    final bool hasAlphaChannel = (srcImage.alpha is -1);
+    bool hasAlphaChannel = (srcImage.alpha is -1);
     if (hasAlphaChannel) {
-        final int apinc = imgWidth - srcWidth;
-        final int spinc = dibBM.bmWidthBytes - srcWidth * 4;
+        int apinc = imgWidth - srcWidth;
+        int spinc = dibBM.bmWidthBytes - srcWidth * 4;
         int ap = srcY * imgWidth + srcX, sp = 3;
         byte[] alphaData = srcImage.alphaData;
         for (int y = 0; y < srcHeight; ++y) {
@@ -1349,7 +1349,7 @@ void drawBitmapAlpha(Image srcImage, int srcX, int srcY, int srcWidth, int srcHe
     srcData[] = (cast(byte*)dibBM.bmBits)[ 0 .. sizeInBytes ];
 
     /* Compose the pixels */
-    final int dpinc = dibBM.bmWidthBytes - destWidth * 4;
+    int dpinc = dibBM.bmWidthBytes - destWidth * 4;
     int dp = 0;
     for (int y = 0; y < destHeight; ++y) {
         for (int x = 0; x < destWidth; ++x) {
@@ -2651,8 +2651,8 @@ public void fillGradientRectangle(int x, int y, int width, int height, bool vert
         rop2 = OS.GetROP2(handle);
     }
     if (OS.IsWinNT && rop2 !is OS.R2_XORPEN && OS.GetDeviceCaps(handle, OS.TECHNOLOGY) !is OS.DT_RASPRINTER) {
-        final auto hHeap = OS.GetProcessHeap();
-        final auto pMesh = OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, GRADIENT_RECT.sizeof + TRIVERTEX.sizeof * 2);
+        auto hHeap = OS.GetProcessHeap();
+        auto pMesh = OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, GRADIENT_RECT.sizeof + TRIVERTEX.sizeof * 2);
         if (pMesh is null) SWT.error(SWT.ERROR_NO_HANDLES);
         auto pVertex = cast(TRIVERTEX*)( pMesh + GRADIENT_RECT.sizeof );
 
@@ -2682,8 +2682,8 @@ public void fillGradientRectangle(int x, int y, int width, int height, bool vert
         if (success) return;
     }
 
-    final int depth = OS.GetDeviceCaps(handle, OS.BITSPIXEL);
-    final int bitResolution = (depth >= 24) ? 8 : (depth >= 15) ? 5 : 0;
+    int depth = OS.GetDeviceCaps(handle, OS.BITSPIXEL);
+    int bitResolution = (depth >= 24) ? 8 : (depth >= 15) ? 5 : 0;
     ImageData.fillGradientRectangle(this, data.device,
         x, y, width, height, vertical, fromRGB, toRGB,
         bitResolution, bitResolution, bitResolution);

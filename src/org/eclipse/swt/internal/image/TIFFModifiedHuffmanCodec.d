@@ -22,7 +22,7 @@ import org.eclipse.swt.SWT;
 *   (TIFF compression type 3 option 1D)
 */
 final class TIFFModifiedHuffmanCodec {
-    static final short[][][] BLACK_CODE = [
+    static const short[][][] BLACK_CODE = [
         /* 2 bits  */
         [[ cast(short)2, 3], [ cast(short)3, 2]],
         /* 3 bits  */
@@ -60,7 +60,7 @@ final class TIFFModifiedHuffmanCodec {
         [ cast(short)119, 1216]]
     ];
 
-    static final short[][][] WHITE_CODE = [
+    static const short[][][] WHITE_CODE = [
         /* 4 bits */
         [[ cast(short)7, 2], [ cast(short)8, 3], [ cast(short)11, 4], [ cast(short)12, 5], [ cast(short)14, 6], [ cast(short)15, 7]],
         /* 5 bits */
@@ -91,8 +91,8 @@ final class TIFFModifiedHuffmanCodec {
         [ cast(short)28, 2368], [ cast(short)29, 2432], [ cast(short)30, 2496], [ cast(short)31, 2560]]
     ];
 
-    static final int BLACK_MIN_BITS = 2;
-    static final int WHITE_MIN_BITS = 4;
+    static const int BLACK_MIN_BITS = 2;
+    static const int WHITE_MIN_BITS = 4;
 
     bool isWhite;
     int whiteValue = 0;

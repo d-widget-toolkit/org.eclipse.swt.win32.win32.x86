@@ -247,7 +247,7 @@ public class Display : Device {
     Synchronizer synchronizer;
     bool runMessages = true, runMessagesInIdle = false, runMessagesInMessageProc = true;
     static const String RUN_MESSAGES_IN_IDLE_KEY = "org.eclipse.swt.internal.win32.runMessagesInIdle"; //$NON-NLS-1$
-    static final String RUN_MESSAGES_IN_MESSAGE_PROC_KEY = "org.eclipse.swt.internal.win32.runMessagesInMessageProc"; //$NON-NLS-1$
+    static const String RUN_MESSAGES_IN_MESSAGE_PROC_KEY = "org.eclipse.swt.internal.win32.runMessagesInMessageProc"; //$NON-NLS-1$
     Thread thread;
 
     /* Display Shutdown */
@@ -313,7 +313,7 @@ public class Display : Device {
 
     /* Resize and move recursion */
     int resizeCount;
-    static final int RESIZE_LIMIT = 4;
+    static const int RESIZE_LIMIT = 4;
 
     /* Display Data */
     Object data;

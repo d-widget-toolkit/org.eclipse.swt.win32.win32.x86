@@ -54,7 +54,7 @@ import java.lang.all;
  * @since 3.3
  */
 public class TableDropTargetEffect : DropTargetEffect {
-    static final int SCROLL_HYSTERESIS = 200; // milli seconds
+    static const int SCROLL_HYSTERESIS = 200; // milli seconds
 
     int scrollIndex = -1;
     long scrollBeginTime;

@@ -212,7 +212,7 @@ HBITMAP copyWithAlpha (HBITMAP hBitmap, int background, byte[] alphaData, int de
         byte transRed = cast(byte)(background & 0xFF);
         byte transGreen = cast(byte)((background >> 8) & 0xFF);
         byte transBlue = cast(byte)((background >> 16) & 0xFF);
-        final int spinc = dibBM.bmWidthBytes - srcWidth * 4;
+        int spinc = dibBM.bmWidthBytes - srcWidth * 4;
         int sp = 3;
         for (int y = 0; y < srcHeight; ++y) {
             for (int x = 0; x < srcWidth; ++x) {

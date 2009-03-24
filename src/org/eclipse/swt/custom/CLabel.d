@@ -436,12 +436,12 @@ void onPaint(PaintEvent event) {
             }
         } else if (gradientColors !is null) {
             // draw a gradient behind the text
-            final Color oldBackground = gc.getBackground();
+            Color oldBackground = gc.getBackground();
             if (gradientColors.length is 1) {
                 if (gradientColors[0] !is null) gc.setBackground(gradientColors[0]);
                 gc.fillRectangle(0, 0, rect.width, rect.height);
             } else {
-                final Color oldForeground = gc.getForeground();
+                Color oldForeground = gc.getForeground();
                 Color lastColor = gradientColors[0];
                 if (lastColor is null) lastColor = oldBackground;
                 int pos = 0;
@@ -451,11 +451,11 @@ void onPaint(PaintEvent event) {
                     if (lastColor is null) lastColor = oldBackground;
                     gc.setBackground(lastColor);
                     if (gradientVertical) {
-                        final int gradientHeight = (gradientPercents[i] * rect.height / 100) - pos;
+                        int gradientHeight = (gradientPercents[i] * rect.height / 100) - pos;
                         gc.fillGradientRectangle(0, pos, rect.width, gradientHeight, true);
                         pos += gradientHeight;
                     } else {
-                        final int gradientWidth = (gradientPercents[i] * rect.width / 100) - pos;
+                        int gradientWidth = (gradientPercents[i] * rect.width / 100) - pos;
                         gc.fillGradientRectangle(pos, 0, gradientWidth, rect.height, false);
                         pos += gradientWidth;
                     }
@@ -667,7 +667,7 @@ public void setBackground(Color[] colors, int[] percents, bool vertical) {
     }
 
     // Are these settings the same as before?
-    final Color background = getBackground();
+    Color background = getBackground();
     if (backgroundImage is null) {
         if ((gradientColors !is null) && (colors !is null) &&
             (gradientColors.length is colors.length)) {

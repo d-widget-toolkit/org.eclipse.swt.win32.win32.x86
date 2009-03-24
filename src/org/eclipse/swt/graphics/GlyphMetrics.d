@@ -83,7 +83,7 @@ public this(int ascent, int descent, int width) {
  *
  * @see #hashCode()
  */
-public override int opEquals (Object object) {
+public override equals_t opEquals (Object object) {
     if (object is this) return true;
     if (auto metrics = cast(GlyphMetrics)object ){
        return metrics.ascent == ascent && metrics.descent == descent && metrics.width == width;

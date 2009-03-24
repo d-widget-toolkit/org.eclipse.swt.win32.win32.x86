@@ -41,7 +41,7 @@ public class LineBackgroundEvent : TypedEvent {
      */
     public Color lineBackground;
 
-    static final long serialVersionUID = 3978711687853324342L;
+    static const long serialVersionUID = 3978711687853324342L;
 
 /**
  * Constructs a new instance of this class based on the

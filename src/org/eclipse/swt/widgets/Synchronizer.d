@@ -46,11 +46,11 @@ public class Synchronizer {
     RunnableLock [] messages;
     Object messageLock;
     Thread syncThread;
-    static final int GROW_SIZE = 4;
-    static final int MESSAGE_LIMIT = 64;
+    static const int GROW_SIZE = 4;
+    static const int MESSAGE_LIMIT = 64;
 
     //TEMPORARY CODE
-    static final bool IS_CARBON = false;//"carbon".equals (SWT.getPlatform ());
+    static const bool IS_CARBON = false;//"carbon".equals (SWT.getPlatform ());
 
 /**
  * Constructs a new instance of this class.

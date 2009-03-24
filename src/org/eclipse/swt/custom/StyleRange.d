@@ -121,7 +121,7 @@ public this(int start, int length, Color foreground, Color background, int fontS
  *
  * @see #hashCode()
  */
-public override int opEquals(Object object) {
+public override equals_t opEquals(Object object) {
     if (object is this) return true;
     if (auto style = cast(StyleRange) object ) {
         if (start !is style.start) return false;

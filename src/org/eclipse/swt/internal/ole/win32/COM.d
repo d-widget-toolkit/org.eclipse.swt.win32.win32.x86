@@ -273,7 +273,7 @@ public class COM : OS {
     public static const int DROPEFFECT_MOVE = 2;
     public static const int DROPEFFECT_LINK = 4;
     public static const int DROPEFFECT_SCROLL = 0x80000000;
-    public static final int DSH_ALLOWDROPDESCRIPTIONTEXT = 0x1;
+    public static const int DSH_ALLOWDROPDESCRIPTIONTEXT = 0x1;
     public static const int DV_E_FORMATETC = -2147221404;
     public static const int DV_E_STGMEDIUM = -2147221402;
     public static const int DV_E_TYMED = -2147221399;

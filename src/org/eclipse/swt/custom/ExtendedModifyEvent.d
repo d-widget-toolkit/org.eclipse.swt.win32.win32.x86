@@ -30,7 +30,7 @@ public final class ExtendedModifyEvent : TypedEvent {
     /** replaced text or empty string if no text was replaced */
     public String replacedText;
 
-    static final long serialVersionUID = 3258696507027830832L;
+    static const long serialVersionUID = 3258696507027830832L;
 
 /**
  * Constructs a new instance of this class based on the

@@ -172,7 +172,7 @@ public class Shell : Decorations {
         OS.COLOR_HIGHLIGHT,
         OS.COLOR_SCROLLBAR,
     ];
-    final static int BRUSHES_SIZE = 32;
+    const static int BRUSHES_SIZE = 32;
 
     private static bool static_this_completed = false;
     private static void static_this() {

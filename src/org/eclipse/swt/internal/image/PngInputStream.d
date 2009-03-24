@@ -28,7 +28,7 @@ public class PngInputStream : InputStream {
     PngChunk chunk;
     int offset, length;
 
-    final static int DATA_OFFSET = 8;
+    const static int DATA_OFFSET = 8;
 
 public this(PngIdatChunk chunk, PngChunkReader reader) {
     this.chunk = chunk;

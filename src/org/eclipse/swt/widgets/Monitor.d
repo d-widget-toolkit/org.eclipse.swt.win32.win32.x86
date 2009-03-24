@@ -45,7 +45,7 @@ this () {
  *
  * @see #hashCode()
  */
-public override int opEquals (Object object) {
+public override equals_t opEquals (Object object) {
     if (object is this) return true;
     if ( auto mon = cast(org.eclipse.swt.widgets.Monitor.Monitor)object ){
        return handle is mon.handle;

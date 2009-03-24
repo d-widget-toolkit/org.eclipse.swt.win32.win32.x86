@@ -37,7 +37,7 @@ import org.eclipse.swt.internal.ole.win32.OBJIDL;
  */
 public abstract class Transfer {
 
-private static final int RETRY_LIMIT = 10;
+private static const int RETRY_LIMIT = 10;
 /* 
  * Feature in Windows. When another application has control
  * of the clipboard, the clipboard is locked and it's not

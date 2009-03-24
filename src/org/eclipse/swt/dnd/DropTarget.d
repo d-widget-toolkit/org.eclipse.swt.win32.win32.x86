@@ -119,7 +119,7 @@ public class DropTarget : Widget {
     _IDropTargetImpl iDropTarget;
     int refCount;
 
-    static final String DEFAULT_DROP_TARGET_EFFECT = "DEFAULT_DROP_TARGET_EFFECT"; //$NON-NLS-1$
+    static const String DEFAULT_DROP_TARGET_EFFECT = "DEFAULT_DROP_TARGET_EFFECT"; //$NON-NLS-1$
 
 /**
  * Creates a new <code>DropTarget</code> to allow data to be dropped on the specified

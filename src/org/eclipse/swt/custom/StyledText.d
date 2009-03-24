@@ -2156,7 +2156,7 @@ void doAutoScroll(int direction, int distance) {
     }
 
     Runnable timer = null;
-    final Display disp = getDisplay();
+    Display disp = getDisplay();
     // Set a timer that will simulate the user pressing and holding
     // down a cursor key (i.e., arrowUp, arrowDown).
     if (direction is SWT.UP) {
@@ -5635,7 +5635,7 @@ void handleVerticalScroll(Event event) {
  * Add accessibility support for the widget.
  */
 void initializeAccessible() {
-    final Accessible accessible = getAccessible();
+    Accessible accessible = getAccessible();
     accessible.addAccessibleListener(new class() AccessibleAdapter {
         public void getName (AccessibleEvent e) {
             String name = null;

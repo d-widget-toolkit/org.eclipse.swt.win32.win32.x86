@@ -58,7 +58,7 @@ public class MovementEvent : TypedEvent {
      */
     public int movement;
 
-    static final long serialVersionUID = 3978765487853324342L;
+    static const long serialVersionUID = 3978765487853324342L;
 
 /**
  * Constructs a new instance of this class based on the

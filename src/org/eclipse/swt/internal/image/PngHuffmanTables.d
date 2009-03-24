@@ -23,8 +23,8 @@ public class PngHuffmanTables {
     static PngHuffmanTable FixedLiteralTable;
     static PngHuffmanTable FixedDistanceTable;
 
-    static final int LiteralTableSize = 288;
-    static final int[] FixedLiteralLengths = [
+    static const int LiteralTableSize = 288;
+    static const int[] FixedLiteralLengths = [
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -39,14 +39,14 @@ public class PngHuffmanTables {
         7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8,
     ];
 
-    static final int DistanceTableSize = 32;
-    static final int[] FixedDistanceLengths = [
+    static const int DistanceTableSize = 32;
+    static const int[] FixedDistanceLengths = [
         5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
         5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
     ];
 
-    static final int LengthCodeTableSize = 19;
-    static final int[] LengthCodeOrder = [
+    static const int LengthCodeTableSize = 19;
+    static const int[] LengthCodeOrder = [
         16, 17, 18, 0, 8, 7, 9, 6, 10, 5,
         11, 4, 12, 3, 13, 2, 14, 1, 15
     ];

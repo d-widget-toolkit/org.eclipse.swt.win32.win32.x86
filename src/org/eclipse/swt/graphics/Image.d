@@ -1079,7 +1079,7 @@ void destroy () {
  *
  * @see #hashCode
  */
-override public int opEquals (Object object) {
+override public equals_t opEquals (Object object) {
     if (object is this) return true;
     if (!(cast(Image)object)) return false;
     Image image = cast(Image) object;
@@ -1709,10 +1709,10 @@ static int[] init_(Device device, Image image, ImageData i) {
     * platforms in BI_RGB mode.
     */
     if (i.palette.isDirect) {
-        final PaletteData palette = i.palette;
-        final int redMask = palette.redMask;
-        final int greenMask = palette.greenMask;
-        final int blueMask = palette.blueMask;
+        PaletteData palette = i.palette;
+        int redMask = palette.redMask;
+        int greenMask = palette.greenMask;
+        int blueMask = palette.blueMask;
         int newDepth = i.depth;
         int newOrder = ImageData.MSB_FIRST;
         PaletteData newPalette = null;

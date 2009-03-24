@@ -323,7 +323,7 @@ override protected void checkSubclass () {
     if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
 }
 
-override override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
     if (handle is null) return 0;
     return OS.DefMDIChildProc (hwnd, msg, wParam, lParam);
 }

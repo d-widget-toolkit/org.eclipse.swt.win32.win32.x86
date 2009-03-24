@@ -132,9 +132,9 @@ public class ViewForm : Composite {
 
     Color selectionBackground;
 
-    static final int OFFSCREEN = -200;
-    static final int BORDER1_COLOR = SWT.COLOR_WIDGET_NORMAL_SHADOW;
-    static final int SELECTION_BACKGROUND = SWT.COLOR_LIST_BACKGROUND;
+    static const int OFFSCREEN = -200;
+    static const int BORDER1_COLOR = SWT.COLOR_WIDGET_NORMAL_SHADOW;
+    static const int SELECTION_BACKGROUND = SWT.COLOR_LIST_BACKGROUND;
 
 
     static this(){
