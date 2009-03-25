@@ -16,8 +16,8 @@ import org.eclipse.swt.internal.Library;
 import org.eclipse.swt.internal.Platform;
 
 private import org.eclipse.swt.internal.win32.WINAPI;
-private import org.eclipse.swt.internal.opengl.win32.native;
-    
+static import org.eclipse.swt.internal.opengl.win32.native;
+alias org.eclipse.swt.internal.opengl.win32.native OPENGL_NATIVE;
 public class WGL : Platform { 
 
 public:
@@ -104,24 +104,24 @@ public:
         PFD_STEREO_DONTCARE         = 0x80000000
     }
 
-    alias .ChoosePixelFormat            ChoosePixelFormat;
-    alias .DescribePixelFormat          DescribePixelFormat;
-    alias .GetPixelFormat               GetPixelFormat;
-    alias .SetPixelFormat               SetPixelFormat;
-    alias .SwapBuffers                  SwapBuffers;
+    alias OPENGL_NATIVE.ChoosePixelFormat            ChoosePixelFormat;
+    alias OPENGL_NATIVE.DescribePixelFormat          DescribePixelFormat;
+    alias OPENGL_NATIVE.GetPixelFormat               GetPixelFormat;
+    alias OPENGL_NATIVE.SetPixelFormat               SetPixelFormat;
+    alias OPENGL_NATIVE.SwapBuffers                  SwapBuffers;
     
-    alias .wglCopyContext               wglCopyContext;
-    alias .wglCreateContext             wglCreateContext;
-    alias .wglCreateLayerContext        wglCreateLayerContext;
-    alias .wglDeleteContext             wglDeleteContext;
-    alias .wglGetCurrentContext         wglGetCurrentContext;
-    alias .wglGetCurrentDC              wglGetCurrentDC;
-    alias .wglGetProcAddress            wglGetProcAddress;
-    alias .wglMakeCurrent               wglMakeCurrent;
-    alias .wglShareLists                wglShareLists;
-    alias .wglDescribeLayerPlane        wglDescribeLayerPlane;
-    alias .wglSetLayerPaletteEntries    wglSetLayerPaletteEntries;
-    alias .wglGetLayerPaletteEntries    wglGetLayerPaletteEntries;
-    alias .wglRealizeLayerPalette       wglRealizeLayerPalette;
-    alias .wglSwapLayerBuffers          wglSwapLayerBuffers;
+    alias OPENGL_NATIVE.wglCopyContext               wglCopyContext;
+    alias OPENGL_NATIVE.wglCreateContext             wglCreateContext;
+    alias OPENGL_NATIVE.wglCreateLayerContext        wglCreateLayerContext;
+    alias OPENGL_NATIVE.wglDeleteContext             wglDeleteContext;
+    alias OPENGL_NATIVE.wglGetCurrentContext         wglGetCurrentContext;
+    alias OPENGL_NATIVE.wglGetCurrentDC              wglGetCurrentDC;
+    alias OPENGL_NATIVE.wglGetProcAddress            wglGetProcAddress;
+    alias OPENGL_NATIVE.wglMakeCurrent               wglMakeCurrent;
+    alias OPENGL_NATIVE.wglShareLists                wglShareLists;
+    alias OPENGL_NATIVE.wglDescribeLayerPlane        wglDescribeLayerPlane;
+    alias OPENGL_NATIVE.wglSetLayerPaletteEntries    wglSetLayerPaletteEntries;
+    alias OPENGL_NATIVE.wglGetLayerPaletteEntries    wglGetLayerPaletteEntries;
+    alias OPENGL_NATIVE.wglRealizeLayerPalette       wglRealizeLayerPalette;
+    alias OPENGL_NATIVE.wglSwapLayerBuffers          wglSwapLayerBuffers;
 }

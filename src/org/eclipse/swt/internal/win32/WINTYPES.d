@@ -15994,3 +15994,5 @@ struct SCRIPT_TABDEF {
 //        ubyte, "fReserved", 8));
 //}
 //
+
+alias HANDLE HPAINTBUFFER;
