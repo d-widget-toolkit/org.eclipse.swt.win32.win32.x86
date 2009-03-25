@@ -83,23 +83,27 @@ public class LDWTRESULT {
 public class OS : C {
 
     struct Symbol {
-        char[] name;
+        String name;
         void** symbol;
         int major;
         int minor;
     }
-    static void loadLib( Symbol[] symbols, char[] libname ){
-        if (auto lib = tango.sys.SharedLib.SharedLib.load(libname)) {
-            foreach( inout s; symbols ){
-                if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
-                    *s.symbol = lib.getSymbol( s.name.ptr );
-                    if( s.symbol is null ){
-                        getDwtLogger.error(  __FILE__, __LINE__, "{}: Symbol '{}' not found", libname, s.name );
+    static void loadLib( Symbol[] symbols, String libname ){
+        version(Tango){
+            if (auto lib = tango.sys.SharedLib.SharedLib.load(libname)) {
+                foreach( inout s; symbols ){
+                    if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
+                        *s.symbol = lib.getSymbol( s.name.ptr );
+                        if( s.symbol is null ){
+                            getDwtLogger.error(  __FILE__, __LINE__, "{}: Symbol '{}' not found", libname, s.name );
+                        }
                     }
                 }
+            } else {
+                getDwtLogger.error(  __FILE__, __LINE__, "Could not load the library {}", libname );
             }
-        } else {
-            getDwtLogger.error(  __FILE__, __LINE__, "Could not load the library {}", libname );
+        } else { // Phobos
+            implMissing( __FILE__, __LINE__ );
         }
     }
 
@@ -368,15 +372,19 @@ BOOL function(
         //PORTING_CHANGE: comctl is loaded automatically
         //TCHAR lpLibFileName = new TCHAR (0, "comctl32.dll", true); //$NON-NLS-1$
         //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
-        if (auto lib = tango.sys.SharedLib.SharedLib.load( `comctl32.dll`) ) {
-            char[] name = "DllGetVersion\0"; //$NON-NLS-1$
-            void* DllGetVersion = lib.getSymbol(name.ptr);
-            if (DllGetVersion !is null){
-                alias extern(Windows) void function(DLLVERSIONINFO*) TDllVersion;
-                TDllVersion f = cast( TDllVersion )DllGetVersion;
-                f(&dvi);
+        version(Tango){
+            if (auto lib = tango.sys.SharedLib.SharedLib.load( `comctl32.dll`) ) {
+                char[] name = "DllGetVersion\0"; //$NON-NLS-1$
+                void* DllGetVersion = lib.getSymbol(name.ptr);
+                if (DllGetVersion !is null){
+                    alias extern(Windows) void function(DLLVERSIONINFO*) TDllVersion;
+                    TDllVersion f = cast( TDllVersion )DllGetVersion;
+                    f(&dvi);
+                }
+                lib.unload();
             }
-            lib.unload();
+        } else { // Phobos
+            implMissing( __FILE__, __LINE__ );
         }
         COMCTL32_MAJOR = dvi.dwMajorVersion;
         COMCTL32_MINOR = dvi.dwMinorVersion;
@@ -388,15 +396,19 @@ BOOL function(
         dvi.dwMajorVersion = 4;
         //TCHAR lpLibFileName = new TCHAR (0, "Shell32.dll", true); //$NON-NLS-1$
         //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
-        if ( auto lib = tango.sys.SharedLib.SharedLib.load( `Shell32.dll`)) {
-            char[] name = "DllGetVersion\0"; //$NON-NLS-1$
-            void* DllGetVersion = lib.getSymbol(name.ptr);
-            if (DllGetVersion !is null){
-                alias extern(Windows) void function(DLLVERSIONINFO*) TDllVersion;
-                TDllVersion f = cast( TDllVersion )DllGetVersion;
-                f(&dvi);
+        version(Tango){
+            if ( auto lib = tango.sys.SharedLib.SharedLib.load( `Shell32.dll`)) {
+                char[] name = "DllGetVersion\0"; //$NON-NLS-1$
+                void* DllGetVersion = lib.getSymbol(name.ptr);
+                if (DllGetVersion !is null){
+                    alias extern(Windows) void function(DLLVERSIONINFO*) TDllVersion;
+                    TDllVersion f = cast( TDllVersion )DllGetVersion;
+                    f(&dvi);
+                }
+                lib.unload();
             }
-            lib.unload();
+        } else { // Phobos
+            implMissing( __FILE__, __LINE__ );
         }
         SHELL32_MAJOR = dvi.dwMajorVersion;
         SHELL32_MINOR = dvi.dwMinorVersion;
@@ -408,10 +420,14 @@ BOOL function(
     **************************************************************************/
 
     public static void enableVisualStyles() {
-        void printError( char[] msg ){
-            char[] winMsg = tango.sys.Common.SysError.lastMsg();
-            char[2000] buf;
-            getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, CodePage.from( winMsg, buf ) );
+        void printError( String msg ){
+            version(Tango){
+                char[] winMsg = tango.sys.Common.SysError.lastMsg();
+                char[2000] buf;
+                getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, CodePage.from( winMsg, buf ) );
+            } else { // Phobos
+                implMissing( __FILE__, __LINE__ );
+            }
         }
         TCHAR[] buffer = new TCHAR[ MAX_PATH ];
         buffer[] = 0;
@@ -2714,17 +2730,21 @@ static Symbol[] Symbols_UxTheme = [
 ];
 
 static void loadLib_UxTheme(){
-    if (auto lib = tango.sys.SharedLib.SharedLib.load(`uxtheme.dll`)) {
-        foreach( inout s; Symbols_UxTheme ){
-            if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
-                *s.symbol = lib.getSymbol( s.name.ptr );
-                if( *s.symbol is null ){
-                    getDwtLogger.error( __FILE__, __LINE__, "UxTheme.dll: Symbol '{}' not found", s.name );
+    version(Tango){
+        if (auto lib = tango.sys.SharedLib.SharedLib.load(`uxtheme.dll`)) {
+            foreach( inout s; Symbols_UxTheme ){
+                if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
+                    *s.symbol = lib.getSymbol( s.name.ptr );
+                    if( *s.symbol is null ){
+                        getDwtLogger.error( __FILE__, __LINE__, "UxTheme.dll: Symbol '{}' not found", s.name );
+                    }
                 }
             }
+        } else {
+            getDwtLogger.error( __FILE__, __LINE__, "Could not load the library UxTheme.dll");
         }
-    } else {
-        getDwtLogger.error( __FILE__, __LINE__, "Could not load the library UxTheme.dll");
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
     }
 }
 //----------------------------------------------------------------------
@@ -3407,14 +3427,14 @@ public static int VERSION (int major, int minor) {  return major << 16 | minor;}
 //  return WINAPI.DrawText(hDC, lpString, length, lpRect, uFormat);
 //}
 
-static int GetProfileString(char[] lpAppName, char[] lpKeyName, char[] lpDefault, out char[] lpReturnedString, int nSize ){
+static int GetProfileString(String lpAppName, String lpKeyName, String lpDefault, out String lpReturnedString, int nSize ){
     TCHAR[] buffer = new TCHAR[nSize];
     int result = _GetProfileString(.StrToTCHARz(lpAppName), .StrToTCHARz(lpKeyName), .StrToTCHARz(lpDefault), buffer.ptr, nSize);
     lpReturnedString = .TCHARzToStr(buffer.ptr);
     return result;
 }
 
-static char[] GetWindowText(HWND hwnd){
+static String GetWindowText(HWND hwnd){
     assert(hwnd);
     int len = GetWindowTextLength(hwnd);
     if(len > 0){
@@ -3598,7 +3618,11 @@ static bool TreeView_GetItemRect( HWND hwnd, HTREEITEM hitem, RECT* prc, bool co
     return cast(bool) SendMessage( hwnd, TVM_GETITEMRECT, code, cast(int)prc );
 }
 static int strlen( PCHAR ptr ){
-    return tango.stdc.string.strlen( cast(char*)ptr );
+    version(Tango){
+        return tango.stdc.string.strlen( cast(char*)ptr );
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
+    }
 }
 
 static void POINTSTOPOINT( inout POINT pt, int pts) {
@@ -3611,7 +3635,7 @@ alias DWTWINAPI.GetScrollBarInfo GetScrollBarInfo;
 //-----------------------------------------------------------------------------
 // convert UTF-8 to MBCS
 alias StrToMBCS StrToMBCSs;
-public CHAR[] StrToMBCS(char[] sc, uint codepage = 0) {
+public CHAR[] StrToMBCS(CString sc, uint codepage = 0) {
     CHAR[] ret = cast(CHAR[]) sc;
     try{
         foreach (char c; sc){
@@ -3634,7 +3658,7 @@ public CHAR[] StrToMBCS(char[] sc, uint codepage = 0) {
 }
 
 // convert UTF-8 to MBCSz
-public char* StrToMBCSz(char[] sc) {
+public char* StrToMBCSz(CString sc) {
     char* ret = null;
     try{
         if( CodePage.isAscii( sc )){
@@ -3642,7 +3666,11 @@ public char* StrToMBCSz(char[] sc) {
         }
         char[] dst;
         dst.length = sc.length;
-        return toStringz( tango.sys.win32.CodePage.CodePage.into( sc, dst ));
+        version(Tango){
+            return toStringz( tango.sys.win32.CodePage.CodePage.into( sc, dst ));
+        } else { // Phobos
+            implMissing( __FILE__, __LINE__ );
+        }
     }catch(Exception e){
         // do nothing
         ret = "";
@@ -3651,10 +3679,10 @@ public char* StrToMBCSz(char[] sc) {
     return ret;
 }
 
-public wchar[] StrToWCHARs(uint codepage , char[] sc, bool terminated = false ) {
+public String16 StrToWCHARs(uint codepage , CString sc, bool terminated = false ) {
     return StrToWCHARs( sc, terminated );
 }
-public wchar[] StrToWCHARs(char[] sc, bool terminated = false ) {
+public String16 StrToWCHARs(CString sc, bool terminated = false ) {
     wchar[] ret;
     try{
         ret = toWCharArray(sc);
@@ -3668,19 +3696,19 @@ public wchar[] StrToWCHARs(char[] sc, bool terminated = false ) {
     return ret;
 }
 
-public wchar* StrToWCHARz( uint codepage, char[] sc, uint* length = null ) {
+public wchar* StrToWCHARz( uint codepage, CString sc, uint* length = null ) {
     return StrToWCHARz( sc, length );
 }
 
-public wchar* StrToWCHARz(char[] sc, uint* length = null ) {
+public wchar* StrToWCHARz(CString sc, uint* length = null ) {
     return StrToWCHARs(sc, true ).ptr;
 }
 
-public char[] MBCSsToStr(CHAR[] string, uint codepage = 0){
+public CString MBCSsToStr(CHAR[] string, uint codepage = 0){
     return MBCSzToStr( string.ptr, string.length, codepage);
 }
 
-public char[] MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
+public CString MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
     // null terminated string pointer
     if(_length == -1){
         _length = 0;
@@ -3700,11 +3728,11 @@ public char[] MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
     return result;
 }
 
-public char[] WCHARsToStr(wchar[] string){
+public String WCHARsToStr(CString16 string){
     return WCHARzToStr(string.ptr, string.length);
 }
 
-public char[] WCHARzToStr(wchar* pString, int _length = -1)
+public String WCHARzToStr(LPCWSTR pString, int _length = -1)
 {
     if( pString is null ){
         return null;

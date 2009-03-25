@@ -7,9 +7,10 @@ module org.eclipse.swt.internal.ole.win32.OLEIDL;
 //  File: oadvhr.idl
 //
 //--------------------------------------------------------------------------
-private import org.eclipse.swt.internal.win32.WINTYPES;
-private import org.eclipse.swt.internal.ole.win32.extras;
-private import org.eclipse.swt.internal.ole.win32.OBJIDL;
+import org.eclipse.swt.internal.win32.WINTYPES;
+import org.eclipse.swt.internal.ole.win32.extras;
+import org.eclipse.swt.internal.ole.win32.OBJIDL;
+import org.eclipse.swt.internal.ole.win32.COMTYPES;
 //private import std.c.windows.windows;
 //private import std.c.windows.com;
 

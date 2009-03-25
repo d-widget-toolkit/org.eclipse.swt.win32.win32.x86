@@ -278,7 +278,7 @@ public String open () {
     /* Convert the title and copy it into lpstrTitle */
     if (title is null) title = "";
     /* Use the character encoding for the default locale */
-    TCHAR[] buffer3 = StrToTCHARs (0, title, true);
+    auto buffer3 = StrToTCHARs (0, title, true);
     int byteCount3 = buffer3.length * TCHAR.sizeof;
     auto lpstrTitle = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount3);
     OS.MoveMemory (lpstrTitle, buffer3.ptr, byteCount3);
@@ -296,7 +296,7 @@ public String open () {
         strFilter = strFilter ~ FILTER ~ '\0' ~ FILTER ~ '\0';
     }
     /* Use the character encoding for the default locale */
-    TCHAR[] buffer4 = StrToTCHARs (0, strFilter, true);
+    auto buffer4 = StrToTCHARs (0, strFilter, true);
     int byteCount4 = buffer4.length * TCHAR.sizeof;
     auto lpstrFilter = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount4);
     OS.MoveMemory (lpstrFilter, buffer4.ptr, byteCount4);
@@ -304,7 +304,7 @@ public String open () {
     /* Convert the fileName and filterName to C strings */
     if (fileName is null) fileName = "";
     /* Use the character encoding for the default locale */
-    TCHAR[] name = StrToTCHARs (0, fileName, true);
+    auto name = StrToTCHARs (0, fileName, true);
 
     /*
     * Copy the name into lpstrFile and ensure that the
@@ -323,7 +323,7 @@ public String open () {
     */
     if (filterPath is null) filterPath = "";
     /* Use the character encoding for the default locale */
-    TCHAR[] path = StrToTCHARs (0, filterPath.replace ('/', '\\'), true);
+    auto path = StrToTCHARs (0, filterPath.replace ('/', '\\'), true);
     int byteCount5 = OS.MAX_PATH * TCHAR.sizeof;
     auto lpstrInitialDir = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount5);
     int byteCountDir = Math.min (path.length * TCHAR.sizeof, byteCount5 - TCHAR.sizeof);

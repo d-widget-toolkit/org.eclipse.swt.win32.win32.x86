@@ -214,8 +214,8 @@ public int open () {
 
     /* Open the message box */
     /* Use the character encoding for the default locale */
-    TCHAR[] buffer1 = StrToTCHARs (0, message, true);
-    TCHAR[] buffer2 = StrToTCHARs (0, title, true);
+    StringT buffer1 = StrToTCHARs (0, message, true);
+    StringT buffer2 = StrToTCHARs (0, title, true);
     int code = OS.MessageBox (hwndOwner, buffer1.ptr, buffer2.ptr, bits);
 
     /* Clear the temporarily dialog modal parent */

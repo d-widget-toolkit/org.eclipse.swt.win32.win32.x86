@@ -1066,7 +1066,7 @@ int getTabWidth (int tabs) {
     HFONT newFont = cast(HFONT) OS.SendMessage (handle, OS.WM_GETFONT, 0, 0);
     if (newFont !is null) oldFont = OS.SelectObject (hDC, newFont);
     int flags = OS.DT_CALCRECT | OS.DT_SINGLELINE | OS.DT_NOPREFIX;
-    TCHAR[] SPACE = StrToTCHARs (getCodePage (), " ", false);
+    StringT SPACE = StrToTCHARs (getCodePage (), " ", false);
     OS.DrawText (hDC, SPACE.ptr, SPACE.length, &rect, flags);
     if (newFont !is null) OS.SelectObject (hDC, oldFont);
     OS.ReleaseDC (handle, hDC);

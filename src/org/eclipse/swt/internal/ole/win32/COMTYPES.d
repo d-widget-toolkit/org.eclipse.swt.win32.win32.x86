@@ -15,6 +15,13 @@ private import org.eclipse.swt.internal.ole.win32.extras;
 // private import org.eclipse.swt.internal.ole.win32.extras;
 
 
+alias WCHAR OLECHAR;
+alias OLECHAR *LPOLESTR;
+version(D_Version2){
+    mixin("alias const(OLECHAR) *LPCOLESTR;");
+} else { // D1
+    alias OLECHAR *LPCOLESTR;
+}
 
 alias IID* LPIID;
 alias HRESULT STDAPI;

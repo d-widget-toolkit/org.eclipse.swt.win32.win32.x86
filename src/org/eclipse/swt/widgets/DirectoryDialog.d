@@ -99,12 +99,12 @@ extern(Windows)static int BrowseCallbackProc (HWND hwnd, uint uMsg, int lParam, 
         case OS.BFFM_INITIALIZED:
             if (pThis.filterPath !is null && pThis.filterPath.length !is 0) {
                 /* Use the character encoding for the default locale */
-                TCHAR[] buffer = StrToTCHARs (0, pThis.filterPath.replace ('/', '\\'), true);
-                OS.SendMessage (hwnd, OS.BFFM_SETSELECTION, 1, buffer.ptr);
+                StringT buffer = StrToTCHARs (0, pThis.filterPath.replace ('/', '\\'), true);
+                OS.SendMessage (hwnd, OS.BFFM_SETSELECTION, 1, cast(void*)buffer.ptr);
             }
             if (pThis.title !is null && pThis.title.length !is 0) {
                 /* Use the character encoding for the default locale */
-                TCHAR[] buffer = StrToTCHARs (0, pThis.title, true);
+                StringT buffer = StrToTCHARs (0, pThis.title, true);
                 OS.SetWindowText (hwnd, buffer.ptr);
             }
             break;
@@ -183,7 +183,7 @@ public String open () {
 //            string = new String (buffer, 0, index);
         }
         /* Use the character encoding for the default locale */
-        TCHAR[] buffer = StrToTCHARs (0, string, true);
+        StringT buffer = StrToTCHARs (0, string, true);
         int byteCount = buffer.length * TCHAR.sizeof;
         lpszTitle = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (lpszTitle, buffer.ptr, byteCount);

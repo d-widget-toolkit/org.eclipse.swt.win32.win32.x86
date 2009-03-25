@@ -15,12 +15,17 @@ module org.eclipse.swt.widgets.Synchronizer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.RunnableLock;
 import org.eclipse.swt.internal.Compatibility;
+import org.eclipse.swt.graphics.Device;
 
 import org.eclipse.swt.SWT;
+
 import java.lang.all;
 import java.lang.Thread;
-import tango.core.Exception: SyncException;
-import org.eclipse.swt.graphics.Device;
+
+version(Tango){
+    import tango.core.Exception: SyncException;
+} else { // Phobos
+}
 
 /**
  * Instances of this class provide synchronization support
@@ -189,10 +194,14 @@ public void syncExec (Runnable runnable) {
     synchronized (lock) {
         bool interrupted = false;
         while (!lock.done ()) {
-            try {
-                lock.wait ();
-            } catch (SyncException e) {
-                interrupted = true;
+            version(Tango){
+                try {
+                    lock.wait ();
+                } catch (SyncException e) {
+                    interrupted = true;
+                }
+            } else { // Phobos
+                implMissing( __FILE__, __LINE__ );
             }
         }
         if (interrupted) {

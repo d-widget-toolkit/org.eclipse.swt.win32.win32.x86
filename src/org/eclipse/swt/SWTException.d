@@ -44,11 +44,11 @@ public class SWTException : Exception {
      * The underlying throwable that caused the problem,
      * or null if this information is not available.
      */
-    public Exception throwable( Exception e ){
+    public Throwable throwable( Throwable e ){
         this.next = e;
         return this.next;
     }
-    public Exception throwable(){
+    public Throwable throwable(){
         return this.next;
     }
 
@@ -112,7 +112,7 @@ public this (int code, String message) {
  *
  * @since 3.1
  */
-public Exception getCause() {
+public Throwable getCause() {
     return throwable;
 }
 

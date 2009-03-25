@@ -12,6 +12,7 @@ module org.eclipse.swt.internal.ole.win32.OAIDL;
 //private import std.c.windows.windows;
 //private import std.c.windows.com;
 private import org.eclipse.swt.internal.ole.win32.OBJIDL;
+private import org.eclipse.swt.internal.ole.win32.COMTYPES;
 private import org.eclipse.swt.internal.ole.win32.extras;
 private import org.eclipse.swt.internal.win32.WINTYPES;
 private import org.eclipse.swt.ole.win32.Variant;

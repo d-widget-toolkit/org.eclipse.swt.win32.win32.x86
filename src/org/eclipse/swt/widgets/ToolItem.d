@@ -784,7 +784,7 @@ override public void setText (String string) {
     TCHAR* pszText;
     if (string.length !is 0) {
         info.fsStyle |= OS.BTNS_SHOWTEXT;
-        TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), string, true );
+        StringT buffer = StrToTCHARs (parent.getCodePage (), string, true );
         int byteCount = buffer.length * TCHAR.sizeof;
         pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);

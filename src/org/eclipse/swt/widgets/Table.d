@@ -4601,7 +4601,7 @@ bool setScrollWidth (TableItem item, bool force) {
                     auto hDC = OS.GetDC (handle);
                     auto oldFont = OS.SelectObject (hDC, hFont);
                     int flags = OS.DT_CALCRECT | OS.DT_SINGLELINE | OS.DT_NOPREFIX;
-                    TCHAR[] buffer = StrToTCHARs (getCodePage (), string, false);
+                    StringT buffer = StrToTCHARs (getCodePage (), string, false);
                     RECT rect;
                     OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, flags);
                     OS.SelectObject (hDC, oldFont);
@@ -4626,8 +4626,8 @@ bool setScrollWidth (TableItem item, bool force) {
         * space.
         */
         if (newWidth is 0) {
-            TCHAR[] buffer = StrToTCHARs (getCodePage (), " ", true);
-            newWidth = Math.max (newWidth, OS.SendMessage (handle, OS.LVM_GETSTRINGWIDTH, 0, buffer.ptr));
+            StringT buffer = StrToTCHARs (getCodePage (), " ", true);
+            newWidth = Math.max (newWidth, OS.SendMessage (handle, OS.LVM_GETSTRINGWIDTH, 0, cast(void*)buffer.ptr));
         }
         auto hStateList = cast(HANDLE) OS.SendMessage (handle, OS.LVM_GETIMAGELIST, OS.LVSIL_STATE, 0);
         if (hStateList !is null) {
@@ -6819,7 +6819,7 @@ LRESULT wmNotifyToolTip (NMHDR* hdr, int /*long*/ wParam, int /*long*/ lParam) {
 //                              }
                                 if (string !is null) {
                                     Shell shell = getShell ();
-                                    wchar [] chars = StrToTCHARs(string, true );
+                                    StringT chars = StrToTCHARs(string, true );
                                     if (hdr.code is OS.TTN_GETDISPINFOA) {
                                         CHAR [] bytes = new CHAR [chars.length * 2];
                                         OS.WideCharToMultiByte (getCodePage (), 0, chars.ptr, chars.length, bytes.ptr, bytes.length, null, null);
@@ -6917,7 +6917,7 @@ LRESULT wmNotifyToolTip (NMTTCUSTOMDRAW* nmcd, int /*long*/ lParam) {
                             if ((column.style & SWT.CENTER) !is 0) flags |= OS.DT_CENTER;
                             if ((column.style & SWT.RIGHT) !is 0) flags |= OS.DT_RIGHT;
                         }
-                        TCHAR[] buffer = StrToTCHARs (getCodePage (), string, false);
+                        StringT buffer = StrToTCHARs (getCodePage (), string, false);
                         RECT textRect;
                         OS.SetRect (&textRect, x, cellRect.top, cellRect.right, cellRect.bottom);
                         OS.DrawText (nmcd.nmcd.hdc, buffer.ptr, buffer.length, &textRect, flags);

@@ -11,12 +11,12 @@ module org.eclipse.swt.internal.ole.win32.COMAPI;
 
 //private import std.c.windows.windows;
 //private import std.c.windows.com;
-private import org.eclipse.swt.internal.win32.WINTYPES;
-private import org.eclipse.swt.internal.ole.win32.COMTYPES;
-private import org.eclipse.swt.internal.ole.win32.OBJIDL;
-private import org.eclipse.swt.internal.ole.win32.OLEIDL;
-private import org.eclipse.swt.internal.ole.win32.OAIDL;
-private import org.eclipse.swt.internal.ole.win32.extras;
+import org.eclipse.swt.internal.win32.WINTYPES;
+import org.eclipse.swt.internal.ole.win32.COMTYPES;
+import org.eclipse.swt.internal.ole.win32.OBJIDL;
+import org.eclipse.swt.internal.ole.win32.OLEIDL;
+import org.eclipse.swt.internal.ole.win32.OAIDL;
+import org.eclipse.swt.internal.ole.win32.extras;
 
 extern(Windows){
 
@@ -39,7 +39,7 @@ STDAPI CoCreateInstance(
   REFCLSID rclsid,
   LPUNKNOWN pUnkOuter,
   DWORD dwClsContext,
-  REFIID riid,
+  REFCIID riid,
   LPVOID * ppv
 );
 void CoFreeUnusedLibraries();
@@ -47,7 +47,7 @@ STDAPI CoGetClassObject(
   REFCLSID rclsid,
   DWORD dwClsContext,
   COSERVERINFO * pServerInfo,
-  REFIID riid,
+  REFCIID riid,
   LPVOID * ppv
 );
 STDAPI CoLockObjectExternal(
@@ -74,16 +74,16 @@ WINOLEAPI GetClassFile(
   CLSID * pclsid
 );
 WINOLEAPI IIDFromString(
-  LPOLESTR lpsz,
+  LPCOLESTR lpsz,
   LPIID lpiid
 );
 BOOL IsEqualGUID(
-  REFGUID rguid1,
-  REFGUID rguid2
+  REFCGUID rguid1,
+  REFCGUID rguid2
 );
 WINOLEAPI OleCreate(
   REFCLSID rclsid,  //CLSID of embedded object to be created
-  REFIID riid,      //Reference to the identifier of the interface
+  REFCIID riid,      //Reference to the identifier of the interface
                     // used to communicate with new object
   DWORD renderopt,  //RENDEROPT value indicating cached capabilities
   FORMATETC * pFormatEtc,
@@ -98,7 +98,7 @@ WINOLEAPI OleCreateFromFile(
   REFCLSID rclsid,         //Reserved. Must be CLSID_NULL
   LPCOLESTR lpszFileName,  //Pointer to full path of file used to
                            // create object
-  REFIID riid,             //Reference to the identifier of the
+  REFCIID riid,            //Reference to the identifier of the
                            // interface to be used to communicate with
                            // new object
   DWORD renderopt,         //Value from OLERENDER
@@ -239,7 +239,7 @@ WINOLEAPI StringFromCLSID(
   LPOLESTR * ppsz
 );
 BSTR SysAllocString(
-  OLECHAR *  sz
+  LPCOLESTR  sz
 );
 VOID SysFreeString(
   BSTR  bstr

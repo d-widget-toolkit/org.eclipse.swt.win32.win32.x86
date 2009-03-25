@@ -915,7 +915,7 @@ void setMenu (Menu menu, bool dispose) {
                 uFlags |= OS.MF_POPUP;
                 uIDNewItem = cast(int)menu.handle;
             }
-            TCHAR[] lpNewItem = StrToTCHARs (0, " ", true);
+            StringT lpNewItem = StrToTCHARs (0, " ", true);
             success = OS.InsertMenu (hMenu, index, uFlags, uIDNewItem, lpNewItem.ptr) !is 0;
             if (success) {
                 info.fMask = OS.MIIM_DATA | OS.MIIM_TYPE;
@@ -1066,10 +1066,10 @@ override public void setText (String string) {
             for (i=0; i<length_; i++) {
                 if (text[i] !is '&') text [j++] = text [i];
             }
-            if (j < i) string = text[ 0 .. j ].dup;
+            if (j < i) string = text[ 0 .. j ].idup;
         }
         /* Use the character encoding for the default locale */
-        TCHAR[] buffer = StrToTCHARs (0, string, true);
+        StringT buffer = StrToTCHARs (0, string, true);
         int byteCount = buffer.length * TCHAR.sizeof;
         pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);
@@ -1085,7 +1085,7 @@ override public void setText (String string) {
         auto hMenu = parent.handle;
 
         /* Use the character encoding for the default locale */
-        TCHAR[] buffer = StrToTCHARs (0, string, true);
+        StringT buffer = StrToTCHARs (0, string, true);
         int byteCount = buffer.length * TCHAR.sizeof;
         pszText = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);

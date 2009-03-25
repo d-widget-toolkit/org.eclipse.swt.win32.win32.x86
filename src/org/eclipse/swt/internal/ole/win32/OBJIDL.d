@@ -9,8 +9,9 @@ module org.eclipse.swt.internal.ole.win32.OBJIDL;
 //--------------------------------------------------------------------------
 
 
-private import org.eclipse.swt.internal.ole.win32.extras;
-private import org.eclipse.swt.internal.win32.WINTYPES;
+import org.eclipse.swt.internal.ole.win32.extras;
+import org.eclipse.swt.internal.win32.WINTYPES;
+import org.eclipse.swt.internal.ole.win32.COMTYPES;
 // private import std.c.windows.windows;
 // private import std.c.windows.com;
 // private import org.eclipse.swt.internal.win32.os;
@@ -375,18 +376,18 @@ alias OLECHAR ** SNB;
 
 interface IStorage : IUnknown
 {
-	HRESULT CreateStream( OLECHAR *pwcsName, DWORD grfMode, DWORD reserved1, DWORD reserved2, IStream * ppstm);
-   HRESULT OpenStream( OLECHAR *pwcsName, void *reserved1, DWORD grfMode, DWORD reserved2, IStream * ppstm);
-   HRESULT CreateStorage( OLECHAR *pwcsName, DWORD grfMode, DWORD reserved1, DWORD reserved2, IStorage * ppstg);
-   HRESULT OpenStorage( OLECHAR *pwcsName, IStorage pstgPriority, DWORD grfMode, SNB snbExclude, DWORD reserved, IStorage * ppstg );
+	HRESULT CreateStream( LPCOLESTR pwcsName, DWORD grfMode, DWORD reserved1, DWORD reserved2, IStream * ppstm);
+   HRESULT OpenStream( LPCOLESTR pwcsName, void *reserved1, DWORD grfMode, DWORD reserved2, IStream * ppstm);
+   HRESULT CreateStorage( LPCOLESTR pwcsName, DWORD grfMode, DWORD reserved1, DWORD reserved2, IStorage * ppstg);
+   HRESULT OpenStorage( LPCOLESTR pwcsName, IStorage pstgPriority, DWORD grfMode, SNB snbExclude, DWORD reserved, IStorage * ppstg );
    HRESULT CopyTo( DWORD ciidExclude, IID *rgiidExclude, SNB snbExclude, IStorage pstgDest );
-	HRESULT MoveElementTo( OLECHAR * pwcsName, IStorage pstgDest, OLECHAR *pwcsNewName, DWORD grfFlags );
+	HRESULT MoveElementTo( LPCOLESTR  pwcsName, IStorage pstgDest, LPCOLESTR pwcsNewName, DWORD grfFlags );
 	HRESULT Commit( DWORD grfCommitFlags );
 	HRESULT Revert();
 	HRESULT EnumElements( DWORD reserved1, void *reserved2, DWORD reserved3, IEnumSTATSTG * ppenum);
-	HRESULT DestroyElement( OLECHAR * pwcsName );
-	HRESULT RenameElement( OLECHAR *pwcsOldName, OLECHAR *pwcsNewName );
-	HRESULT SetElementTimes( OLECHAR * pwcsName, FILETIME * pctime, FILETIME *patime, FILETIME *pmtime );
+	HRESULT DestroyElement( LPCOLESTR  pwcsName );
+	HRESULT RenameElement( LPCOLESTR pwcsOldName, LPCOLESTR pwcsNewName );
+	HRESULT SetElementTimes( LPCOLESTR  pwcsName, FILETIME * pctime, FILETIME *patime, FILETIME *pmtime );
 	HRESULT SetClass( REFCLSID clsid );
 	HRESULT SetStateBits( DWORD grfStateBits, DWORD grfMask );
 	HRESULT Stat( STATSTG *pstatstg, DWORD grfStatFlag );

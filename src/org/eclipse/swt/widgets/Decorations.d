@@ -1339,7 +1339,7 @@ public void setText (String string) {
     // SWT extension: allow null string
     //if (string is null) error (SWT.ERROR_NULL_ARGUMENT);
     /* Use the character encoding for the default locale */
-    TCHAR[] buffer = StrToTCHARs (string, true);
+    StringT buffer = StrToTCHARs (string, true);
     /* Ensure that the title appears in the task bar.*/
     if ((state & FOREIGN_HANDLE) !is 0) {
         auto hHeap = OS.GetProcessHeap ();

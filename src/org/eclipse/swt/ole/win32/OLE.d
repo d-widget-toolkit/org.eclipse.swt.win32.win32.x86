@@ -384,23 +384,23 @@ public static String findProgramID (String extension) {
     if (extension.charAt (0) !is '.') extension = "." ~ extension; //$NON-NLS-1$
 
     /* Use the character encoding for the default locale */
-    TCHAR[] extensionKey = StrToTCHARs(0, extension, true);
+    StringT extensionKey = StrToTCHARs(0, extension, true);
     String result = getKeyValue(extensionKey);
     if (result !is null) {
         // look for "<programID>\NotInsertable"
-        TCHAR[] notInsertableKey = StrToTCHARs(0, result~"\\NotInsertable", true); //$NON-NLS-1$
+        StringT notInsertableKey = StrToTCHARs(0, result~"\\NotInsertable", true); //$NON-NLS-1$
         if (getKeyExists(notInsertableKey)) return ""; //$NON-NLS-1$
         // look for "<programID>\Insertable"
-        TCHAR[] insertableKey = StrToTCHARs(0, result~"\\Insertable", true); //$NON-NLS-1$
+        StringT insertableKey = StrToTCHARs(0, result~"\\Insertable", true); //$NON-NLS-1$
         if (getKeyExists(insertableKey)) return result;
         // look for "<programID>\protocol\StdFileEditing\server"
-        TCHAR[] serverKey = StrToTCHARs(0, result~"\\protocol\\StdFileEditing\\server", true); //$NON-NLS-1$
+        StringT serverKey = StrToTCHARs(0, result~"\\protocol\\StdFileEditing\\server", true); //$NON-NLS-1$
         if (getKeyExists(serverKey)) return result;
     }
 
     return ""; //$NON-NLS-1$
 }
-static String getKeyValue (TCHAR[] key) {
+static String getKeyValue (StringT key) {
     void* [1] phkResult;
     if (OS.RegOpenKeyEx (cast(void*)OS.HKEY_CLASSES_ROOT, key.ptr, 0, OS.KEY_READ, phkResult.ptr) !is 0) {
         return null;
@@ -423,7 +423,7 @@ static String getKeyValue (TCHAR[] key) {
     if (phkResult [0] !is null) OS.RegCloseKey (phkResult [0]);
     return result;
 }
-private static bool getKeyExists (TCHAR[] key) {
+private static bool getKeyExists (StringT key) {
     void* [1] phkResult;
     if (OS.RegOpenKeyEx (cast(void*)OS.HKEY_CLASSES_ROOT, key.ptr, 0, OS.KEY_READ, phkResult.ptr) !is 0) {
         return false;

@@ -1203,7 +1203,7 @@ Status function(Handle format, int hotkeyPrefix) GdipSetStringFormatHotkeyPrefix
 Status function( Handle format, float firstTabOffset, int count, float* tabStops) GdipSetStringFormatTabStops;
 
 struct Symbol {
-    char[] name;
+    String name;
     void** symbol;
 }
 

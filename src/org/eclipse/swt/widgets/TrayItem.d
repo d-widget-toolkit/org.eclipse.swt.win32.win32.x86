@@ -471,7 +471,7 @@ public void setToolTipText (String value) {
     checkWidget ();
     toolTipText = value;
     NOTIFYICONDATA iconData;
-    TCHAR[] buffer = StrToTCHARs (0, toolTipText is null ? "X"[1..1] : toolTipText, true);
+    StringT buffer = StrToTCHARs (0, toolTipText is null ? "X"[1..1] : toolTipText, true);
     assert( buffer.ptr !is null );
     /*
     * Note that the size of the szTip field is different in version 5.0 of shell32.dll.

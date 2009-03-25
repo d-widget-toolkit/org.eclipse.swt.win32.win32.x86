@@ -76,9 +76,9 @@ public final class Printer : Device {
     /**
      * strings used to access the Windows registry
      */
-    static TCHAR[] profile;
-    static TCHAR[] appName;
-    static TCHAR[] keyName;
+    static StringT profile;
+    static StringT appName;
+    static StringT keyName;
     static this() {
         profile = StrToTCHARs(0, "PrinterPorts", true); //$NON-NLS-1$
         appName = StrToTCHARs(0, "windows", true); //$NON-NLS-1$
@@ -107,7 +107,7 @@ public static PrinterData[] getPrinterList() {
                 System.arraycopy(deviceNames, 0, newNames, 0, deviceNames.length);
                 deviceNames = newNames;
             }
-            deviceNames[nameCount] = buf[index .. i ].dup;
+            deviceNames[nameCount] = buf[index .. i ].idup;
             nameCount++;
             index = i + 1;
         }
@@ -120,7 +120,7 @@ public static PrinterData[] getPrinterList() {
             int commaIndex = 0;
             while (buf[commaIndex] !is ',' && commaIndex < length) commaIndex++;
             if (commaIndex < length) {
-                driver = buf[0 .. commaIndex].dup;
+                driver = buf[0 .. commaIndex].idup;
             }
         }
         printerList[p] = new PrinterData(driver, device);
@@ -147,14 +147,14 @@ public static PrinterData getDefaultPrinterData() {
     int commaIndex = 0;
     while(buf[commaIndex] !is ',' && commaIndex < length) commaIndex++;
     if (commaIndex < length) {
-        deviceName = buf[0 .. commaIndex].dup;
+        deviceName = buf[0 .. commaIndex].idup;
     }
     String driver = ""; //$NON-NLS-1$
     if (OS.GetProfileString(TCHARsToStr(profile), deviceName, null, buf, length) > 0) {
         commaIndex = 0;
         while (buf[commaIndex] !is ',' && commaIndex < length) commaIndex++;
         if (commaIndex < length) {
-            driver = buf[0 .. commaIndex].dup;
+            driver = buf[0 .. commaIndex].idup;
         }
     }
     return new PrinterData(driver, deviceName);
@@ -218,8 +218,8 @@ public this(PrinterData data) {
 protected void create(DeviceData deviceData) {
     data = cast(PrinterData)deviceData;
     /* Use the character encoding for the default locale */
-    TCHAR[] driver = StrToTCHARs(0, data.driver, true);
-    TCHAR[] device = StrToTCHARs(0, data.name, true);
+    StringT driver = StrToTCHARs(0, data.driver, true);
+    StringT device = StrToTCHARs(0, data.name, true);
     DEVMODE* lpInitData;
     byte buffer [] = data.otherData;
     auto hHeap = OS.GetProcessHeap();
@@ -309,7 +309,7 @@ public bool startJob(String jobName) {
     TCHAR* lpszDocName;
     if (jobName !is null && jobName.length !is 0) {
         /* Use the character encoding for the default locale */
-        TCHAR[] buffer = StrToTCHARs(0, jobName, true);
+        StringT buffer = StrToTCHARs(0, jobName, true);
         int byteCount = buffer.length * TCHAR.sizeof;
         lpszDocName = cast(TCHAR*) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory(lpszDocName, buffer.ptr, byteCount);
@@ -318,7 +318,7 @@ public bool startJob(String jobName) {
     TCHAR* lpszOutput;
     if (data.printToFile && data.fileName !is null) {
         /* Use the character encoding for the default locale */
-        TCHAR[] buffer = StrToTCHARs(0, data.fileName, true);
+        StringT buffer = StrToTCHARs(0, data.fileName, true);
         int byteCount = buffer.length * TCHAR.sizeof;
         lpszOutput = cast(TCHAR*) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory(lpszOutput, buffer.ptr, byteCount);

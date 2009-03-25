@@ -836,7 +836,7 @@ LRESULT CDDS_ITEMPOSTPAINT (NMTVCUSTOMDRAW* nmcd, int wParam, int lParam) {
                                 if ((column.style & SWT.CENTER) !is 0) flags |= OS.DT_CENTER;
                                 if ((column.style & SWT.RIGHT) !is 0) flags |= OS.DT_RIGHT;
                             }
-                            TCHAR[] buffer = StrToTCHARs (getCodePage (), string, false);
+                            StringT buffer = StrToTCHARs (getCodePage (), string, false);
                             if (!ignoreDrawForeground) OS.DrawText (hDC, buffer.ptr, buffer.length, rect, flags);
                             OS.DrawText (hDC, buffer.ptr, buffer.length, rect, flags | OS.DT_CALCRECT);
                             if (hFont !is cast(HFONT)-1) hFont = cast(HFONT)OS.SelectObject (hDC, hFont);
@@ -7158,7 +7158,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
                     if (strings !is null) string = strings [index];
                 }
                 if (string !is null) {
-                    TCHAR[] buffer = StrToTCHARs (getCodePage (), string, false);
+                    StringT buffer = StrToTCHARs (getCodePage (), string, false);
                     int byteCount = Math.min (buffer.length, lptvdi.item.cchTextMax - 1) * TCHAR.sizeof;
                     OS.MoveMemory (lptvdi.item.pszText, buffer.ptr, byteCount);
                     int st = byteCount/TCHAR.sizeof;
@@ -7792,7 +7792,7 @@ LRESULT wmNotifyToolTip (NMTTCUSTOMDRAW* nmcd, int /*long*/ lParam) {
                                     if ((column.style & SWT.CENTER) !is 0) flags |= OS.DT_CENTER;
                                     if ((column.style & SWT.RIGHT) !is 0) flags |= OS.DT_RIGHT;
                                 }
-                                TCHAR[] buffer = StrToTCHARs (getCodePage (), string, false);
+                                StringT buffer = StrToTCHARs (getCodePage (), string, false);
                                 RECT textRect;
                                 OS.SetRect (&textRect, x, cellRect.top, cellRect.right, cellRect.bottom);
                                 OS.DrawText (nmcd.nmcd.hdc, buffer.ptr, buffer.length, &textRect, flags);

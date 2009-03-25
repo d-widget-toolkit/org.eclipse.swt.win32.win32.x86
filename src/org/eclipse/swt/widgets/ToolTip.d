@@ -526,8 +526,8 @@ public void setVisible (bool visible) {
     if (item !is null && OS.SHELL32_MAJOR >= 5) {
         if (visible) {
             NOTIFYICONDATA iconData;
-            TCHAR[] buffer1 = StrToTCHARs (0, text, true);
-            TCHAR[] buffer2 = StrToTCHARs (0, message, true);
+            StringT buffer1 = StrToTCHARs (0, text, true);
+            StringT buffer2 = StrToTCHARs (0, message, true);
             static if (OS.IsUnicode) {
                 TCHAR [] szInfoTitle = iconData.szInfoTitle;
                 int length1 = Math.min (szInfoTitle.length - 1, buffer1.length);

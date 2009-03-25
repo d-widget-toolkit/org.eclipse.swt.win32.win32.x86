@@ -1806,7 +1806,7 @@ BOOL TransparentBlt(
   int nHeightSrc,     // height of source rectangle
   UINT crTransparent  // color to make transparent
 );
-int IIDFromString (wchar* lpsz, byte* lpiid);
+int IIDFromString (LPCWSTR lpsz, byte* lpiid);
 HRESULT ScriptJustify(
   SCRIPT_VISATTR* psva,
   int* piAdvance,
@@ -3379,9 +3379,9 @@ BOOL RestoreDC(
 //alias STDWIN.RoundRect RoundRect;
 
 // basic
-void RtlMoveMemory(void* Destination, void* Source, DWORD Length);
+void RtlMoveMemory(void* Destination, LPCVOID Source, DWORD Length);
 // extends
-void RtlMoveMemory(int Destination, void* Source, DWORD Length);
+void RtlMoveMemory(int Destination, LPCVOID Source, DWORD Length);
 void RtlMoveMemory(void* Destination, int Source, DWORD Length);
 void RtlMoveMemory(int Destination, int Source, DWORD Length);
 

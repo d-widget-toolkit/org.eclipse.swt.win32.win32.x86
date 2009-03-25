@@ -504,7 +504,7 @@ char [] fixMnemonic (String string) {
 }
 
 char [] fixMnemonic (String string, bool spaces) {
-    char [] buffer = string ~ '\0';
+    char[] buffer = (string ~ '\0').dup;
     int i = 0, j = 0;
     while (i < buffer.length) {
         if (buffer [i] is '&') {
@@ -580,7 +580,7 @@ public Object getData (String key) {
     if ((state & KEYED_DATA) !is 0) {
         Object [] table = (cast(ArrayWrapperObject) data).array;
         for (int i=1; i<table.length; i+=2) {
-            String tablekey = (cast(ArrayWrapperString) table[i]).array;
+            auto tablekey = (cast(ArrayWrapperString) table[i]).array;
             if (key ==/*eq*/ tablekey ) return table [i+1];
         }
     }
@@ -1162,7 +1162,7 @@ public void setData (String key, Object value) {
     if ((state & KEYED_DATA) !is 0) {
         table = (cast(ArrayWrapperObject) data).array;
         while (index < table.length) {
-            String tablekey = (cast(ArrayWrapperString)table[index]).array;
+            auto tablekey = (cast(ArrayWrapperString)table[index]).array;
             if (key ==/*eq*/ tablekey ) break;
             index += 2;
         }
@@ -1181,7 +1181,7 @@ public void setData (String key, Object value) {
             data = new ArrayWrapperObject( table );
             state |= KEYED_DATA;
         }
-        table [index] = new ArrayWrapperString( key );
+        table [index] = new ArrayWrapperString( cast(char[])key );
         table [index + 1] = value;
     } else {
         if ((state & KEYED_DATA) !is 0) {

@@ -506,7 +506,7 @@ void createItem (MenuItem item, int index) {
             * space.
             */
             auto hHeap = OS.GetProcessHeap ();
-            TCHAR[] buffer = StrToTCHARs (0, " \0");
+            StringT buffer = StrToTCHARs (0, " \0");
             int byteCount = (buffer.length-1) * TCHAR.sizeof;
             auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
             OS.MoveMemory (pszText, buffer.ptr, byteCount);

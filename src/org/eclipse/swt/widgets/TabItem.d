@@ -138,12 +138,12 @@ void _setText (int index, String string) {
             for (i=0; i<length_; i++) {
                 if (text[i] !is '&') text [j++] = text [i];
             }
-            if (j < i) string = text[ 0 .. j ].dup;
+            if (j < i) string = text[ 0 .. j ].idup;
         }
     }
     auto hwnd = parent.handle;
     auto hHeap = OS.GetProcessHeap ();
-    TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), string, true);
+    StringT buffer = StrToTCHARs (parent.getCodePage (), string, true);
     int byteCount = buffer.length  * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (pszText, buffer.ptr, byteCount);

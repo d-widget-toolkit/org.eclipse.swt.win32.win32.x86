@@ -147,7 +147,7 @@ public class Display : Device {
     //Callback windowCallback;
     //int windowProc_;
     int threadId;
-    TCHAR[] windowClass_, windowShadowClass;
+    StringT windowClass_, windowShadowClass;
     static int WindowClassCount;
     static const String WindowName = "SWT_Window"; //$NON-NLS-1$
     static const String WindowShadowName = "SWT_WindowShadow"; //$NON-NLS-1$
@@ -2610,20 +2610,22 @@ override protected void init_ () {
     }
     +/
     int byteCount = windowClass_.length * TCHAR.sizeof;
-    lpWndClass.lpszClassName = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
-    OS.MoveMemory (lpWndClass.lpszClassName, windowClass_.ptr, byteCount);
+    auto buf = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
+    lpWndClass.lpszClassName = buf;
+    OS.MoveMemory (buf, windowClass_.ptr, byteCount);
     OS.RegisterClass (&lpWndClass);
-    OS.HeapFree (hHeap, 0, lpWndClass.lpszClassName);
+    OS.HeapFree (hHeap, 0, buf);
 
     /* Register the SWT drop shadow window class */
     if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 1)) {
         lpWndClass.style |= OS.CS_DROPSHADOW;
     }
     byteCount = windowShadowClass.length * TCHAR.sizeof;
-    lpWndClass.lpszClassName = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
-    OS.MoveMemory (lpWndClass.lpszClassName, windowShadowClass.ptr, byteCount);
+    buf = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
+    lpWndClass.lpszClassName = buf;
+    OS.MoveMemory (buf, windowShadowClass.ptr, byteCount);
     OS.RegisterClass (&lpWndClass);
-    OS.HeapFree (hHeap, 0, lpWndClass.lpszClassName);
+    OS.HeapFree (hHeap, 0, buf);
 
     /* Create the message only HWND */
     hwndMessage = OS.CreateWindowEx (0,

@@ -91,7 +91,7 @@ public class Group : Composite {
                 OS.GetClassInfo (null, GroupClass.ptr, &lpWndClass);
                 GroupProc = lpWndClass.lpfnWndProc;
             } else {
-                TCHAR[] WC_BUTTON = "BUTTON\0";
+                StringT WC_BUTTON = "BUTTON\0";
                 OS.GetClassInfo (null, WC_BUTTON.ptr, &lpWndClass);
                 GroupProc = lpWndClass.lpfnWndProc;
                 auto hInstance = OS.GetModuleHandle (null);

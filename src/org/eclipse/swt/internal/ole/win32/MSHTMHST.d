@@ -13,6 +13,7 @@ module org.eclipse.swt.internal.ole.win32.MSHTMHST;
 //private import std.c.windows.windows;
 //private import std.c.windows.com;
 import org.eclipse.swt.internal.win32.OS;
+import org.eclipse.swt.internal.ole.win32.COMTYPES;
 
 //import win32.oleextra;
 private import org.eclipse.swt.internal.ole.win32.extras;

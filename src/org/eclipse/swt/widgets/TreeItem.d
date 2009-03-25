@@ -521,7 +521,7 @@ RECT* getBounds (int index, bool getText, bool getImage, bool fullText, bool ful
                     String string = index is 0 ? text : strings !is null ? strings [index] : null;
                     if (string !is null) {
                         RECT* textRect = new RECT();
-                        TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), string, false);
+                        StringT buffer = StrToTCHARs (parent.getCodePage (), string, false);
                         int flags = OS.DT_NOPREFIX | OS.DT_SINGLELINE | OS.DT_CALCRECT;
                         auto hNewDC = hDC;
                         HFONT hFont;

@@ -55,7 +55,7 @@ interface IClassFactory2 : IClassFactory
 {
 	HRESULT GetLicInfo(LICINFO * pLicInfo);
 	HRESULT RequestLicKey(DWORD dwReserved, BSTR * pbstrKey);
-	HRESULT CreateInstanceLic(LPUNKNOWN pUnkOuter, LPUNKNOWN pUnkReserved, REFIID riid, BSTR bstrKey, void ** ppvObject);
+	HRESULT CreateInstanceLic(LPUNKNOWN pUnkOuter, LPUNKNOWN pUnkReserved, REFCIID riid, BSTR bstrKey, void ** ppvObject);
 }
 alias IClassFactory2 LPCLASSFACTORY2;
 
@@ -74,7 +74,7 @@ alias IConnectionPoint LPCONNECTIONPOINT;
 interface IConnectionPointContainer : IUnknown
 {
 	HRESULT EnumConnectionPoints(LPENUMCONNECTIONPOINTS * ppEnum);
-	HRESULT FindConnectionPoint(REFIID riid, LPCONNECTIONPOINT * ppCP);
+	HRESULT FindConnectionPoint(REFCIID riid, LPCONNECTIONPOINT * ppCP);
 }
 alias IConnectionPointContainer LPCONNECTIONPOINTCONTAINER;
 
@@ -209,7 +209,7 @@ interface IDocHostShowUI : IUnknown
 }
 */
 interface IServiceProvider : IUnknown {
-	HRESULT QueryService(REFGUID guidService, REFIID riid, void **ppv);
+	HRESULT QueryService(REFGUID guidService, REFCIID riid, void **ppv);
 }
 alias IServiceProvider LPSERVICEPROVIDER;
 

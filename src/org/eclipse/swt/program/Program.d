@@ -40,7 +40,7 @@ public final class Program {
 this () {
 }
 
-static String assocQueryString (int assocStr, TCHAR[] key, bool expand) {
+static String assocQueryString (int assocStr, StringT key, bool expand) {
     TCHAR[] pszOut = NewTCHARs(0, 1024);
     uint[1] pcchOut;
     pcchOut[0] = pszOut.length;
@@ -83,7 +83,7 @@ public static Program findProgram (String extension) {
     if (extension.length is 0) return null;
     if (extension.charAt (0) !is '.') extension = "." ~ extension; //$NON-NLS-1$
     /* Use the character encoding for the default locale */
-    TCHAR[] key = StrToTCHARs (0, extension, true);
+    StringT key = StrToTCHARs (0, extension, true);
     Program program = null;
     if (OS.IsWinCE) {
         void*[1] phkResult;
@@ -154,7 +154,7 @@ public static String [] getExtensions () {
 
 static String getKeyValue (String string, bool expand) {
     /* Use the character encoding for the default locale */
-    TCHAR[] key = StrToTCHARs (0, string, true);
+    StringT key = StrToTCHARs (0, string, true);
     void* [1] phkResult;
     if (OS.RegOpenKeyEx (cast(void*)OS.HKEY_CLASSES_ROOT, key.ptr, 0, OS.KEY_READ, phkResult.ptr) !is 0) {
         return null;
@@ -270,7 +270,7 @@ public static bool launch (String fileName) {
 
     /* Use the character encoding for the default locale */
     auto hHeap = OS.GetProcessHeap ();
-    TCHAR[] buffer = StrToTCHARs (0, fileName, true);
+    StringT buffer = StrToTCHARs (0, fileName, true);
     int byteCount = buffer.length * TCHAR.sizeof;
     auto lpFile = cast(wchar*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (lpFile, buffer.ptr, byteCount);
@@ -315,7 +315,7 @@ public bool execute (String fileName) {
     String commandLine = prefix ~ fileName ~ suffix;
     auto hHeap = OS.GetProcessHeap ();
     /* Use the character encoding for the default locale */
-    TCHAR[] buffer = StrToTCHARs (0, commandLine, true);
+    StringT buffer = StrToTCHARs (0, commandLine, true);
     int byteCount = buffer.length  * TCHAR.sizeof;
     auto lpCommandLine = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (lpCommandLine, buffer.ptr, byteCount);
@@ -340,7 +340,7 @@ public ImageData getImageData () {
     if (extension !is null) {
         SHFILEINFOW shfi;
         int flags = OS.SHGFI_ICON | OS.SHGFI_SMALLICON | OS.SHGFI_USEFILEATTRIBUTES;
-        TCHAR[] pszPath = StrToTCHARs (0, extension, true);
+        StringT pszPath = StrToTCHARs (0, extension, true);
         OS.SHGetFileInfo (pszPath.ptr, OS.FILE_ATTRIBUTE_NORMAL, &shfi, SHFILEINFO.sizeof, flags);
         if (shfi.hIcon !is null) {
             Image image = Image.win32_new (null, SWT.ICON, shfi.hIcon);
@@ -366,7 +366,7 @@ public ImageData getImageData () {
         }
     }
     /* Use the character encoding for the default locale */
-    TCHAR[] lpszFile = StrToTCHARs (0, fileName, true);
+    StringT lpszFile = StrToTCHARs (0, fileName, true);
     HICON [1] phiconSmall, phiconLarge;
     OS.ExtractIconEx (lpszFile.ptr, nIconIndex, phiconLarge.ptr, phiconSmall.ptr, 1);
     if (phiconSmall [0] is null) return null;

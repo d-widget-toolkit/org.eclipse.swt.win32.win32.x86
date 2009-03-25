@@ -225,7 +225,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
         auto newFont = cast(HFONT) OS.SendMessage (handle, OS.WM_GETFONT, 0, 0);
         auto oldFont = OS.SelectObject (hDC, newFont);
         if (text.length > 0) {
-            TCHAR[] buffer = StrToTCHARs (getCodePage (), parse (text));
+            StringT buffer = StrToTCHARs (getCodePage (), parse (text));
             RECT rect;
             int flags = OS.DT_CALCRECT | OS.DT_NOPREFIX;
             if (wHint !is SWT.DEFAULT) {
@@ -524,7 +524,7 @@ String parse (String string) {
                     parseMnemonics (buffer, linkStart, endtagStart, result);
                     offsets [linkIndex] = new Point (offset, result.length - 1);
                     if (ids [linkIndex] is null) {
-                        ids [linkIndex] = buffer[ linkStart .. endtagStart ].dup;
+                        ids [linkIndex] = buffer[ linkStart .. endtagStart ].idup;
                     }
                     linkIndex++;
                     start = tagStart = linkStart = endtagStart = refStart = index + 1;
@@ -555,7 +555,7 @@ String parse (String string) {
                 break;
             case 12:
                 if (c is '"') {
-                    ids[linkIndex] = buffer[ refStart .. index ].dup;
+                    ids[linkIndex] = buffer[ refStart .. index ].idup;
                     state = 2;
                 }
                 break;

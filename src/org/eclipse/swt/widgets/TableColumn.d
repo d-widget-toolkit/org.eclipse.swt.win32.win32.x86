@@ -811,7 +811,7 @@ override public void setText (String string) {
     * with spaces.
     */
     auto hHeap = OS.GetProcessHeap ();
-    TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), fixMnemonic (string, true), true);
+    StringT buffer = StrToTCHARs (parent.getCodePage (), fixMnemonic (string, true), true);
     int byteCount = buffer.length * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (pszText, buffer.ptr, byteCount);

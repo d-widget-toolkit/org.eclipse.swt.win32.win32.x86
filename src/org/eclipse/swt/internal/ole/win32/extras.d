@@ -8,10 +8,7 @@ module org.eclipse.swt.internal.ole.win32.extras;
 //public import std.c.windows.com;
 //public import std.c.windows.windows;
 import org.eclipse.swt.internal.win32.WINTYPES;
-// private import org.eclipse.swt.internal.ole.win32.comtypes;
-alias WCHAR OLECHAR;
-alias OLECHAR *LPOLESTR;
-alias OLECHAR *LPCOLESTR;
+import org.eclipse.swt.internal.ole.win32.COMTYPES;
 
 enum
 {
@@ -51,7 +48,10 @@ enum {
     CLSCTX_SERVER = (CLSCTX_INPROC_SERVER|CLSCTX_LOCAL_SERVER),
 }
 
-alias GUID IID;
+version(Tango){
+    static assert(0);
+    alias GUID IID;
+}
 alias GUID CLSID;
 
 extern (C)
@@ -159,6 +159,11 @@ extern (C)
     extern IID IID_IEnumOLEVERB;
 }
 
+version(D_Version2){
+    mixin("alias const(IID) *REFCIID;");
+} else { // D1
+    alias IID *REFCIID;
+}
 extern (Windows) export {
     DWORD   CoBuildVersion();
 
@@ -180,7 +185,7 @@ extern (Windows) export {
     void    CoFreeUnusedLibraries();
 
     interface IUnknown {
-        HRESULT QueryInterface(IID* riid, void** pvObject);
+        HRESULT QueryInterface(REFCIID riid, void** pvObject);
         ULONG AddRef();
         ULONG Release();
     }
@@ -203,6 +208,11 @@ alias PDWORD PLCID;
 //typedef GUID CLSID;
 //alias CLSID * LPCLSID;
 alias GUID *REFGUID;
+version(D_Version2){
+    mixin("alias const(GUID) *REFCGUID;");
+} else { // D1
+    alias GUID *REFCGUID;
+}
 
 //alias IID *REFIID;
 

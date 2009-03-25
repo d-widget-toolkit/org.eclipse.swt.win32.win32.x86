@@ -213,7 +213,7 @@ void drawItem (GC gc, HTHEME hTheme, RECT* clipRect, bool drawFocus) {
     }
     if (text.length > 0) {
         rect.left += ExpandItem.TEXT_INSET;
-        TCHAR[] buffer = StrToTCHARs ( text/+, parent.getCodePage ()+/ );
+        auto buffer = StrToTCHARs ( text/+, parent.getCodePage ()+/ );
         if (hTheme !is null) {
             OS.DrawThemeText (hTheme, hDC, OS.EBP_NORMALGROUPHEAD, 0, buffer.ptr, buffer.length, OS.DT_VCENTER | OS.DT_SINGLELINE, 0, &rect);
         } else {
@@ -342,7 +342,7 @@ int getPreferredWidth (HTHEME hTheme, HDC hDC) {
     }
     if (text.length > 0) {
         RECT rect;
-        TCHAR[] buffer = StrToTCHARs (/+parent.getCodePage (),+/ text);
+        auto buffer = StrToTCHARs (/+parent.getCodePage (),+/ text);
         if (hTheme !is null) {
             OS.GetThemeTextExtent (hTheme, hDC, OS.EBP_NORMALGROUPHEAD, 0, buffer.ptr, buffer.length, OS.DT_SINGLELINE, null, &rect);
         } else {

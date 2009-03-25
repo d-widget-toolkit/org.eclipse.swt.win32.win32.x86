@@ -379,7 +379,7 @@ public void pack () {
     }
     RECT rect;
     int flags = OS.DT_CALCRECT | OS.DT_NOPREFIX;
-    TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), text, false);
+    StringT buffer = StrToTCHARs (parent.getCodePage (), text, false);
     OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, flags);
     int headerWidth = rect.right - rect.left + Tree.HEADER_MARGIN;
     if (OS.COMCTL32_MAJOR >= 6 && OS.IsAppThemed ()) headerWidth += Tree.HEADER_EXTRA;
@@ -676,7 +676,7 @@ override public void setText (String string) {
     * with spaces.
     */
     auto hHeap = OS.GetProcessHeap ();
-    TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), fixMnemonic (string, true), true);
+    StringT buffer = StrToTCHARs (parent.getCodePage (), fixMnemonic (string, true), true);
     int byteCount = buffer.length * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (pszText, buffer.ptr, byteCount);

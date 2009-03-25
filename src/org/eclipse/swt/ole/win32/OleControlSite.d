@@ -285,7 +285,7 @@ public void addEventListener(OleAutomation automation, String eventSinkId, int e
     if (listener is null || automation is null || eventSinkId is null) OLE.error (__FILE__, __LINE__, SWT.ERROR_NULL_ARGUMENT);
     auto address = automation.getAddress();
     if (address is null) return;
-    wchar[] buffer = StrToWCHARs(0,eventSinkId,true);
+    String16 buffer = StrToWCHARs(0,eventSinkId,true);
     GUID* guid = new GUID();
     if (COM.IIDFromString(buffer.ptr, guid) !is COM.S_OK) return;
     addEventListener(address, guid, eventID, listener);

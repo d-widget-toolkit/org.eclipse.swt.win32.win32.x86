@@ -9,6 +9,7 @@ version(Tango){
 } else { // Phobos
 //    public import std.c.windows.windows;
 }
+import java.lang.all;
 
 // missing in tango
 //alias TLOGFONTA* LPLOGFONTA;
@@ -31,7 +32,13 @@ version(Tango){
     alias WINBOOL BOOL;
     alias uint CALTYPE;
     alias uint CALID;
-    alias char CCHAR;
+    version(D_Version2){
+        mixin("alias const(char) CCHAR;");
+        mixin("alias const(wchar) CWCHAR;");
+    } else { // D1
+        alias char CCHAR;
+        alias wchar CWCHAR;
+    }
     alias char* PCHAR;
     alias uint COLORREF;
     alias uint TCOLORREF;
@@ -110,13 +117,22 @@ version(Tango){
     alias ushort* LP;
     alias WINBOOL* LPBOOL;
     alias ubyte* LPBYTE;
-    alias PCHAR LPCCH;
-    alias PCHAR LPCH;
     alias COLORREF* LPCOLORREF;
-    alias PCHAR LPCSTR;
-    alias TCHAR* LPCTSTR;
-    alias wchar* LPCWCH;
-    alias wchar* LPCWSTR;
+    version(D_Version2){
+        mixin( "alias const(char)* LPCCH;");
+        mixin( "alias const(char)* LPCH;");
+        mixin( "alias const(char)* LPCSTR;");
+        mixin( "alias const(TCHAR)* LPCTSTR;");
+        mixin( "alias const(wchar)* LPCWCH;");
+        mixin( "alias const(wchar)* LPCWSTR;");
+    } else {
+        alias PCHAR LPCCH;
+        alias PCHAR LPCH;
+        alias PCHAR LPCSTR;
+        alias TCHAR* LPCTSTR;
+        alias wchar* LPCWCH;
+        alias wchar* LPCWSTR;
+    }
     alias DWORD* LPDWORD;
     alias HANDLE* LPHANDLE;
     alias int* LPINT;
@@ -126,7 +142,11 @@ version(Tango){
     alias TCHAR* LPTSTR;
     alias int LRESULT;
     alias POINTER LPVOID;
-    alias POINTER LPCVOID;
+    version(D_Version2){
+        mixin( "alias const(void)* LPCVOID;");
+    } else {
+        alias POINTER LPCVOID;
+    }
     alias wchar* LPWCH;
     alias wchar* LPWORD;
     alias wchar* LPWSTR;
@@ -174,8 +194,10 @@ version(Tango){
         // fills code with so many casts that it's just not sensible.
         // (See also DMD Issue 2193.)
         alias  char TCHAR;
+        alias String StringT;
     }else{
         alias wchar TCHAR;
+        alias String16 StringT;
     }
 
     alias ubyte BCHAR;
@@ -191,7 +213,7 @@ version(Tango){
     alias IID* REFIID;
 
     // Cast a string literal to a ubyte*=PCHAR
-    template _PCHAR( char[] a ){
+    template _PCHAR( String a ){
         const PCHAR _PCHAR = cast(PCHAR)a.ptr;
     }
 

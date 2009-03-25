@@ -546,7 +546,7 @@ override public String toString () {
         default: vAlign = "Undefined "~String_valueOf(verticalAlignment); break;
     }
     String string = getName()~" {";
-    string ~= "horizontalAlignment="~String_valueOf(hAlign)~" ";
+    string ~= "horizontalAlignment="~hAlign~" ";
     if (horizontalIndent !is 0) string ~= "horizontalIndent="~String_valueOf(horizontalIndent)~" ";
     if (horizontalSpan !is 1) string ~= "horizontalSpan="~String_valueOf(horizontalSpan)~" ";
     if (grabExcessHorizontalSpace) string ~= "grabExcessHorizontalSpace="~String_valueOf(grabExcessHorizontalSpace)~" ";

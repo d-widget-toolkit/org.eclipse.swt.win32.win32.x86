@@ -279,7 +279,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
                     TCHAR* buffer = StrToTCHARz (parent.getCodePage (), text);
                     width = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, buffer);
                 } else {
-                    TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), text, false);
+                    StringT buffer = StrToTCHARs (parent.getCodePage (), text, false);
                     auto textDC = hDC !is null ? hDC : OS.GetDC (hwnd), oldFont = cast(HFONT)-1;
                     if (hDC is null) {
                         if (hFont is cast(HFONT)-1) hFont = cast(HFONT) OS.SendMessage (hwnd, OS.WM_GETFONT, 0, 0);
@@ -396,7 +396,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
                 String string = column is 0 ? text : strings !is null ? strings [column] : null;
                 if (string !is null) {
                     RECT textRect;
-                    TCHAR[] buffer = StrToTCHARs (parent.getCodePage (), string, false);
+                    StringT buffer = StrToTCHARs (parent.getCodePage (), string, false);
                     int flags = OS.DT_NOPREFIX | OS.DT_SINGLELINE | OS.DT_CALCRECT;
                     OS.DrawText (hDC, buffer.ptr, buffer.length, &textRect, flags);
                     rect.right += textRect.right - textRect.left + Table.INSET * 3 + 1;
@@ -1187,7 +1187,7 @@ public void setText (int index, String string) {
     checkWidget();
     if (index is 0) {
         if (string.equals(text)) return;
-        super.setText (string.dup);
+        super.setText (string.idup);
     }
     int count = Math.max (1, parent.getColumnCount ());
     if (0 > index || index > count - 1) return;
@@ -1197,7 +1197,7 @@ public void setText (int index, String string) {
     }
     if (strings !is null) {
         if (string==/*eq*/strings [index]) return;
-        strings [index] = string.dup;
+        strings [index] = string.idup;
     }
     if ((parent.style & SWT.VIRTUAL) !is 0) cached = true;
     if (index is 0) {

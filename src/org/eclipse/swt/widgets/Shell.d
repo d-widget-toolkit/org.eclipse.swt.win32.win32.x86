@@ -159,10 +159,14 @@ public class Shell : Decorations {
     static /+const+/ WNDPROC ToolTipProc;
     static /+const+/ WNDPROC DialogProc;
     static if( OS.IsWinCE ){
-        static const TCHAR[] DialogClass = "Dialog\0"w;
+        static const StringT DialogClass = "Dialog\0"w;
     }
     else{
-        static const TCHAR[] DialogClass = "#32770\0"w;
+        version(D_Version2){
+            static StringT DialogClass = "#32770\0"w;
+        } else { // D1
+            static const StringT DialogClass = "#32770\0"w;
+        }
     }
     const static int [] SYSTEM_COLORS = [
         OS.COLOR_BTNFACE,
@@ -1687,7 +1691,7 @@ void setToolTipText (HWND hwnd, String text) {
     }
 }
 
-void setToolTipText (NMTTDISPINFO* lpnmtdi, CHAR [] buffer) {
+void setToolTipText (NMTTDISPINFO* lpnmtdi, CCHAR [] buffer) {
     /*
     * Ensure that the current position of the mouse
     * is inside the client area of the shell.  This
@@ -1703,7 +1707,7 @@ void setToolTipText (NMTTDISPINFO* lpnmtdi, CHAR [] buffer) {
     lpnmtdi.lpszText = lpstrTip;
 }
 
-void setToolTipText (NMTTDISPINFO* lpnmtdi, WCHAR [] buffer) {
+void setToolTipText (NMTTDISPINFO* lpnmtdi, CWCHAR [] buffer) {
     /*
     * Ensure that the current position of the mouse
     * is inside the client area of the shell.  This

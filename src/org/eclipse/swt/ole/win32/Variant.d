@@ -538,7 +538,7 @@ void getData(VARIANT* pData){
             break;
         case COM.VT_BSTR :
             COM.MoveMemory((cast(void*)pData), &type, 2);
-            wchar[] data = StrToWCHARs(stringData);
+            StringT data = StrToWCHARs(stringData);
             auto ptr = COM.SysAllocString(data.ptr);
             COM.MoveMemory((cast(void*)pData) + 8, &ptr, 4);
             break;

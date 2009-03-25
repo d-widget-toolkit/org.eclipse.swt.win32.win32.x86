@@ -78,7 +78,7 @@ public class KeyEvent : TypedEvent {
      */
     public bool doit;
 
-    static final long serialVersionUID = 3256442491011412789L;
+    static const long serialVersionUID = 3256442491011412789L;
 
 /**
  * Constructs a new instance of this class based on the

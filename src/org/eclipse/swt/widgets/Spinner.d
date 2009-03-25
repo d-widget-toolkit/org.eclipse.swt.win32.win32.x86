@@ -340,7 +340,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
             }
             string = buffer.toString ();
         }
-        TCHAR[] buffer = StrToTCHARs (getCodePage (), string, false);
+        StringT buffer = StrToTCHARs (getCodePage (), string, false);
         int flags = OS.DT_CALCRECT | OS.DT_EDITCONTROL | OS.DT_NOPREFIX;
         OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, flags);
         width = rect.right - rect.left;
@@ -1353,7 +1353,7 @@ LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
             if (call) {
                 OS.CallWindowProc (EditProc, hwndText, msg, wParam, lParam);
             }
-            TCHAR[] buffer = StrToTCHARs (getCodePage (), newText, true);
+            StringT buffer = StrToTCHARs (getCodePage (), newText, true);
             if (msg is OS.WM_SETTEXT) {
                 auto hHeap = OS.GetProcessHeap ();
                 int byteCount = buffer.length * TCHAR.sizeof;
@@ -1363,7 +1363,7 @@ LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
                 OS.HeapFree (hHeap, 0, pszText);
                 return new LRESULT (code);
             } else {
-                OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, buffer.ptr);
+                OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, cast(void*)buffer.ptr);
                 return LRESULT.ZERO;
             }
         }

@@ -201,8 +201,8 @@ public this (Composite parent, int style) {
     super (parent, checkStyle (style));
     if ((this.style & SWT.SHORT) !is 0) {
         String buffer = ((this.style & SWT.DATE) !is 0) ? getCustomShortDateFormat() : getCustomShortTimeFormat();
-        TCHAR[] lpszFormat = StrToTCHARs (0, buffer, true);
-        OS.SendMessage (handle, OS.DTM_SETFORMAT, 0, lpszFormat.ptr);
+        StringT lpszFormat = StrToTCHARs (0, buffer, true);
+        OS.SendMessage (handle, OS.DTM_SETFORMAT, 0, cast(void*)lpszFormat.ptr);
     }
 }
 

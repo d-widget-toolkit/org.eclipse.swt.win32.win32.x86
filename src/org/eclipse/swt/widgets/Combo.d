@@ -189,7 +189,7 @@ public void add (String string) {
     // SWT extension: allow null string
     //if (string is null) error (SWT.ERROR_NULL_ARGUMENT);
     auto buffer = StrToTCHARs( getCodePage(), string, true );
-    int result = OS.SendMessage (handle, OS.CB_ADDSTRING, 0, buffer.ptr );
+    int result = OS.SendMessage (handle, OS.CB_ADDSTRING, 0, cast(void*)buffer.ptr );
     if (result is OS.CB_ERR) error (SWT.ERROR_ITEM_NOT_ADDED);
     if (result is OS.CB_ERRSPACE) error (SWT.ERROR_ITEM_NOT_ADDED);
     if ((style & SWT.H_SCROLL) !is 0) setScrollWidth (buffer, true);
@@ -226,7 +226,7 @@ public void add (String string, int index) {
         error (SWT.ERROR_INVALID_RANGE);
     }
     auto buffer = StrToTCHARs( getCodePage(), string, true );
-    int result = OS.SendMessage (handle, OS.CB_INSERTSTRING, index, buffer.ptr);
+    int result = OS.SendMessage (handle, OS.CB_INSERTSTRING, index, cast(void*)buffer.ptr);
     if (result is OS.CB_ERRSPACE || result is OS.CB_ERR) {
         error (SWT.ERROR_ITEM_NOT_ADDED);
     }
@@ -1121,7 +1121,7 @@ void remove (int index, bool notify) {
         if (0 <= index && index < count) error (SWT.ERROR_ITEM_NOT_REMOVED);
         error (SWT.ERROR_INVALID_RANGE);
     }
-    if ((style & SWT.H_SCROLL) !is 0) setScrollWidth (buffer, true);
+    if ((style & SWT.H_SCROLL) !is 0) setScrollWidth (cast(StringT)buffer, true);
     if (notify && length_ !is OS.GetWindowTextLength (handle)) {
         sendEvent (SWT.Modify);
         if (isDisposed ()) return;
@@ -1736,7 +1736,7 @@ void setScrollWidth (int scrollWidth) {
     }
 }
 
-void setScrollWidth (TCHAR[] buffer, bool grow) {
+void setScrollWidth (StringT buffer, bool grow) {
     RECT rect;
     HFONT newFont, oldFont;
     auto hDC = OS.GetDC (handle);
@@ -2389,7 +2389,7 @@ LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
                 OS.CallWindowProc (EditProc, hwndText, msg, wParam, lParam);
             }
             if (msg is OS.WM_SETTEXT) {
-                TCHAR[] buffer = StrToTCHARs( getCodePage(), newText, true );
+                StringT buffer = StrToTCHARs( getCodePage(), newText, true );
                 auto hHeap = OS.GetProcessHeap ();
                 int byteCount = buffer.length * TCHAR.sizeof;
                 auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);

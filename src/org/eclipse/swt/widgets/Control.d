@@ -55,7 +55,10 @@ import org.eclipse.swt.widgets.Monitor;
 import java.lang.all;
 import java.lang.System;
 
-static import tango.sys.Common;
+version(Tango){
+    //static import tango.sys.Common;
+} else { // Phobos
+}
 
 /**
  * Control is the abstract superclass of all windowed user interface classes.

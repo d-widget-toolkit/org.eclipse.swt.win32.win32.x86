@@ -357,7 +357,7 @@ public this(Composite parent, int style, String progId, File file) {
                 // its primary stream
                 wchar* streamName = StrToWCHARz("CONTENTS"); //$NON-NLS-1$
                 GUID* wordGUID = getClassID(WORDPROGID);
-                if (wordGUID !is null && COM.IsEqualGUID(appClsid, wordGUID)) streamName = "WordDocument"; //$NON-NLS-1$
+                if (wordGUID !is null && COM.IsEqualGUID(appClsid, wordGUID)) streamName = StrToWCHARz("WordDocument"); //$NON-NLS-1$
                 IStream stream;
                 result = storage.CreateStream(streamName, mode, 0, 0, &stream); // Increments ref count if successful
                 if (result !is COM.S_OK) {

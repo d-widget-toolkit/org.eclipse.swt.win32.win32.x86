@@ -16,8 +16,13 @@ module org.eclipse.swt.events.SelectionListener;
 public import org.eclipse.swt.internal.SWTEventListener;
 public import org.eclipse.swt.events.SelectionEvent;
 
-import tango.core.Traits;
-import tango.core.Tuple;
+version(Tango){
+    import tango.core.Traits;
+    import tango.core.Tuple;
+} else { // Phobos
+    import std.traits;
+    import std.typetuple;
+}
 
 /**
  * Classes which implement this interface provide methods
@@ -75,9 +80,15 @@ public void widgetDefaultSelected(SelectionEvent e);
 /// SWT extension
 private class _DgSelectionListenerT(Dg,T...) : SelectionListener {
 
-    alias ParameterTupleOf!(Dg) DgArgs;
-    static assert( is(DgArgs == Tuple!(SelectionEvent,T)),
+    version(Tango){
+        alias ParameterTupleOf!(Dg) DgArgs;
+        static assert( is(DgArgs == Tuple!(CTabFolderEvent,T)),
                 "Delegate args not correct: "~DgArgs.stringof~" vs. (Event,"~T.stringof~")" );
+    } else { // Phobos
+        alias ParameterTypeTuple!(Dg) DgArgs;
+        static assert( is(DgArgs == TypeTuple!(CTabFolderEvent,T)),
+                "Delegate args not correct: "~DgArgs.stringof~" vs. (Event,"~T.stringof~")" );
+    }
 
     Dg dg;
     T  t;
