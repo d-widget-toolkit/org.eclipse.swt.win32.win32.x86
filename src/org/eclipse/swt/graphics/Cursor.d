@@ -75,7 +75,7 @@ public final class Cursor : Resource {
     /**
      * data used to create a HAND cursor.
      */
-    static const byte[] HAND_SOURCE = [
+    static /+const+/ byte[] HAND_SOURCE = [
         cast(byte)0xf9,cast(byte)0xff,cast(byte)0xff,cast(byte)0xff,
         cast(byte)0xf0,cast(byte)0xff,cast(byte)0xff,cast(byte)0xff,
         cast(byte)0xf0,cast(byte)0xff,cast(byte)0xff,cast(byte)0xff,
@@ -112,7 +112,7 @@ public final class Cursor : Resource {
         cast(byte)0xff,cast(byte)0xff,cast(byte)0xff,cast(byte)0xff,
         cast(byte)0xff,cast(byte)0xff,cast(byte)0xff,cast(byte)0xff
     ];
-    static const byte[] HAND_MASK = [
+    static /+const+/ byte[] HAND_MASK = [
         cast(byte)0x00,cast(byte)0x00,cast(byte)0x00,cast(byte)0x00,
         cast(byte)0x06,cast(byte)0x00,cast(byte)0x00,cast(byte)0x00,
         cast(byte)0x06,cast(byte)0x00,cast(byte)0x00,cast(byte)0x00,
