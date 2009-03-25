@@ -632,7 +632,7 @@ private .LRESULT QueryGetData(FORMATETC* pFormatetc) {
  * Ownership of ppvObject transfers from callee to caller so reference count on ppvObject
  * must be incremented before returning.  Caller is responsible for releasing ppvObject.
  */
-private HRESULT QueryInterface(REFIID riid, void** ppvObject) {
+private HRESULT QueryInterface(REFCIID riid, void** ppvObject) {
     if (riid is null || ppvObject is null)
         return COM.E_INVALIDARG;
 
@@ -739,7 +739,7 @@ private class _IDropSourceImpl : IDropSource {
     this(DragSource p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
@@ -754,7 +754,7 @@ private class _IDataObjectImpl : IDataObject {
     this(DragSource p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

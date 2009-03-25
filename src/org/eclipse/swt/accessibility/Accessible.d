@@ -443,7 +443,7 @@ public class Accessible {
      * Ownership of ppvObject transfers from callee to caller so reference count on ppvObject
      * must be incremented before returning.  Caller is responsible for releasing ppvObject.
      */
-    HRESULT QueryInterface(REFIID riid, void** ppvObject) {
+    HRESULT QueryInterface(REFCIID riid, void** ppvObject) {
         if (iaccessible is null) return COM.CO_E_OBJNOTCONNECTED;
 
         if (COM.IsEqualGUID(riid, &COM.IIDIUnknown)) {
@@ -1403,14 +1403,14 @@ class _IAccessibleImpl : IAccessible {
     this(Accessible p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
     // interface of IDispatch
     HRESULT GetTypeInfoCount(UINT * pctinfo) { return COM.E_NOTIMPL; }
     HRESULT GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo * ppTInfo) { return COM.E_NOTIMPL; }
-    HRESULT GetIDsOfNames(REFIID riid, LPOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId) { return COM.E_NOTIMPL; }
+    HRESULT GetIDsOfNames(REFCIID riid, LPCOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId) { return COM.E_NOTIMPL; }
     HRESULT Invoke(DISPID dispIdMember,REFIID riid,LCID lcid,WORD wFlags,DISPPARAMS* pDispParams,VARIANT* pVarResult,EXCEPINFO* pExcepInfo,UINT* puArgErr) { return COM.E_NOTIMPL; }
 
     // interface of IAccessible
@@ -1477,7 +1477,7 @@ class _IEnumVARIANTImpl : IEnumVARIANT {
     this(Accessible a) { parent = a; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

@@ -287,8 +287,8 @@ void drawSelected(GC gc ) {
         // draw selected tab background and outline
         shape = null;
         if (this.parent.onBottom) {
-            int[] left = parent.simple ? CTabFolder.SIMPLE_BOTTOM_LEFT_CORNER : CTabFolder.BOTTOM_LEFT_CORNER;
-            int[] right = parent.simple ? CTabFolder.SIMPLE_BOTTOM_RIGHT_CORNER : parent.curve;
+            int[] left = parent.simple ? cast(int[])CTabFolder.SIMPLE_BOTTOM_LEFT_CORNER : cast(int[])CTabFolder.BOTTOM_LEFT_CORNER;
+            int[] right = parent.simple ? cast(int[])CTabFolder.SIMPLE_BOTTOM_RIGHT_CORNER : parent.curve;
             if (parent.borderLeft is 0 && parent.indexOf(this) is parent.firstIndex) {
                 left = [x, y+height];
             }
@@ -311,8 +311,8 @@ void drawSelected(GC gc ) {
             shape[index++] = parent.simple ? rightEdge - 1 : rightEdge + parent.curveWidth - parent.curveIndent;
             shape[index++] = y - 1;
         } else {
-            int[] left = parent.simple ? CTabFolder.SIMPLE_TOP_LEFT_CORNER : CTabFolder.TOP_LEFT_CORNER;
-            int[] right = parent.simple ? CTabFolder.SIMPLE_TOP_RIGHT_CORNER : parent.curve;
+            int[] left = parent.simple ? cast(int[])CTabFolder.SIMPLE_TOP_LEFT_CORNER : cast(int[])CTabFolder.TOP_LEFT_CORNER;
+            int[] right = parent.simple ? cast(int[])CTabFolder.SIMPLE_TOP_RIGHT_CORNER : parent.curve;
             if (parent.borderLeft is 0 && parent.indexOf(this) is parent.firstIndex) {
                 left = [x, y];
             }

@@ -134,7 +134,7 @@ package int OnRequestEdit(int dispID) {
     notifyListener(dispID,event);
     return (event.doit) ? COM.S_OK : COM.S_FALSE;
 }
-protected HRESULT QueryInterface(REFIID riid, void ** ppvObject) {
+protected HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
     if (riid is null || ppvObject is null)
         return COM.E_INVALIDARG;
 
@@ -167,7 +167,7 @@ private class _IPropertyNotifySinkImpl : IPropertyNotifySink {
     this(OlePropertyChangeSink  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

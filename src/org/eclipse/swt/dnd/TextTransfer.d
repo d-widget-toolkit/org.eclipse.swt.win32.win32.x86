@@ -77,10 +77,10 @@ public void javaToNative (Object object, TransferData transferData){
         DND.error(DND.ERROR_INVALID_DATA);
     }
     transferData.result = COM.E_FAIL;
-    String string = (cast(ArrayWrapperString)object).array;
+    String string = stringcast(object);
     switch (transferData.type) {
         case COM.CF_UNICODETEXT: {
-            wchar[] chars = StrToWCHARs(0,string, true);
+            String16 chars = StrToWCHARs(0,string, true);
             int charCount = chars.length;
             int byteCount = chars.length * 2;
             auto newPtr = OS.GlobalAlloc(COM.GMEM_FIXED | COM.GMEM_ZEROINIT, byteCount);
@@ -93,7 +93,7 @@ public void javaToNative (Object object, TransferData transferData){
             break;
         }
         case COM.CF_TEXT: {
-            wchar[] chars = StrToWCHARs(0,string, true);
+            String16 chars = StrToWCHARs(0,string, true);
             int count = chars.length;
             int codePage = OS.GetACP();
             int cchMultiByte = OS.WideCharToMultiByte(codePage, 0, chars.ptr, -1, null, 0, null, null);

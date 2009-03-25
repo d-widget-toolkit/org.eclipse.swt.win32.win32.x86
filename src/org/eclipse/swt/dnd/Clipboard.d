@@ -78,7 +78,7 @@ public this(Display display) {
         DND.error(SWT.ERROR_THREAD_INVALID_ACCESS);
     }
     this.display = display;
-    TCHAR* chFormatName = StrToTCHARz(0, "Preferred DropEffect"); //$NON-NLS-1$
+    LPCTSTR chFormatName = StrToTCHARz(0, "Preferred DropEffect"); //$NON-NLS-1$
     CFSTR_PREFERREDDROPEFFECT = OS.RegisterClipboardFormat(chFormatName);
     createCOMInterfaces();
     this.AddRef();
@@ -634,7 +634,7 @@ LRESULT QueryGetData(FORMATETC * pFormatetc) {
  * Ownership of ppvObject transfers from callee to caller so reference count on ppvObject
  * must be incremented before returning.  Caller is responsible for releasing ppvObject.
  */
-HRESULT QueryInterface(GUID* riid, void ** ppvObject) {
+HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
     if (riid is null || ppvObject is null) return COM.E_INVALIDARG;
     if (COM.IsEqualGUID(riid, &COM.IIDIUnknown) || COM.IsEqualGUID(riid, &COM.IIDIDataObject) ) {
         *ppvObject = cast(void*)cast(IUnknown)iDataObject;
@@ -801,7 +801,7 @@ private class _IDataObjectImpl : IDataObject {
     this(Clipboard  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(GUID* riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

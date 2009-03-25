@@ -229,3 +229,10 @@ public override String toString() {
 }
 
 }
+
+version(D_Version2){
+    mixin("alias const(RGB) constRGB;");
+} else { // D1
+    alias RGB constRGB;
+}
+

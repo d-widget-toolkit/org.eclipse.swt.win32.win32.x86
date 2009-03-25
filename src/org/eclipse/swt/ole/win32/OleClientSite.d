@@ -929,7 +929,7 @@ private void onTraverse(Event event) {
 private int OnViewChange(int dwAspect, int lindex) {
     return COM.S_OK;
 }
-protected int QueryInterface(REFIID riid, void ** ppvObject) {
+protected int QueryInterface(REFCIID riid, void ** ppvObject) {
 
     if (riid is null || ppvObject is null)
         return COM.E_NOINTERFACE;
@@ -1351,7 +1351,7 @@ class _IAdviseSinkImpl : IAdviseSink {
     this(OleClientSite  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
@@ -1369,7 +1369,7 @@ class _IOleClientSiteImpl : IOleClientSite {
     this(OleClientSite  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
@@ -1394,7 +1394,7 @@ class  _IOleDocumentSiteImpl : IOleDocumentSite {
     this(OleClientSite  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
@@ -1407,7 +1407,7 @@ class _IOleInPlaceSiteImpl : IOleInPlaceSite {
     this(OleClientSite  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
@@ -1437,7 +1437,7 @@ class _IUnknownImpl : IUnknown
     this(OleClientSite  p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 }

@@ -574,7 +574,7 @@ private void onResize(Event e) {
         objIOleInPlaceActiveObject.ResizeBorder(&lpRect, iOleInPlaceFrame, true);
     }
 }
-private HRESULT QueryInterface(REFIID riid, void** ppvObject) {
+private HRESULT QueryInterface(REFCIID riid, void** ppvObject) {
 //  implements IUnknown, IOleInPlaceFrame, IOleContainer, IOleInPlaceUIWindow
     if (riid is null || ppvObject is null)
         return COM.E_INVALIDARG;
@@ -812,7 +812,7 @@ class _IOleInPlaceFrameImpl : IOleInPlaceFrame {
     this(OleFrame p) { parent = p; }
 extern (Windows) :
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

@@ -597,7 +597,7 @@ int osToOp(int osOperation){
  * Ownership of ppvObject transfers from callee to caller so reference count on ppvObject
  * must be incremented before returning.  Caller is responsible for releasing ppvObject.
  */
-HRESULT QueryInterface(REFIID riid, void ** ppvObject) {
+HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
 
     if (riid is null || ppvObject is null)
         return COM.E_INVALIDARG;
@@ -779,7 +779,7 @@ class _IDropTargetImpl : IDropTarget {
     this(DropTarget p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

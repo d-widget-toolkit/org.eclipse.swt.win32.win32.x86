@@ -144,7 +144,7 @@ private void notifyListener (int eventType, OleEvent event) {
     eventTable.sendEvent (event);
 }
 
-private HRESULT QueryInterface(REFIID riid, void ** ppvObject) {
+private HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
 
     if (riid is null || ppvObject is null)
         return COM.E_INVALIDARG;
@@ -182,14 +182,14 @@ private class _DispatchImpl : IDispatch {
     OleEventSink parent;
     this(OleEventSink sink) { parent = sink;}
 extern (Windows) :
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject){
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject){
         return parent.QueryInterface(riid, ppvObject);
     }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
     HRESULT GetTypeInfoCount(UINT * pctinfo) { return COM.E_NOTIMPL; }
     HRESULT GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo * ppTInfo) { return COM.E_NOTIMPL; }
-    HRESULT GetIDsOfNames(REFIID riid, LPOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId) { return COM.E_NOTIMPL; }
+    HRESULT GetIDsOfNames(REFCIID riid, LPCOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId) { return COM.E_NOTIMPL; }
     HRESULT Invoke(DISPID dispIdMember,REFIID riid,LCID lcid,WORD wFlags,DISPPARAMS* pDispParams,VARIANT* pVarResult,EXCEPINFO* pExcepInfo,UINT* puArgErr){
         return parent.Invoke(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
     }

@@ -272,11 +272,11 @@ WINOLEAPI WriteClassStg(
 STDAPI CreateStdAccessibleObject(
   HWND hwnd,
   LONG idObject,
-  REFIID riidInterface,
+  REFCIID riidInterface,
   void** ppvObject
 );
 LRESULT LresultFromObject(
-  REFIID riid,
+  REFCIID riid,
   WPARAM wParam,
   LPUNKNOWN pAcc
 );

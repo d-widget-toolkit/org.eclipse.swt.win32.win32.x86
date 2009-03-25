@@ -80,8 +80,8 @@ public void javaToNative (Object object, TransferData transferData){
         DND.error(DND.ERROR_INVALID_DATA);
     }
     // CF_RTF is stored as a null terminated byte array
-    String string = (cast(ArrayWrapperString)object).array;
-    wchar* chars = StrToWCHARz(string);
+    String string = stringcast(object);
+    LPCWSTR chars = StrToWCHARz(string);
     int codePage = OS.GetACP();
     int cchMultiByte = OS.WideCharToMultiByte(codePage, 0, chars, -1, null, 0, null, null);
     if (cchMultiByte is 0) {

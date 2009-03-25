@@ -83,10 +83,10 @@ public class TableTree : Composite {
     */
     bool inDispose = false;
 
-    static const TableTreeItem[] EMPTY_ITEMS;
-    static const String[] EMPTY_TEXTS;
-    static const Image[] EMPTY_IMAGES;
-    static const String ITEMID = "TableTreeItemID"; //$NON-NLS-1$
+    static /+const+/ TableTreeItem[] EMPTY_ITEMS;
+    static /+const+/ String[] EMPTY_TEXTS;
+    static /+const+/ Image[] EMPTY_IMAGES;
+    static /+const+/ String ITEMID = "TableTreeItemID"; //$NON-NLS-1$
 
 /**
  * Constructs a new instance of this class given its parent

@@ -648,7 +648,7 @@ public class StyledText : Canvas {
             StringBuffer buffer = new StringBuffer(segment.substring (0, pageIndex));
             buffer.append (page);
             buffer.append (segment.substring(pageIndex + pageTagLength));
-            segment = buffer.toString().dup;
+            segment = buffer.toString()._idup();
         }
         if (segment.length > 0) {
             layout.setText(segment);
@@ -5318,8 +5318,7 @@ void handleMouseDown(Event event) {
 
     //paste clipboard selection
     if (event.button is 2) {
-        auto o = cast(ArrayWrapperString)getClipboardContent(DND.SELECTION_CLIPBOARD);
-        String text = o.array;
+        String text = stringcast(getClipboardContent(DND.SELECTION_CLIPBOARD));
         if (text !is null && text.length > 0) {
             // position cursor
             doMouseLocationChange(event.x, event.y, false);
@@ -6030,10 +6029,7 @@ void paintObject(GC gc, int x, int y, int ascent, int descent, StyleRange style,
  */
 public void paste(){
     checkWidget();
-    String text = null;
-    if( auto o = cast(ArrayWrapperString) getClipboardContent(DND.CLIPBOARD)){
-        text = o.array;
-    }
+    String text = stringcast( getClipboardContent(DND.CLIPBOARD));
     if (text !is null && text.length > 0) {
         Event event = new Event();
         event.start = selection.x;

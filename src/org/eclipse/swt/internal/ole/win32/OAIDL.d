@@ -859,7 +859,7 @@ interface IDispatch : IUnknown
 {
 HRESULT GetTypeInfoCount(UINT * pctinfo);
 HRESULT GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo * ppTInfo);
-HRESULT GetIDsOfNames(REFIID riid, LPCOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId);
+HRESULT GetIDsOfNames(REFCIID riid, LPCOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId);
 HRESULT Invoke(DISPID dispIdMember,REFIID riid,LCID lcid,WORD wFlags,DISPPARAMS* pDispParams,VARIANT* pVarResult,EXCEPINFO* pExcepInfo,UINT* puArgErr);
 }
 alias IDispatch LPDISPATCH;

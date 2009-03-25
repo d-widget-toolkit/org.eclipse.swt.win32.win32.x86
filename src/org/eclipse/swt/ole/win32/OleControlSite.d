@@ -611,7 +611,7 @@ protected int OnUIDeactivate(int fUndoable) {
     state = STATE_INPLACEACTIVE;
     return COM.S_OK;
 }
-override protected HRESULT QueryInterface(REFIID riid, void ** ppvObject) {
+override protected HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
     int nullv = 0;
     int result = super.QueryInterface(riid, ppvObject);
     if (result is COM.S_OK)
@@ -866,14 +866,14 @@ class _IDispatchImpl : IDispatch {
     this(OleControlSite p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 
     // interface of IDispatch : IUnknown
     HRESULT GetTypeInfoCount(UINT * pctinfo) { return COM.E_NOTIMPL; }
     HRESULT GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo * ppTInfo) { return COM.E_NOTIMPL; }
-    HRESULT GetIDsOfNames(REFIID riid, LPOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId) { return COM.E_NOTIMPL; }
+    HRESULT GetIDsOfNames(REFCIID riid, LPCOLESTR * rgszNames, UINT cNames, LCID lcid, DISPID * rgDispId) { return COM.E_NOTIMPL; }
     // Note : <Shawn> one argument is short !!!
     HRESULT Invoke(DISPID dispIdMember,REFIID riid,LCID lcid,WORD wFlags,DISPPARAMS* pDispParams,VARIANT* pVarResult,EXCEPINFO* pExcepInfo,UINT* puArgErr) {
         return parent.Invoke(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
@@ -886,7 +886,7 @@ class _IOleControlSiteImpl : IOleControlSite {
     this(OleControlSite p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

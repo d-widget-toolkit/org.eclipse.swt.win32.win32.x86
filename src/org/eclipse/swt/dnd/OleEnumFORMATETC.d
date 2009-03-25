@@ -92,7 +92,7 @@ package HRESULT Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) {
     }
     return COM.S_FALSE;
 }
-private HRESULT QueryInterface(REFIID riid, void** ppvObject) {
+private HRESULT QueryInterface(REFCIID riid, void** ppvObject) {
 
     if (riid is null || ppvObject is null) return COM.E_NOINTERFACE;
 
@@ -148,7 +148,7 @@ class _IEnumFORMATETCImpl : IEnumFORMATETC {
     this(OleEnumFORMATETC   p) { parent = p; }
 extern (Windows):
     // interface of IUnknown
-    HRESULT QueryInterface(REFIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
+    HRESULT QueryInterface(REFCIID riid, void ** ppvObject) { return parent.QueryInterface(riid, ppvObject); }
     ULONG AddRef()  { return parent.AddRef(); }
     ULONG Release() { return parent.Release(); }
 

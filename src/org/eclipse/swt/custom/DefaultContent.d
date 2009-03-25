@@ -493,7 +493,7 @@ public String getLine(int index) {
         while ((length_ - 1 >= 0) && isDelimiter(textStore[start+length_-1])) {
             length_--;
         }
-        return textStore[ start .. start + length_].dup;
+        return textStore[ start .. start + length_]._idup();
     } else {
         // gap is in the specified range, strip out the gap
         StringBuffer buf = new StringBuffer();
@@ -531,14 +531,14 @@ String getFullLine(int index) {
     int end = start + length_ - 1;
     if (!gapExists() || (end < gapStart) || (start >= gapEnd)) {
         // line is before or after the gap
-        return textStore[ start .. start + length_ ].dup;
+        return textStore[ start .. start + length_ ]._idup();
     } else {
         // gap is in the specified range, strip out the gap
         StringBuffer buffer = new StringBuffer();
         int gapLength = gapEnd - gapStart;
         buffer.append(textStore[ start .. gapStart ]);
         buffer.append(textStore[ gapEnd .. gapEnd + length_ - gapLength - (gapStart - start) ]);
-        return buffer.toString().dup;
+        return buffer.toString()._idup();
     }
 }
 /**
@@ -697,7 +697,7 @@ bool gapExists() {
  * @return the text
  */
 String getPhysicalText(int start, int length_) {
-    return textStore[ start .. start + length_ ].dup;
+    return textStore[ start .. start + length_ ]._idup();
 }
 /**
  * Returns a string representing the logical content of
@@ -715,15 +715,15 @@ public String getTextRange(int start, int length_) {
         return "";
     int end= start + length_;
     if (!gapExists() || (end < gapStart))
-        return textStore[ start .. start + length_].dup;
+        return textStore[ start .. start + length_]._idup();
     if (gapStart < start) {
         int gapLength= gapEnd - gapStart;
-        return textStore[ start + gapLength .. start + gapLength + length_ ].dup;
+        return textStore[ start + gapLength .. start + gapLength + length_ ]._idup();
     }
     StringBuffer buf = new StringBuffer();
     buf.append(textStore[ start .. start + gapStart - start ] );
     buf.append(textStore[ gapEnd .. gapEnd + end - gapStart ] );
-    return buf.toString().dup;
+    return buf.toString()._idup();
 }
 /**
  * Removes the specified <code>TextChangeListener</code>.

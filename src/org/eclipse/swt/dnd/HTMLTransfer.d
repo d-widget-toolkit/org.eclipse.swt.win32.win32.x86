@@ -84,7 +84,7 @@ public void javaToNative (Object object, TransferData transferData){
     if (!checkHTML(object) || !isSupportedType(transferData)) {
         DND.error(DND.ERROR_INVALID_DATA);
     }
-    String string = ( cast(ArrayWrapperString)object ).array;
+    String string = stringcast(object );
     /* NOTE: CF_HTML uses UTF-8 encoding. */
     int cchMultiByte = OS.WideCharToMultiByte(OS.CP_UTF8, 0, StrToTCHARz(string), -1, null, 0, null, null);
     if (cchMultiByte is 0) {

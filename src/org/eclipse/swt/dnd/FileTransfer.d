@@ -92,7 +92,7 @@ public void javaToNative(Object object, TransferData transferData) {
         allFiles.append(fileNames[i]);
         allFiles.append(CF_HDROP_SEPARATOR); // each name is null terminated
     }
-    TCHAR[] buffer = StrToTCHARs(0, allFiles.toString(), true); // there is an extra null terminator at the very end
+    StringT buffer = StrToTCHARs(0, allFiles.toString(), true); // there is an extra null terminator at the very end
     DROPFILES dropfiles;
     dropfiles.pFiles = DROPFILES.sizeof;
     dropfiles.pt.x = dropfiles.pt.y = 0;

@@ -80,9 +80,9 @@ public void javaToNative (Object object, TransferData transferData){
     }
     transferData.result = COM.E_FAIL;
     // URL is stored as a null terminated byte array
-    String url = (cast(ArrayWrapperString)object).array;
+    String url = stringcast(object);
     int codePage = OS.GetACP();
-    wchar[] chars = StrToWCHARs(codePage, url, true );
+    String16 chars = StrToWCHARs(codePage, url, true );
     int cchMultiByte = OS.WideCharToMultiByte(codePage, 0, chars.ptr, -1, null, 0, null, null);
     if (cchMultiByte is 0) {
         transferData.stgmedium = new STGMEDIUM();
