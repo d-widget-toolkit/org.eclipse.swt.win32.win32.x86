@@ -222,7 +222,7 @@ override void createHandle () {
     OS.SendMessage (hwndUpDown, OS.IsWinCE ? OS.UDM_SETPOS : OS.UDM_SETPOS32, 0, 0);
     pageIncrement = 10;
     digits = 0;
-    TCHAR* buffer = StrToTCHARz (getCodePage (), "0");
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), "0");
     OS.SetWindowText (hwndText, buffer);
 }
 
@@ -838,9 +838,9 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
     String newText = verifyText (oldText, start, end, event);
     if (newText is null) return false;
     if (newText is oldText) return true;
-    TCHAR* buffer = StrToTCHARz (getCodePage (), newText);
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), newText);
     OS.SendMessage (hwndText, OS.EM_SETSEL, start, end);
-    OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, buffer);
+    OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, cast(void*)buffer);
     return false;
 }
 
@@ -1051,7 +1051,7 @@ void setSelection (int value, bool setPos, bool setText, bool notify) {
             string = verifyText (string, 0, length_, null);
             if (string is null) return;
         }
-        TCHAR* buffer = StrToTCHARz (getCodePage (), string);
+        LPCTSTR buffer = StrToTCHARz (getCodePage (), string);
         OS.SetWindowText (hwndText, buffer);
         OS.SendMessage (hwndText, OS.EM_SETSEL, 0, -1);
         if (!OS.IsWinCE) {

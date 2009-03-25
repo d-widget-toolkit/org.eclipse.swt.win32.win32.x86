@@ -1817,7 +1817,7 @@ public int getIconDepth () {
     }
 
     /* Use the character encoding for the default locale */
-    TCHAR* buffer1 = StrToTCHARz( "Control Panel\\Desktop\\WindowMetrics" ); //$NON-NLS-1$
+    LPCTSTR buffer1 = StrToTCHARz( "Control Panel\\Desktop\\WindowMetrics" ); //$NON-NLS-1$
 
     void* phkResult;
     int result = OS.RegOpenKeyEx ( cast(void*)OS.HKEY_CURRENT_USER, buffer1, 0, OS.KEY_READ, &phkResult);
@@ -1826,7 +1826,7 @@ public int getIconDepth () {
     uint lpcbData;
 
     /* Use the character encoding for the default locale */
-    TCHAR* buffer2 = StrToTCHARz( "Shell Icon BPP" ); //$NON-NLS-1$
+    LPCTSTR buffer2 = StrToTCHARz( "Shell Icon BPP" ); //$NON-NLS-1$
     result = OS.RegQueryValueEx (phkResult , buffer2, null, null, null, &lpcbData);
     if (result is 0) {
         ubyte[] lpData = new ubyte[ lpcbData  / TCHAR.sizeof ];
@@ -2700,11 +2700,11 @@ bool isXMouseActive () {
     * NOTE: X-Mouse is active when bit 1 of the UserPreferencesMask is set.
     */
     bool xMouseActive = false;
-    TCHAR* key = StrToTCHARz( "Control Panel\\Desktop" ); //$NON-NLS-1$
+    LPCTSTR key = StrToTCHARz( "Control Panel\\Desktop" ); //$NON-NLS-1$
     void* phKey;
     int result = OS.RegOpenKeyEx (cast(void*)OS.HKEY_CURRENT_USER, key, 0, OS.KEY_READ, &phKey);
     if (result is 0) {
-        TCHAR* lpValueName = StrToTCHARz ( "UserPreferencesMask" ); //$NON-NLS-1$
+        LPCTSTR lpValueName = StrToTCHARz ( "UserPreferencesMask" ); //$NON-NLS-1$
         uint[4] lpcbData;
         uint lpData;
         result = OS.RegQueryValueEx (phKey, lpValueName, null, null, cast(ubyte*)&lpData, lpcbData.ptr);

@@ -138,7 +138,7 @@ void _setText (int index, String string) {
             for (i=0; i<length_; i++) {
                 if (text[i] !is '&') text [j++] = text [i];
             }
-            if (j < i) string = text[ 0 .. j ].idup;
+            if (j < i) string = text[ 0 .. j ]._idup();
         }
     }
     auto hwnd = parent.handle;

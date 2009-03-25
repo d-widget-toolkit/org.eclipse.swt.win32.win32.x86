@@ -172,7 +172,7 @@ public static void drawGlyphs(GC gc, wchar[] renderBuffer, int[] renderDx, int x
  *  parameter. See org.eclipse.swt.custom.BidiSegmentEvent for details.
  * @return buffer with the glyphs that should be rendered for the given text
  */
-public static char[] getRenderInfo(GC gc, String text, int[] order, byte[] classBuffer, int[] dx, int flags, int [] offsets) {
+public static String getRenderInfo(GC gc, String text, int[] order, byte[] classBuffer, int[] dx, int flags, int [] offsets) {
     auto fontLanguageInfo = OS.GetFontLanguageInfo(gc.handle);
     auto hHeap = OS.GetProcessHeap();
     int[8] lpCs;
@@ -182,7 +182,7 @@ public static char[] getRenderInfo(GC gc, String text, int[] order, byte[] class
         isRightOriented = OS.GetLayout(gc.handle) !is 0;
     }
     OS.TranslateCharsetInfo( cast(uint*)cs, cast(CHARSETINFO*)lpCs.ptr, OS.TCI_SRCCHARSET);
-    TCHAR[] textBuffer = StrToTCHARs(lpCs[1], text, false);
+    StringT textBuffer = StrToTCHARs(lpCs[1], text, false);
     int byteCount = textBuffer.length;
     bool linkBefore = (flags & LINKBEFORE) is LINKBEFORE;
     bool linkAfter = (flags & LINKAFTER) is LINKAFTER;
@@ -240,7 +240,7 @@ public static char[] getRenderInfo(GC gc, String text, int[] order, byte[] class
         // The number of glyphs expected is <= length (segment length);
         // the actual number returned may be less in case of Arabic ligatures.
         result.nGlyphs = length_;
-        TCHAR[] textBuffer2 = StrToTCHARs(lpCs[1], text.substring(offset, offset + length_), false);
+        StringT textBuffer2 = StrToTCHARs(lpCs[1], text.substring(offset, offset + length_), false);
         OS.GetCharacterPlacement(gc.handle, textBuffer2.ptr, textBuffer2.length, 0, &result, dwFlags);
 
         if (dx !is null) {
@@ -311,7 +311,7 @@ public static void getOrderInfo(GC gc, String text, int[] order, byte[] classBuf
     int[8] lpCs;
     int cs = OS.GetTextCharset(gc.handle);
     OS.TranslateCharsetInfo( cast(uint*) cs, cast(CHARSETINFO*)lpCs.ptr, OS.TCI_SRCCHARSET);
-    TCHAR[] textBuffer = StrToTCHARs(lpCs[1], text, false);
+    StringT textBuffer = StrToTCHARs(lpCs[1], text, false);
     int byteCount = textBuffer.length;
     bool isRightOriented = false;
     if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION(4, 10)) {
@@ -350,7 +350,7 @@ public static void getOrderInfo(GC gc, String text, int[] order, byte[] classBuf
         // The number of glyphs expected is <= length (segment length);
         // the actual number returned may be less in case of Arabic ligatures.
         result.nGlyphs = length_;
-        TCHAR[] textBuffer2 = StrToTCHARs(lpCs[1], text.substring(offset, offset + length_), false);
+        StringT textBuffer2 = StrToTCHARs(lpCs[1], text.substring(offset, offset + length_), false);
         OS.GetCharacterPlacement(gc.handle, textBuffer2.ptr, textBuffer2.length, 0, &result, dwFlags);
 
         if (order !is null) {

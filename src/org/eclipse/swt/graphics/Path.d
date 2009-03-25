@@ -296,8 +296,8 @@ public void addString(String string, float x, float y, Font font) {
     if (isDisposed()) SWT.error(SWT.ERROR_GRAPHIC_DISPOSED);
     if (font is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (font.isDisposed()) SWT.error(SWT.ERROR_INVALID_ARGUMENT);
-    wchar[] wstr = StrToWCHARs( string );
-    wchar* buffer = wstr.ptr;
+    String16 wstr = StrToWCHARs( string );
+    LPCWSTR buffer = wstr.ptr;
     int length = wstr.length;
     auto hDC = device.internal_new_GC(null);
     auto gdipFont = GC.createGdipFont(hDC, font.handle);

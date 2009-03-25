@@ -107,7 +107,7 @@ public static PrinterData[] getPrinterList() {
                 System.arraycopy(deviceNames, 0, newNames, 0, deviceNames.length);
                 deviceNames = newNames;
             }
-            deviceNames[nameCount] = buf[index .. i ].idup;
+            deviceNames[nameCount] = buf[index .. i ]._idup();
             nameCount++;
             index = i + 1;
         }
@@ -120,7 +120,7 @@ public static PrinterData[] getPrinterList() {
             int commaIndex = 0;
             while (buf[commaIndex] !is ',' && commaIndex < length) commaIndex++;
             if (commaIndex < length) {
-                driver = buf[0 .. commaIndex].idup;
+                driver = buf[0 .. commaIndex]._idup();
             }
         }
         printerList[p] = new PrinterData(driver, device);
@@ -147,14 +147,14 @@ public static PrinterData getDefaultPrinterData() {
     int commaIndex = 0;
     while(buf[commaIndex] !is ',' && commaIndex < length) commaIndex++;
     if (commaIndex < length) {
-        deviceName = buf[0 .. commaIndex].idup;
+        deviceName = buf[0 .. commaIndex]._idup();
     }
     String driver = ""; //$NON-NLS-1$
     if (OS.GetProfileString(TCHARsToStr(profile), deviceName, null, buf, length) > 0) {
         commaIndex = 0;
         while (buf[commaIndex] !is ',' && commaIndex < length) commaIndex++;
         if (commaIndex < length) {
-            driver = buf[0 .. commaIndex].idup;
+            driver = buf[0 .. commaIndex]._idup();
         }
     }
     return new PrinterData(driver, deviceName);

@@ -86,11 +86,11 @@ public final class TextLayout : Resource {
 
     Font font;
     String  text;
-    wchar[] wtext;
-    char[]  segmentsText;
-    wchar[] segmentsWText; // SWT
-    int[]   index8to16; // SWT
-    int[]   index16to8; // SWT
+    String16 wtext;
+    String  segmentsText;
+    String16 segmentsWText; // DWT
+    int[]   index8to16; // DWT
+    int[]   index16to8; // DWT
     int lineSpacing;
     int ascent, descent;
     int alignment;
@@ -261,7 +261,7 @@ public this (Device device) {
 
 void breakRun(StyleItem run) {
     if (run.psla !is null) return;
-    wchar[] chars = segmentsWText[ index8to16[ run.start ] .. index8to16[ run.start + run.length ] ];
+    String16 chars = segmentsWText[ index8to16[ run.start ] .. index8to16[ run.start + run.length ] ];
     auto hHeap = OS.GetProcessHeap();
     run.psla = cast(SCRIPT_LOGATTR*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, SCRIPT_LOGATTR.sizeof * chars.length);
     if (run.psla is null) SWT.error(SWT.ERROR_NO_HANDLES);
@@ -2127,7 +2127,7 @@ public int[] getSegments () {
     return segments;
 }
 
-void getSegmentsText( out char[] resUtf8, out wchar[] resUtf16 ) {
+void getSegmentsText( out String resUtf8, out String16 resUtf16 ) {
 
     void buildIndexTables() { // build the index translation tables.
         index8to16.length = resUtf8.length + 1;
@@ -2178,7 +2178,7 @@ void getSegmentsText( out char[] resUtf8, out wchar[] resUtf16 ) {
         }
     }
     {
-        char[] oldChars = text;
+        auto oldChars = text;
         // SWT: MARK is now 3 chars long
         String separator = orientation is SWT.RIGHT_TO_LEFT ? STR_RTL_MARK : STR_LTR_MARK;
         assert( separator.length is MARK_SIZE );
@@ -2201,12 +2201,12 @@ void getSegmentsText( out char[] resUtf8, out wchar[] resUtf16 ) {
             newChars[ start .. start + MARK_SIZE ] = separator;
             segmentCount++;
         }
-        resUtf8 = newChars[ 0 .. Math.min(charCount + (segmentCount*MARK_SIZE), newChars.length)];
+        resUtf8 = cast(String)newChars[ 0 .. Math.min(charCount + (segmentCount*MARK_SIZE), newChars.length)];
     }
     // now for the wide chars
     {
-        wchar[] oldWChars = wtext;
-        wchar[] wseparator = orientation is SWT.RIGHT_TO_LEFT ? WSTR_RTL_MARK : WSTR_LTR_MARK;
+        String16 oldWChars = wtext;
+        auto wseparator = orientation is SWT.RIGHT_TO_LEFT ? WSTR_RTL_MARK : WSTR_LTR_MARK;
         assert( wseparator.length is 1 );
         wchar[] newWChars = new wchar[wlength_ + nSegments];
 
@@ -2227,7 +2227,7 @@ void getSegmentsText( out char[] resUtf8, out wchar[] resUtf16 ) {
             newWChars[ start .. start + WMARK_SIZE ] = wseparator;
             segmentCount++;
         }
-        resUtf16 = newWChars[ 0 .. Math.min(charCount + (segmentCount*WMARK_SIZE), newWChars.length)];
+        resUtf16 = cast(String16)newWChars[ 0 .. Math.min(charCount + (segmentCount*WMARK_SIZE), newWChars.length)];
     }
     buildIndexTables();
 }
@@ -2382,7 +2382,7 @@ StyleItem[] itemize () {
     auto pItems = cast(SCRIPT_ITEM*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, MAX_ITEM * SCRIPT_ITEM.sizeof);
     if (pItems is null) SWT.error(SWT.ERROR_NO_HANDLES);
     int pcItems;
-    wchar[] chars = segmentsWText;
+    String16 chars = segmentsWText;
     OS.ScriptItemize(chars.ptr, chars.length, MAX_ITEM, &scriptControl, &scriptState, pItems, &pcItems);
 //  if (hr is E_OUTOFMEMORY) //TODO handle it
     // SWT pcItems is not inclusive the trailing item
@@ -2871,7 +2871,7 @@ public void setText (String text) {
     //if (text is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (text.equals(this.text)) return;
     freeRuns();
-    this.text  = text.dup;
+    this.text  = text._idup();
     this.wtext = StrToWCHARs(text);
     styles = new StyleItem[2];
     styles[0] = new StyleItem();
@@ -2904,7 +2904,7 @@ public void setWidth (int width) {
     this.wrapWidth = width;
 }
 
-bool shape (HDC hdc, StyleItem run, wchar[] wchars, int[] glyphCount, int maxGlyphs, SCRIPT_PROPERTIES* sp) {
+bool shape (HDC hdc, StyleItem run, String16 wchars, int[] glyphCount, int maxGlyphs, SCRIPT_PROPERTIES* sp) {
     bool useCMAPcheck = !sp.fComplex && !run.analysis.fNoGlyphIndex;
     if (useCMAPcheck) {
         scope ushort[] glyphs = new ushort[wchars.length];
@@ -2949,7 +2949,7 @@ bool shape (HDC hdc, StyleItem run, wchar[] wchars, int[] glyphCount, int maxGly
  */
 void shape (HDC hdc, StyleItem run) {
     int[1] buffer;
-    wchar[] wchars = segmentsWText[ index8to16[ run.start ] .. index8to16[ run.start + run.length ] ];
+    auto wchars = segmentsWText[ index8to16[ run.start ] .. index8to16[ run.start + run.length ] ];
     int maxGlyphs = (wchars.length * 3 / 2) + 16;
     auto hHeap = OS.GetProcessHeap();
     run.glyphs = cast(ushort*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, maxGlyphs * 2);

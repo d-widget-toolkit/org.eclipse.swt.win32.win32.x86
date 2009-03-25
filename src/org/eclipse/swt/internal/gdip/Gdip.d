@@ -575,7 +575,7 @@ public:
 
     **************************************************************************/
 
-    static Bitmap Bitmap_new( wchar* filename, bool useIcm )
+    static Bitmap Bitmap_new( LPCWSTR filename, bool useIcm )
     {
         Bitmap bitmap;
         if (useIcm) {
@@ -1088,7 +1088,7 @@ public:
 
 **************************************************************************/
 
-    static int FontFamily_GetFamilyName( FontFamily family, wchar* name, int language )
+    static int FontFamily_GetFamilyName( FontFamily family, LPCWSTR name, int language )
     {
         return SetStatus( GdipGetFamilyName( family, name, language ) );
     }
@@ -1181,9 +1181,9 @@ public:
         if (hfont is null) {
             Gdip.lastResult = GdipCreateFontFromDC( hdc, font );
         } else {
-            LOGFONTA logfont;
-            if (GetObjectA( hfont, LOGFONTA.sizeof, &logfont ))
-                Gdip.lastResult = GdipCreateFontFromLogfontA(hdc, logfont, font);
+            LOGFONTW logfont;
+            if (OS.GetObject( hfont, LOGFONTW.sizeof, &logfont ))
+                Gdip.lastResult = GdipCreateFontFromLogfontW(hdc, logfont, font);
             else
                 Gdip.lastResult = GdipCreateFontFromDC(hdc, font);
         }
@@ -1196,7 +1196,7 @@ public:
 
     **************************************************************************/
 
-    static Font Font_new( wchar* familyName, float emSize, int style, uint unit,
+    static Font Font_new( LPCWSTR familyName, float emSize, int style, uint unit,
                           FontCollection fontCollection  )
     {
         Font        nativeFont = null;
@@ -1375,7 +1375,7 @@ public:
 
     **************************************************************************/
 
-    static Status GraphicsPath_AddString( Path path, wchar* string,
+    static Status GraphicsPath_AddString( Path path, LPCWSTR string,
                                           int length, FontFamily family,
                                           int style, float emSize,
                                           ref PointF origin, StringFormat format )
@@ -1648,7 +1648,7 @@ public:
 
     **************************************************************************/
 
-    static Status Graphics_DrawString( Graphics graphics, wchar* string, int length,
+    static Status Graphics_DrawString( Graphics graphics, LPCWSTR string, int length,
                                        Font font, ref PointF origin, Brush brush  )
     {
         RectF rect = {origin.X, origin.Y, 0.0f, 0.0f};
@@ -1660,7 +1660,7 @@ public:
 
     **************************************************************************/
 
-    static Status Graphics_DrawString( Graphics graphics, wchar* string, int length,
+    static Status Graphics_DrawString( Graphics graphics, LPCWSTR string, int length,
                                        Font font, ref PointF origin,
                                        StringFormat format, Brush brush )
     {
@@ -1846,7 +1846,7 @@ public:
 
     **************************************************************************/
 
-    static Status Graphics_MeasureString( Graphics graphics, wchar* string, int length,
+    static Status Graphics_MeasureString( Graphics graphics, LPCWSTR string, int length,
                                           Font font, ref PointF origin,
                                           ref RectF boundingBox )
     {
@@ -1869,7 +1869,7 @@ public:
 
     **************************************************************************/
 
-    static Status Graphics_MeasureString( Graphics graphics, wchar* string, int length,
+    static Status Graphics_MeasureString( Graphics graphics, LPCWSTR string, int length,
                                           Font font, ref PointF origin,
                                           StringFormat format, ref RectF boundingBox )
     {

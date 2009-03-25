@@ -1066,7 +1066,7 @@ override public void setText (String string) {
             for (i=0; i<length_; i++) {
                 if (text[i] !is '&') text [j++] = text [i];
             }
-            if (j < i) string = text[ 0 .. j ].idup;
+            if (j < i) string = text[ 0 .. j ]._idup();
         }
         /* Use the character encoding for the default locale */
         StringT buffer = StrToTCHARs (0, string, true);

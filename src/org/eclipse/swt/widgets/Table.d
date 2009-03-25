@@ -4608,8 +4608,8 @@ bool setScrollWidth (TableItem item, bool force) {
                     OS.ReleaseDC (handle, hDC);
                     newWidth = Math.max (newWidth, rect.right - rect.left);
                 } else {
-                    TCHAR* buffer = StrToTCHARz (getCodePage (), string );
-                    newWidth = Math.max (newWidth, OS.SendMessage (handle, OS.LVM_GETSTRINGWIDTH, 0, buffer));
+                    LPCTSTR buffer = StrToTCHARz (getCodePage (), string );
+                    newWidth = Math.max (newWidth, OS.SendMessage (handle, OS.LVM_GETSTRINGWIDTH, 0, cast(void*)buffer));
                 }
             }
             if (item !is null) break;

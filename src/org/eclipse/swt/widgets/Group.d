@@ -202,7 +202,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
         * If the group has text, and the text is wider than the
         * client area, pad the width so the text is not clipped.
         */
-        TCHAR* buffer = StrToTCHARz (/+getCodePage (),+/ string);
+        LPCTSTR buffer = StrToTCHARz (/+getCodePage (),+/ string);
         HFONT newFont, oldFont;
         auto hDC = OS.GetDC (handle);
         newFont = cast(HFONT) OS.SendMessage (handle, OS.WM_GETFONT, 0, 0);
@@ -264,7 +264,7 @@ override void enableWidget (bool enabled) {
     if ((style & SWT.RIGHT_TO_LEFT) !is 0) {
         if (OS.COMCTL32_MAJOR < 6 || !OS.IsAppThemed ()) {
             String string = enabled || text.length is 0 ? text : " " ~ text ~ " ";
-            TCHAR* buffer = StrToTCHARz (/+getCodePage (),+/ string);
+            LPCTSTR buffer = StrToTCHARz (/+getCodePage (),+/ string);
             OS.SetWindowText (handle, buffer);
         }
     }
@@ -404,7 +404,7 @@ public void setText (String string) {
             }
         }
     }
-    TCHAR* buffer = StrToTCHARz(/+getCodePage (),+/ string);
+    LPCTSTR buffer = StrToTCHARz(/+getCodePage (),+/ string);
     OS.SetWindowText (handle, buffer);
 }
 

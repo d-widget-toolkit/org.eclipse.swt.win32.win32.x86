@@ -276,8 +276,8 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
                 int width = 0;
                 auto hFont = fontHandle (column);
                 if (hFont is cast(HFONT)-1 && hDC is null) {
-                    TCHAR* buffer = StrToTCHARz (parent.getCodePage (), text);
-                    width = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, buffer);
+                    LPCTSTR buffer = StrToTCHARz (parent.getCodePage (), text);
+                    width = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, cast(void*)buffer);
                 } else {
                     StringT buffer = StrToTCHARs (parent.getCodePage (), text, false);
                     auto textDC = hDC !is null ? hDC : OS.GetDC (hwnd), oldFont = cast(HFONT)-1;
@@ -1187,7 +1187,7 @@ public void setText (int index, String string) {
     checkWidget();
     if (index is 0) {
         if (string.equals(text)) return;
-        super.setText (string.idup);
+        super.setText (string._idup());
     }
     int count = Math.max (1, parent.getColumnCount ());
     if (0 > index || index > count - 1) return;
@@ -1197,7 +1197,7 @@ public void setText (int index, String string) {
     }
     if (strings !is null) {
         if (string==/*eq*/strings [index]) return;
-        strings [index] = string.idup;
+        strings [index] = string._idup();
     }
     if ((parent.style & SWT.VIRTUAL) !is 0) cached = true;
     if (index is 0) {

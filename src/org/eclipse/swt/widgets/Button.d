@@ -326,7 +326,7 @@ void _setText (String text) {
             text = OS.IsWindowEnabled (handle) ? text : " " ~ text ~ " ";
         }
     }
-    TCHAR* buffer = StrToTCHARz ( text );
+    LPCTSTR buffer = StrToTCHARz ( text );
     OS.SetWindowText (handle, buffer);
 }
 
@@ -405,7 +405,7 @@ int computeLeftMargin () {
         auto hDC = OS.GetDC (handle);
         HFONT newFont = cast(HFONT) OS.SendMessage (handle, OS.WM_GETFONT, 0, 0);
         if (newFont !is null) oldFont = OS.SelectObject (hDC, newFont);
-        TCHAR* buffer = StrToTCHARz( getCodePage (), text);
+        LPCTSTR buffer = StrToTCHARz( getCodePage (), text);
         RECT rect;
         int flags = OS.DT_CALCRECT | OS.DT_SINGLELINE;
         OS.DrawText (hDC, buffer, -1, &rect, flags);
@@ -481,7 +481,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                     height = Math.max (height, lptm.tmHeight);
                 } else {
                     extra = Math.max (MARGIN * 2, lptm.tmAveCharWidth);
-                    TCHAR* buffer = StrToTCHARz( getCodePage (), text);
+                    LPCTSTR buffer = StrToTCHARz( getCodePage (), text);
                     RECT rect;
                     int flags = OS.DT_CALCRECT | OS.DT_SINGLELINE;
                     OS.DrawText (hDC, buffer, -1, &rect, flags);
@@ -596,7 +596,7 @@ override void enableWidget (bool enabled) {
             bool hasImage = (bits & (OS.BS_BITMAP | OS.BS_ICON)) !is 0;
             if (!hasImage) {
                 String string = enabled ? text : " " ~ text ~ " ";
-                TCHAR* buffer = StrToTCHARz (getCodePage (), string);
+                LPCTSTR buffer = StrToTCHARz (getCodePage (), string);
                 OS.SetWindowText (handle, buffer);
             }
         }
@@ -1038,7 +1038,7 @@ public void setGrayed (bool grayed) {
     this.message = message;
     if (OS.COMCTL32_VERSION >= OS.VERSION (6, 1)) {
         if ((style & SWT.COMMAND) !is 0) {
-            OS.SendMessage (handle, OS.BCM_SETNOTE, 0, StrToTCHARz( message ));
+            OS.SendMessage (handle, OS.BCM_SETNOTE, 0, cast(void*)StrToTCHARz( message ));
         }
     }
 }

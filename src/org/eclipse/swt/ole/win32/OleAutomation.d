@@ -353,7 +353,7 @@ public String[] getNames(int dispId, int maxSize) {
 public int[] getIDsOfNames(String[] names) {
 
     int count = names.length;
-    wchar*[] wcNames = new wchar*[count];
+    LPCWSTR[] wcNames = new LPCWSTR[count];
     for(int i=0; i<count; ++i){
         wcNames[i] = StrToWCHARz(names[i]);
     }

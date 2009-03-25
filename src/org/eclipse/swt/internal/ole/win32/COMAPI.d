@@ -32,7 +32,7 @@ HRESULT CLSIDFromProgID(
   LPCLSID pclsid
 );
 HRESULT CLSIDFromString(
-  LPOLESTR lpsz,
+  LPCOLESTR lpsz,
   LPCLSID pclsid
 );
 STDAPI CoCreateInstance(
@@ -215,18 +215,18 @@ HRESULT SHDoDragDrop(
     DWORD *pdwEffect
 );
 HRESULT StgCreateDocfile(
-  WCHAR* pwcsName,
+  LPCWSTR pwcsName,
   DWORD grfMode,
   DWORD reserved,
   LPSTORAGE* ppstgOpen
 );
 
 WINOLEAPI StgIsStorageFile(
-  WCHAR* pwcsName
+  LPCWSTR pwcsName
 );
 
 HRESULT StgOpenStorage(
-  WCHAR* pwcsName,
+  LPCWSTR pwcsName,
   LPSTORAGE pstgPriority,
   DWORD grfMode,
   SNB snbExclude,

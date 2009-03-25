@@ -44,13 +44,13 @@ class PngChunk {
     // Non-critical chunks.
     static const int CHUNK_tRNS = 5;
 
-    static const byte[] TYPE_IHDR = cast(byte[])"IHDR";//{(byte) 'I', (byte) 'H', (byte) 'D', (byte) 'R'};
-    static const byte[] TYPE_PLTE = cast(byte[])"PLTE";//{(byte) 'P', (byte) 'L', (byte) 'T', (byte) 'E'};
-    static const byte[] TYPE_IDAT = cast(byte[])"IDAT";//{(byte) 'I', (byte) 'D', (byte) 'A', (byte) 'T'};
-    static const byte[] TYPE_IEND = cast(byte[])"IEND";//{(byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D'};
-    static const byte[] TYPE_tRNS = cast(byte[])"tRNS";//{(byte) 't', (byte) 'R', (byte) 'N', (byte) 'S'};
+    static /*const*/ byte[] TYPE_IHDR = cast(byte[])"IHDR";//{(byte) 'I', (byte) 'H', (byte) 'D', (byte) 'R'};
+    static /*const*/ byte[] TYPE_PLTE = cast(byte[])"PLTE";//{(byte) 'P', (byte) 'L', (byte) 'T', (byte) 'E'};
+    static /*const*/ byte[] TYPE_IDAT = cast(byte[])"IDAT";//{(byte) 'I', (byte) 'D', (byte) 'A', (byte) 'T'};
+    static /*const*/ byte[] TYPE_IEND = cast(byte[])"IEND";//{(byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D'};
+    static /*const*/ byte[] TYPE_tRNS = cast(byte[])"tRNS";//{(byte) 't', (byte) 'R', (byte) 'N', (byte) 'S'};
 
-    static const int[] CRC_TABLE;
+    static int[] CRC_TABLE;
     //public static void static_this() {
     static this() {
         CRC_TABLE = new int[256];

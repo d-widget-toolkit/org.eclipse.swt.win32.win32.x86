@@ -16,6 +16,12 @@ import java.lang.all;
 //alias TLOGFONTA LOGFONTA;
 //alias char CHAR;
 version(Tango){
+    version(Win32SansUnicode){
+        alias String StringT;
+    }else{
+        alias String16 StringT;
+    }
+    alias wchar CWCHAR;
 } else { // Phobos
     /*
         Module:     Windows Types

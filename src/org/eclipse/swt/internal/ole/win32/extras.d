@@ -49,8 +49,7 @@ enum {
 }
 
 version(Tango){
-    static assert(0);
-    alias GUID IID;
+    //alias GUID IID;
 }
 alias GUID CLSID;
 

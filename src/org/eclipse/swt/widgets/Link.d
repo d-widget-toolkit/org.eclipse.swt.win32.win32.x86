@@ -524,7 +524,7 @@ String parse (String string) {
                     parseMnemonics (buffer, linkStart, endtagStart, result);
                     offsets [linkIndex] = new Point (offset, result.length - 1);
                     if (ids [linkIndex] is null) {
-                        ids [linkIndex] = buffer[ linkStart .. endtagStart ].idup;
+                        ids [linkIndex] = buffer[ linkStart .. endtagStart ]._idup();
                     }
                     linkIndex++;
                     start = tagStart = linkStart = endtagStart = refStart = index + 1;
@@ -555,7 +555,7 @@ String parse (String string) {
                 break;
             case 12:
                 if (c is '"') {
-                    ids[linkIndex] = buffer[ refStart .. index ].idup;
+                    ids[linkIndex] = buffer[ refStart .. index ]._idup();
                     state = 2;
                 }
                 break;
@@ -691,7 +691,7 @@ public void setText (String string) {
         * text to a space instead.
         */
         if (string.length is 0) string = " ";  //$NON-NLS-1$
-        TCHAR* buffer = StrToTCHARz (getCodePage (), string);
+        LPCTSTR buffer = StrToTCHARz (getCodePage (), string);
         OS.SetWindowText (handle, buffer);
         parse (text);
         enableWidget (enabled);

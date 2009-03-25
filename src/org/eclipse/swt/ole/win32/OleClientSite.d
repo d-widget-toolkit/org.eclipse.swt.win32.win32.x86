@@ -220,7 +220,7 @@ public this(Composite parent, int style, File file) {
 
         // Is there an associated CLSID?
         appClsid = new GUID();
-        TCHAR* fileName = StrToTCHARz( 0, file.getAbsolutePath() );
+        LPCTSTR fileName = StrToTCHARz( 0, file.getAbsolutePath() );
         int result = COM.GetClassFile(fileName, appClsid);
         if (result !is COM.S_OK)
             OLE.error (__FILE__, __LINE__, OLE.ERROR_INVALID_CLASSID, result);
@@ -330,7 +330,7 @@ public this(Composite parent, int style, String progId, File file) {
         if (appClsid is null) OLE.error (__FILE__, __LINE__, OLE.ERROR_INVALID_CLASSID);
 
         // Are we opening this file with the preferred OLE object?
-        wchar* fileName = StrToWCHARz(file.getAbsolutePath());
+        LPCTSTR fileName = StrToWCHARz(file.getAbsolutePath());
         GUID* fileClsid = new GUID();
         COM.GetClassFile(fileName, fileClsid);
 
@@ -355,7 +355,7 @@ public this(Composite parent, int style, String progId, File file) {
                 // Create a stream on the storage object.
                 // Word does not follow the standard and does not use "CONTENTS" as the name of
                 // its primary stream
-                wchar* streamName = StrToWCHARz("CONTENTS"); //$NON-NLS-1$
+                LPCTSTR streamName = StrToWCHARz("CONTENTS"); //$NON-NLS-1$
                 GUID* wordGUID = getClassID(WORDPROGID);
                 if (wordGUID !is null && COM.IsEqualGUID(appClsid, wordGUID)) streamName = StrToWCHARz("WordDocument"); //$NON-NLS-1$
                 IStream stream;
@@ -602,7 +602,7 @@ protected GUID* getClassID(String clientName) {
     GUID* guid = new GUID();
 
     // create a null terminated array of char
-    wchar* buffer = null;
+    LPCTSTR buffer = null;
     if (clientName !is null) {
         buffer = StrToWCHARz(clientName);;
     }
@@ -1154,7 +1154,7 @@ private bool saveToStorageFile(File file) {
     if (objIOleObject.QueryInterface(&COM.IIDIPersistStorage, cast(void**)&permStorage) !is COM.S_OK) return false;
     try {
         IStorage storage;
-        wchar* path = StrToWCHARz(file.getAbsolutePath());
+        LPCTSTR path = StrToWCHARz(file.getAbsolutePath());
         int mode = COM.STGM_TRANSACTED | COM.STGM_READWRITE | COM.STGM_SHARE_EXCLUSIVE | COM.STGM_CREATE;
         int result = COM.StgCreateDocfile(path, mode, 0, &storage); //Does an AddRef if successful
         if (result !is COM.S_OK) return false;
@@ -1283,7 +1283,7 @@ public void showProperties(String title) {
     if (result !is COM.S_OK) return;
 
     // create a frame in which to display the pages
-    wchar* chTitle = null;
+    LPCTSTR chTitle = null;
     if (title !is null) {
         chTitle = StrToWCHARz(title);
     }

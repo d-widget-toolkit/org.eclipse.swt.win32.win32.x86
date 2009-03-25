@@ -121,10 +121,15 @@ public static int ceil(int p, int q) {
  * @return true if the file exists
  */
 public static bool fileExists(String parent, String child) {
-    return tango.io.Path.exists(
-            tango.io.Path.join(
-                tango.io.Path.standard(parent),
-                tango.io.Path.standard(child)));
+    version(Tango){
+        return tango.io.Path.exists(
+                tango.io.Path.join(
+                    tango.io.Path.standard(parent),
+                    tango.io.Path.standard(child)));
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
+        return false;
+    }
 }
 
 /**
@@ -280,8 +285,12 @@ public static bool isWhitespace(dchar c) {
  *  if the program cannot be executed
  */
 public static void exec(String prog) {
-    auto proc = new tango.sys.Process.Process( prog );
-    proc.execute;
+    version(Tango){
+        auto proc = new tango.sys.Process.Process( prog );
+        proc.execute;
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
+    }
 }
 
 /**
@@ -297,8 +306,12 @@ public static void exec(String prog) {
  *  if the program cannot be executed
  */
 public static void exec(String[] progArray) {
-    auto proc = new tango.sys.Process.Process( progArray );
-    proc.execute;
+    version(Tango){
+        auto proc = new tango.sys.Process.Process( progArray );
+        proc.execute;
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
+    }
 }
 
 const ImportData[] SWTMessagesBundleData = [
@@ -376,7 +389,7 @@ public static String getMessage(String key, Object[] args) {
     }
     if (msgs !is null) {
         try {
-            char[] frmt = msgs.getString(key);
+            auto frmt = msgs.getString(key);
             switch( args.length ){
             case 0: answer = Format(frmt); break;
             case 1: answer = Format(frmt, args[0]); break;
@@ -413,15 +426,20 @@ public static void interrupt() {
  * @return true if the two instances of class String are equal
  */
 public static bool equalsIgnoreCase(String s1, String s2) {
-    String s1b = new char[ s1.length ];
-    String s2b = new char[ s1.length ];
-    scope(exit){
-        delete s1b;
-        delete s2b;
+    version(Tango){
+        String s1b = new char[ s1.length ];
+        String s2b = new char[ s1.length ];
+        scope(exit){
+            delete s1b;
+            delete s2b;
+        }
+        String s1c = tango.text.Unicode.toFold( s1, s1b );
+        String s2c = tango.text.Unicode.toFold( s2, s2b );
+        return s1c == s2c;
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
+        return false;
     }
-    String s1c = tango.text.Unicode.toFold( s1, s1b );
-    String s2c = tango.text.Unicode.toFold( s2, s2b );
-    return s1c == s2c;
 }
 
 }

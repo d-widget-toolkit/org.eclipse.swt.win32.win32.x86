@@ -82,15 +82,15 @@ struct nsAString
         return result;
     }
 
-    static wchar[] toString16( nsAString* str )
+    static String16 toString16( nsAString* str )
     {
         wchar* buffer = null;
 		PRBool terminated;
 		uint len = NS_StringGetData(str, &buffer, &terminated);
-		return buffer[0 .. len].dup;
+		return buffer[0 .. len]._idup();
     }
     
-    static char[] toString( nsAString* str )
+    static String toString( nsAString* str )
     {
         return String_valueOf( nsAString.toString16( str ) );
     }

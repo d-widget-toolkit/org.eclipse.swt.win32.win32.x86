@@ -12,6 +12,7 @@
  *******************************************************************************/
 module org.eclipse.swt.internal.Lock;
 
+import java.lang.all;
 import java.lang.Thread;
 version(Tango){
     import tango.core.sync.Mutex;

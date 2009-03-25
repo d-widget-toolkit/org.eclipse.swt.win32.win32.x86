@@ -1777,8 +1777,8 @@ alias HANDLE HPAINTBUFFER;
 extern (Windows){
 HRESULT AssocQueryStringA(ASSOCF flags, int str, LPCSTR pszAssoc, LPCSTR pszExtra, LPSTR pszOut, DWORD *pcchOut);
 HRESULT AssocQueryStringW(ASSOCF flags, int str, LPCWSTR pszAssoc, LPCWSTR pszExtra, LPWSTR pszOut, DWORD *pcchOut);
-int AddFontResourceExA(char* lpszFilename, int fl, void* pdv);
-int AddFontResourceExW(wchar* lpszFilename, int fl, void* pdv);
+int AddFontResourceExA(LPCSTR lpszFilename, int fl, void* pdv);
+int AddFontResourceExW(LPCWSTR lpszFilename, int fl, void* pdv);
 
 BOOL AlphaBlend(
   HDC hdcDest,                 // handle to destination DC
@@ -3417,7 +3417,7 @@ version(WinCE)
 
 // USP methods (Unicode Complex Script processor)
 HRESULT ScriptBreak(
-  WCHAR *pwcChars,
+  LPCWSTR pwcChars,
   int cChars,
   SCRIPT_ANALYSIS *psa,
   SCRIPT_LOGATTR *psla
@@ -3462,14 +3462,14 @@ HRESULT ScriptGetProperties(
 HRESULT ScriptGetCMap(
   HDC hdc,
   SCRIPT_CACHE* psc,
-  WCHAR* pwcInChars,
+  LPCWSTR pwcInChars,
   int cChars,
   DWORD dwFlags,
   WORD* pwOutGlyphs
 );
 HRESULT ScriptStringAnalyse(
   HDC hdc,
-  void* pString,
+  LPCVOID pString,
   int cString,
   int cGlyphs,
   int iCharset,
@@ -3497,7 +3497,7 @@ HRESULT ScriptStringFree(
 );
 
 HRESULT ScriptItemize(
-  WCHAR *pwcInChars,
+  LPCWSTR pwcInChars,
   int cInChars,
   int cMaxItems,
   SCRIPT_CONTROL *psControl,
@@ -3525,7 +3525,7 @@ HRESULT ScriptPlace(
 HRESULT ScriptShape(
   HDC hdc,              // in
   SCRIPT_CACHE *psc,    // in/out
-  WCHAR *pwcChars,      //
+  LPCWSTR pwcChars,      //
   int cChars,
   int cMaxGlyphs,
   SCRIPT_ANALYSIS *psa,

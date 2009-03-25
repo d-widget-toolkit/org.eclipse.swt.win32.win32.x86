@@ -3622,6 +3622,7 @@ static int strlen( PCHAR ptr ){
         return tango.stdc.string.strlen( cast(char*)ptr );
     } else { // Phobos
         implMissing( __FILE__, __LINE__ );
+        return 0;
     }
 }
 
@@ -3643,7 +3644,7 @@ public CHAR[] StrToMBCS(CString sc, uint codepage = 0) {
             {
                 CHAR[] result;
                 int i;
-                wchar[] ws = toWCharArray(sc);
+                auto ws = toWCharArray(sc);
                 result.length = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, null, 0, null, null);
                 i = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, result.ptr, result.length, null, null);
                 assert(i == result.length);
@@ -3660,22 +3661,22 @@ public CHAR[] StrToMBCS(CString sc, uint codepage = 0) {
 // convert UTF-8 to MBCSz
 public char* StrToMBCSz(CString sc) {
     char* ret = null;
-    try{
-        if( CodePage.isAscii( sc )){
-            return .toStringz( sc );
-        }
-        char[] dst;
-        dst.length = sc.length;
-        version(Tango){
+    version(Tango){
+        try{
+            if( CodePage.isAscii( sc )){
+                return .toStringz( sc );
+            }
+            char[] dst;
+            dst.length = sc.length;
             return toStringz( tango.sys.win32.CodePage.CodePage.into( sc, dst ));
-        } else { // Phobos
-            implMissing( __FILE__, __LINE__ );
+        }catch(Exception e){
+            // do nothing
+            ret = "";
         }
-    }catch(Exception e){
-        // do nothing
-        ret = "";
-    }
 
+    } else { // Phobos
+        implMissing( __FILE__, __LINE__ );
+    }
     return ret;
 }
 
@@ -3683,7 +3684,7 @@ public String16 StrToWCHARs(uint codepage , CString sc, bool terminated = false 
     return StrToWCHARs( sc, terminated );
 }
 public String16 StrToWCHARs(CString sc, bool terminated = false ) {
-    wchar[] ret;
+    String16 ret;
     try{
         ret = toWCharArray(sc);
     }catch(Exception e){
@@ -3696,11 +3697,11 @@ public String16 StrToWCHARs(CString sc, bool terminated = false ) {
     return ret;
 }
 
-public wchar* StrToWCHARz( uint codepage, CString sc, uint* length = null ) {
+public LPCWSTR StrToWCHARz( uint codepage, CString sc, uint* length = null ) {
     return StrToWCHARz( sc, length );
 }
 
-public wchar* StrToWCHARz(CString sc, uint* length = null ) {
+public LPCWSTR StrToWCHARz(CString sc, uint* length = null ) {
     return StrToWCHARs(sc, true ).ptr;
 }
 
@@ -3719,8 +3720,8 @@ public CString MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
     if(_length == 0)
         return null;
 
-    wchar[] wcs = _mbcszToWs(pString, _length, codepage);
-    char[] result;
+    String16 wcs = _mbcszToWs(pString, _length, codepage);
+    String result;
     try{
         result = String_valueOf(wcs);
     }catch(Exception e){
@@ -3746,9 +3747,9 @@ public String WCHARzToStr(LPCWSTR pString, int _length = -1)
     if(_length == 0)
         return null;
     // convert wchar* to UTF-8
-    wchar[] wcs = pString[0.._length];
+    auto wcs = pString[0.._length];
 
-    char[] result;
+    String result;
     try{
         result = String_valueOf(wcs);
     }catch(Exception e){
@@ -3782,14 +3783,14 @@ static char[] BSTRToStr(/*BSTR*/ inout wchar* bstr, bool freeTheString = false){
 } // end of OLE_COM
 
 
-public static wchar[] _mbcszToWs(PCHAR pMBCS, int len, uint codepage = 0)
+public static String16 _mbcszToWs(PCHAR pMBCS, int len, uint codepage = 0)
 {
     wchar[] wbuf;
     // Convert MBCS to unicode
     wbuf.length = OS.MultiByteToWideChar(codepage, 0, pMBCS, len, null, 0);
     int n = OS.MultiByteToWideChar(codepage, 0, pMBCS, len, wbuf.ptr, wbuf.length);
     assert(n == wbuf.length);
-    return wbuf;
+    return cast(String16)wbuf;
 }
 
 // static methods
@@ -3810,14 +3811,14 @@ char[] c = std.string.tolower(a);
 The length of a is 11, but the length of b,c is 18 now.
  *
  */
-public char[] tolower(char[] string) {
-    TCHAR* ps = StrToTCHARz(string);
-    TCHAR* ps2 = OS.CharLower(ps);
+public String tolower(char[] string) {
+    LPCTSTR ps = StrToTCHARz(string);
+    LPCTSTR ps2 = OS.CharLower(cast(LPTSTR)ps);
     return TCHARzToStr(ps2);
 }
-public char[] toupper(char[] string) {
-    TCHAR* ps = StrToTCHARz(string);
-    TCHAR* ps2 = OS.CharUpper(ps);
+public String toupper(char[] string) {
+    LPCTSTR ps = StrToTCHARz(string);
+    LPCTSTR ps2 = OS.CharUpper(cast(LPTSTR)ps);
     return TCHARzToStr(ps2);
 }
 

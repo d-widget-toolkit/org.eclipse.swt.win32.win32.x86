@@ -343,8 +343,8 @@ public void pack () {
     if (index is -1) return;
     auto hwnd = parent.handle;
     int oldWidth = OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
-    TCHAR* buffer = StrToTCHARz (parent.getCodePage (), text);
-    int headerWidth = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, buffer) + Table.HEADER_MARGIN;
+    LPCTSTR buffer = StrToTCHARz (parent.getCodePage (), text);
+    int headerWidth = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, cast(void*)buffer) + Table.HEADER_MARGIN;
     if (OS.COMCTL32_MAJOR >= 6 && OS.IsAppThemed ()) headerWidth += Table.HEADER_EXTRA;
     bool hasHeaderImage = false;
     if (image !is null || parent.sortColumn is this) {

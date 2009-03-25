@@ -1760,10 +1760,10 @@ void setToolTipTitle (HWND hwndToolTip, String text, HICON icon) {
     }
     if (text !is null) {
         static if( OS.IsUnicode ){
-            TCHAR* pszTitle = StrToTCHARz( text);
+            LPCTSTR pszTitle = StrToTCHARz( text);
         }
         else {
-            TCHAR* pszTitle = StrToTCHARz( text, getCodePage ());
+            LPCTSTR pszTitle = StrToTCHARz( text, getCodePage ());
         }
         OS.SendMessage (hwndToolTip, OS.TTM_SETTITLE, icon, cast(int)pszTitle);
     } else {

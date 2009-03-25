@@ -356,7 +356,7 @@ public void append (String string) {
         if (string is null) return;
     }
     OS.SendMessage (handle, OS.EM_SETSEL, length, length);
-    TCHAR* buffer = StrToTCHARz (getCodePage (), string);
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), string);
     /*
     * Feature in Windows.  When an edit control with ES_MULTILINE
     * style that does not have the WS_VSCROLL style is full (i.e.
@@ -369,7 +369,7 @@ public void append (String string) {
     * handler from WM_CHAR.
     */
     ignoreCharacter = true;
-    OS.SendMessage (handle, OS.EM_REPLACESEL, 0, buffer);
+    OS.SendMessage (handle, OS.EM_REPLACESEL, 0, cast(void*)buffer);
     ignoreCharacter = false;
     OS.SendMessage (handle, OS.EM_SCROLLCARET, 0, 0);
 }
@@ -696,10 +696,10 @@ public Point getCaretLocation () {
             * handler from WM_CHAR.
             */
             ignoreCharacter = ignoreModify = true;
-            OS.SendMessage (handle, OS.EM_REPLACESEL, 0, StrToTCHARz (cp, " "));
+            OS.SendMessage (handle, OS.EM_REPLACESEL, 0, cast(void*)StrToTCHARz (cp, " "));
             caretPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, position, 0);
             OS.SendMessage (handle, OS.EM_SETSEL, position, position + 1);
-            OS.SendMessage (handle, OS.EM_REPLACESEL, 0, StrToTCHARz (cp, ""));
+            OS.SendMessage (handle, OS.EM_REPLACESEL, 0, cast(void*)StrToTCHARz (cp, ""));
             ignoreCharacter = ignoreModify = false;
             OS.SendMessage (handle, OS.EM_SETSEL, start , start );
             OS.SendMessage (handle, OS.EM_SETSEL, start , end );
@@ -1227,7 +1227,7 @@ public void insert (String string) {
         string = verifyText (string, start, end, null);
         if (string is null) return;
     }
-    TCHAR* buffer = StrToTCHARz (getCodePage (), string );
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), string );
     /*
     * Feature in Windows.  When an edit control with ES_MULTILINE
     * style that does not have the WS_VSCROLL style is full (i.e.
@@ -1240,7 +1240,7 @@ public void insert (String string) {
     * handler from WM_CHAR.
     */
     ignoreCharacter = true;
-    OS.SendMessage (handle, OS.EM_REPLACESEL, 0, buffer);
+    OS.SendMessage (handle, OS.EM_REPLACESEL, 0, cast(void*)buffer);
     ignoreCharacter = false;
 }
 
@@ -1489,7 +1489,7 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
     if (newText is null) return false;
     if (newText is oldText) return true;
     newText = Display.withCrLf (newText);
-    TCHAR* buffer = StrToTCHARz (getCodePage (), newText);
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), newText);
     OS.SendMessage (handle, OS.EM_SETSEL, start, end);
     /*
     * Feature in Windows.  When an edit control with ES_MULTILINE
@@ -1503,7 +1503,7 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
     * handler from WM_CHAR.
     */
     ignoreCharacter = true;
-    OS.SendMessage (handle, OS.EM_REPLACESEL, 0, buffer);
+    OS.SendMessage (handle, OS.EM_REPLACESEL, 0, cast(void*)buffer);
     ignoreCharacter = false;
     return false;
 }
@@ -1673,7 +1673,7 @@ public void setMessage (String message) {
         if ((style & SWT.SEARCH) !is 0) {
             int bits = OS.GetWindowLong (handle, OS.GWL_STYLE);
             if ((bits & OS.ES_MULTILINE) is 0) {
-                OS.SendMessage (handle, OS.EM_SETCUEBANNER, 0, StrToTCHARz( 0, message ));
+                OS.SendMessage (handle, OS.EM_SETCUEBANNER, 0, cast(void*)StrToTCHARz( 0, message ));
             }
         }
     }
@@ -1892,7 +1892,7 @@ public void setText (String string) {
     }
     int limit = OS.SendMessage (handle, OS.EM_GETLIMITTEXT, 0, 0) & 0x7FFFFFFF;
     if (string.length > limit) string = string.substring (0, limit);
-    TCHAR* buffer = StrToTCHARz (getCodePage (), string);
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), string);
     OS.SetWindowText (handle, buffer);
     /*
     * Bug in Windows.  When the widget is multi line
@@ -2395,7 +2395,7 @@ LRESULT wmClipboard (int msg, int /*long*/ wParam, int /*long*/ lParam) {
                 callWindowProc (handle, msg, wParam, lParam);
             }
             newText = Display.withCrLf (newText);
-            TCHAR* buffer = StrToTCHARz(getCodePage (), newText);
+            LPCTSTR buffer = StrToTCHARz(getCodePage (), newText);
             /*
             * Feature in Windows.  When an edit control with ES_MULTILINE
             * style that does not have the WS_VSCROLL style is full (i.e.
@@ -2408,7 +2408,7 @@ LRESULT wmClipboard (int msg, int /*long*/ wParam, int /*long*/ lParam) {
             * handler from WM_CHAR.
             */
             ignoreCharacter = true;
-            OS.SendMessage (handle, OS.EM_REPLACESEL, 0, buffer);
+            OS.SendMessage (handle, OS.EM_REPLACESEL, 0, cast(void*)buffer);
             ignoreCharacter = false;
             return LRESULT.ZERO;
         }

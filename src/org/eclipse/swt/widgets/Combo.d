@@ -1028,9 +1028,9 @@ public int indexOf (String string, int start) {
     int count = OS.SendMessage (handle, OS.CB_GETCOUNT, 0, 0);
     if (!(0 <= start && start < count)) return -1;
     int index = start - 1, last = 0;
-    TCHAR* buffer = StrToTCHARz( string );
+    LPCTSTR buffer = StrToTCHARz( string );
     do {
-        index = OS.SendMessage (handle, OS.CB_FINDSTRINGEXACT, last = index, buffer);
+        index = OS.SendMessage (handle, OS.CB_FINDSTRINGEXACT, last = index, cast(void*)buffer);
         if (index is OS.CB_ERR || index <= last) return -1;
     } while (string!=/*eq*/getItem (index));
     return index;
@@ -1409,9 +1409,9 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
     String newText = verifyText (oldText, start, end, event);
     if (newText is null) return false;
     if (newText is oldText) return true;
-    TCHAR* buffer = StrToTCHARz( newText );
+    LPCTSTR buffer = StrToTCHARz( newText );
     OS.SendMessage (hwndText, OS.EM_SETSEL, start, end);
-    OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, buffer);
+    OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, cast(void*)buffer);
     return false;
 }
 
@@ -1578,8 +1578,8 @@ public void setItems (String [] items) {
     int codePage = getCodePage ();
     for (int i=0; i<items.length; i++) {
         String string = items [i];
-        TCHAR* buffer = StrToTCHARz( string );
-        int code = OS.SendMessage (handle, OS.CB_ADDSTRING, 0, buffer);
+        LPCTSTR buffer = StrToTCHARz( string );
+        int code = OS.SendMessage (handle, OS.CB_ADDSTRING, 0, cast(void*)buffer);
         if (code is OS.CB_ERR) error (SWT.ERROR_ITEM_NOT_ADDED);
         if (code is OS.CB_ERRSPACE) error (SWT.ERROR_ITEM_NOT_ADDED);
         if ((style & SWT.H_SCROLL) !is 0) {
@@ -1820,7 +1820,7 @@ public void setText (String string) {
         limit = OS.SendMessage (hwndText, OS.EM_GETLIMITTEXT, 0, 0) & 0x7FFFFFFF;
     }
     if (string.length  > limit) string = string.substring (0, limit);
-    TCHAR* buffer = StrToTCHARz( string );
+    LPCTSTR buffer = StrToTCHARz( string );
     if (OS.SetWindowText (handle, buffer)) {
         sendEvent (SWT.Modify);
         // widget could be disposed at this point
@@ -2398,8 +2398,8 @@ LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
                 OS.HeapFree (hHeap, 0, pszText);
                 return new LRESULT (code);
             } else {
-                TCHAR* buffer = StrToTCHARz( newText );
-                OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, buffer);
+                LPCTSTR buffer = StrToTCHARz( newText );
+                OS.SendMessage (hwndText, OS.EM_REPLACESEL, 0, cast(void*)buffer);
                 return LRESULT.ZERO;
             }
         }

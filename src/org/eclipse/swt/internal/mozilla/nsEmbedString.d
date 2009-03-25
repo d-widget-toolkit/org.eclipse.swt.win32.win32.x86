@@ -78,7 +78,7 @@ scope class nsEmbedCString
         char* buffer = null;
         PRBool terminated;
         uint len = NS_CStringGetData(cast(nsACString*)&str, &buffer, &terminated);
-        return buffer[0 .. len].dup;
+        return buffer[0 .. len]._idup();
     }
 
     ~this()

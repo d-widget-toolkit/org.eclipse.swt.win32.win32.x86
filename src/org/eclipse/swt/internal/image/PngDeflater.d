@@ -120,8 +120,8 @@ static class Code {
 
 }
 
-static const Code lengthCodes[];
-static const Code distanceCodes[];
+static /*const*/ Code lengthCodes[];
+static /*const*/ Code distanceCodes[];
 
 static this() {
     lengthCodes = [

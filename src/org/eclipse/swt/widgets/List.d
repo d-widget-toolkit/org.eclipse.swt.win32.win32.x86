@@ -123,8 +123,8 @@ public void add (String string) {
     checkWidget ();
     // SWT extension: allow null string
     //if (string is null) error (SWT.ERROR_NULL_ARGUMENT);
-    TCHAR* buffer = StrToTCHARz ( getCodePage (), string);
-    int result = OS.SendMessage (handle, OS.LB_ADDSTRING, 0, buffer);
+    LPCTSTR buffer = StrToTCHARz ( getCodePage (), string);
+    int result = OS.SendMessage (handle, OS.LB_ADDSTRING, 0, cast(void*)buffer);
     if (result is OS.LB_ERR) error (SWT.ERROR_ITEM_NOT_ADDED);
     if (result is OS.LB_ERRSPACE) error (SWT.ERROR_ITEM_NOT_ADDED);
     if ((style & SWT.H_SCROLL) !is 0) setScrollWidth (buffer, true);
@@ -156,8 +156,8 @@ public void add (String string, int index) {
     // SWT extension: allow null string
     //if (string is null) error (SWT.ERROR_NULL_ARGUMENT);
     if (index is -1) error (SWT.ERROR_INVALID_RANGE);
-    TCHAR* buffer = StrToTCHARz(getCodePage (), string);
-    int result = OS.SendMessage (handle, OS.LB_INSERTSTRING, index, buffer);
+    LPCTSTR buffer = StrToTCHARz(getCodePage (), string);
+    int result = OS.SendMessage (handle, OS.LB_INSERTSTRING, index, cast(void*)buffer);
     if (result is OS.LB_ERRSPACE) error (SWT.ERROR_ITEM_NOT_ADDED);
     if (result is OS.LB_ERR) {
         int count = OS.SendMessage (handle, OS.LB_GETCOUNT, 0, 0);
@@ -704,9 +704,9 @@ public int indexOf (String string, int start) {
     int count = OS.SendMessage (handle, OS.LB_GETCOUNT, 0, 0);
     if (!(0 <= start && start < count)) return -1;
     int index = start - 1, last;
-    TCHAR* buffer = StrToTCHARz (getCodePage (), string );
+    LPCTSTR buffer = StrToTCHARz (getCodePage (), string );
     do {
-        index = OS.SendMessage (handle, OS.LB_FINDSTRINGEXACT, last = index, buffer);
+        index = OS.SendMessage (handle, OS.LB_FINDSTRINGEXACT, last = index, cast(void*)buffer);
         if (index is OS.LB_ERR || index <= last) return -1;
     } while (string !=/*eq*/ getItem (index));
     return index;
@@ -1243,8 +1243,8 @@ public void setItems (String [] items) {
     int cp = getCodePage ();
     while (index < length) {
         String string = items [index];
-        TCHAR* buffer = StrToTCHARz (cp, string);
-        int result = OS.SendMessage (handle, OS.LB_ADDSTRING, 0, buffer);
+        LPCTSTR buffer = StrToTCHARz (cp, string);
+        int result = OS.SendMessage (handle, OS.LB_ADDSTRING, 0, cast(void*)buffer);
         if (result is OS.LB_ERR || result is OS.LB_ERRSPACE) break;
         if ((style & SWT.H_SCROLL) !is 0) {
             int flags = OS.DT_CALCRECT | OS.DT_SINGLELINE | OS.DT_NOPREFIX;
@@ -1301,7 +1301,7 @@ void setScrollWidth () {
     OS.SendMessage (handle, OS.LB_SETHORIZONTALEXTENT, newWidth + INSET, 0);
 }
 
-void setScrollWidth (TCHAR* buffer, bool grow) {
+void setScrollWidth (LPCTSTR buffer, bool grow) {
     RECT rect;
     HFONT newFont, oldFont;
     auto hDC = OS.GetDC (handle);

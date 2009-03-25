@@ -427,7 +427,7 @@ public void setText (String string) {
         if (oldBits !is newBits) OS.SetWindowLong (handle, OS.GWL_STYLE, newBits);
     }
     string = Display.withCrLf (string);
-    TCHAR* buffer = StrToTCHARz ( getCodePage (), string);
+    LPCTSTR buffer = StrToTCHARz ( getCodePage (), string);
     OS.SetWindowText (handle, buffer);
     /*
     * Bug in Windows.  For some reason, the HBRUSH that
@@ -662,7 +662,7 @@ override LRESULT wmDrawChild (int wParam, int lParam) {
                 imageHeight = rect.height;
             }
             RECT rect;
-            TCHAR* buffer = null;
+            LPCTSTR buffer = null;
             int textWidth = 0, textHeight = 0, flags = 0;
             if (drawText) {
                 //rect = new RECT ();
