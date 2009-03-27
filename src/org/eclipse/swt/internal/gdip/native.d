@@ -15,11 +15,6 @@ module org.eclipse.swt.internal.gdip.native;
 import org.eclipse.swt.internal.win32.WINTYPES;
 import java.lang.all;
 
-version(Tango){
-    static import tango.sys.SharedLib;
-} else { // Phobos
-}
-
 extern(Windows):
 
 /******************************************************************************
@@ -732,6 +727,7 @@ void loadLib_Gdip(){
 
 }
 else{ // version(!STATIC_GDIPLUS)
+import java.nonstandard.SharedLib;
 Status function( uint* token, GdiplusStartupInput* input, GdiplusStartupOutput* output) GdiplusStartup;
 void   function(uint token) GdiplusShutdown;
 Status function(Handle hdc, out Handle graphics) GdipCreateFromHDC;
@@ -1201,11 +1197,6 @@ Status function(out Handle format) GdipStringFormatGetGenericDefault;
 Status function(out Handle format) GdipStringFormatGetGenericTypographic;
 Status function(Handle format, int hotkeyPrefix) GdipSetStringFormatHotkeyPrefix;
 Status function( Handle format, float firstTabOffset, int count, float* tabStops) GdipSetStringFormatTabStops;
-
-struct Symbol {
-    String name;
-    void** symbol;
-}
 
 Symbol[] symbols = [
     { "GdiplusStartup", cast(void**)& GdiplusStartup },
@@ -1681,20 +1672,7 @@ Symbol[] symbols = [
 
 
 void loadLib_Gdip(){
-    version(Tango){
-        if (auto lib = tango.sys.SharedLib.SharedLib.load(`gdiplus.dll`)) {
-            foreach( inout s; symbols ){
-                *s.symbol = lib.getSymbol( s.name.ptr );
-                if( s.symbol is null ){
-                    getDwtLogger.error( __FILE__, __LINE__, "gdiplus.dll: Symbol '{}' not found", s.name );
-                }
-            }
-        } else {
-            getDwtLogger.error( __FILE__, __LINE__, "Could not load the library gdiplus.dll");
-        }
-    } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
-    }
+    SharedLib.loadLibSymbols( symbols, "gdiplus.dll" );
 }
 
 }

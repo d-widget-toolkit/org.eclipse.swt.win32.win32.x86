@@ -18,9 +18,9 @@ static import org.eclipse.swt.internal.win32.WINAPI;
 import org.eclipse.swt.internal.C;
 import org.eclipse.swt.internal.Library;
 import java.lang.all;
+import java.nonstandard.SharedLib;
 
 version(Tango){
-static import tango.sys.SharedLib;
 static import tango.sys.Common;
 
 static import tango.stdc.stdlib;
@@ -81,31 +81,6 @@ public class LDWTRESULT {
 
 
 public class OS : C {
-
-    struct Symbol {
-        String name;
-        void** symbol;
-        int major;
-        int minor;
-    }
-    static void loadLib( Symbol[] symbols, String libname ){
-        version(Tango){
-            if (auto lib = tango.sys.SharedLib.SharedLib.load(libname)) {
-                foreach( inout s; symbols ){
-                    if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
-                        *s.symbol = lib.getSymbol( s.name.ptr );
-                        if( s.symbol is null ){
-                            getDwtLogger.error(  __FILE__, __LINE__, "{}: Symbol '{}' not found", libname, s.name );
-                        }
-                    }
-                }
-            } else {
-                getDwtLogger.error(  __FILE__, __LINE__, "Could not load the library {}", libname );
-            }
-        } else { // Phobos
-            implMissing( __FILE__, __LINE__ );
-        }
-    }
 
     public static HINSTANCE GetLibraryHandle(){
         //PORTING_FIXME: GetLibraryHandle
@@ -307,7 +282,7 @@ BOOL function(
         WIN32_VERSION = VERSION (WIN32_MAJOR, WIN32_MINOR);
 
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 0)) {
-            loadLib( Symbols_Kernel32, `Kernel32.dll` );
+            SharedLib.loadLibSymbols( Symbols_Kernel32, `Kernel32.dll`, WIN32_MAJOR, WIN32_MINOR );
         }
 
         //PORTING_CHANGE: made by version
@@ -320,16 +295,16 @@ BOOL function(
 
         // when to load uxtheme
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 1)) {
-            loadLib( Symbols_UxTheme, `UxTheme.dll` );
+            SharedLib.loadLibSymbols( Symbols_UxTheme, `UxTheme.dll`, WIN32_MAJOR, WIN32_MINOR );
         }
         if (OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 1)) {
-            loadLib( Symbols_CoreImm, `Coreimm.dll` );
+            SharedLib.loadLibSymbols( Symbols_CoreImm, `Coreimm.dll`, WIN32_MAJOR, WIN32_MINOR );
         }
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 0)) {
-            loadLib( Symbols_User32, `User32.dll` );
+            SharedLib.loadLibSymbols( Symbols_User32, `User32.dll`, WIN32_MAJOR, WIN32_MINOR );
         }
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (4, 0)) {
-            loadLib( Symbols_Imm32, `Imm32.dll` );
+            SharedLib.loadLibSymbols( Symbols_Imm32, `Imm32.dll`, WIN32_MAJOR, WIN32_MINOR );
         }
 
         /* Make the process DPI aware for Windows Vista */
@@ -372,20 +347,11 @@ BOOL function(
         //PORTING_CHANGE: comctl is loaded automatically
         //TCHAR lpLibFileName = new TCHAR (0, "comctl32.dll", true); //$NON-NLS-1$
         //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
-        version(Tango){
-            if (auto lib = tango.sys.SharedLib.SharedLib.load( `comctl32.dll`) ) {
-                char[] name = "DllGetVersion\0"; //$NON-NLS-1$
-                void* DllGetVersion = lib.getSymbol(name.ptr);
-                if (DllGetVersion !is null){
-                    alias extern(Windows) void function(DLLVERSIONINFO*) TDllVersion;
-                    TDllVersion f = cast( TDllVersion )DllGetVersion;
-                    f(&dvi);
-                }
-                lib.unload();
-            }
-        } else { // Phobos
-            implMissing( __FILE__, __LINE__ );
-        }
+        SharedLib.tryUseSymbol( "DllGetVersion", "comctl32.dll", (void* ptr){
+            alias extern(Windows) void function(DLLVERSIONINFO*) TDllGetVersion;
+            auto func = cast( TDllGetVersion ) ptr;
+            func(&dvi);
+        });
         COMCTL32_MAJOR = dvi.dwMajorVersion;
         COMCTL32_MINOR = dvi.dwMinorVersion;
         COMCTL32_VERSION = VERSION (COMCTL32_MAJOR, COMCTL32_MINOR);
@@ -396,20 +362,11 @@ BOOL function(
         dvi.dwMajorVersion = 4;
         //TCHAR lpLibFileName = new TCHAR (0, "Shell32.dll", true); //$NON-NLS-1$
         //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
-        version(Tango){
-            if ( auto lib = tango.sys.SharedLib.SharedLib.load( `Shell32.dll`)) {
-                char[] name = "DllGetVersion\0"; //$NON-NLS-1$
-                void* DllGetVersion = lib.getSymbol(name.ptr);
-                if (DllGetVersion !is null){
-                    alias extern(Windows) void function(DLLVERSIONINFO*) TDllVersion;
-                    TDllVersion f = cast( TDllVersion )DllGetVersion;
-                    f(&dvi);
-                }
-                lib.unload();
-            }
-        } else { // Phobos
-            implMissing( __FILE__, __LINE__ );
-        }
+        SharedLib.tryUseSymbol( "DllGetVersion", "Shell32.dll", (void* ptr){
+            alias extern(Windows) void function(DLLVERSIONINFO*) TDllGetVersion;
+            auto func = cast( TDllGetVersion ) ptr;
+            func(&dvi);
+        });
         SHELL32_MAJOR = dvi.dwMajorVersion;
         SHELL32_MINOR = dvi.dwMinorVersion;
         SHELL32_VERSION = VERSION (SHELL32_MAJOR, SHELL32_MINOR);
@@ -2712,7 +2669,7 @@ public static extern(Windows) {
 
 } // public static
 
-static Symbol[] Symbols_UxTheme = [
+static SymbolVersioned2[] Symbols_UxTheme = [
     { "IsAppThemed", cast(void**)& IsAppThemed, 5, 1 },
     { "DrawThemeBackground", cast(void**)& DrawThemeBackground, 5, 1 },
     { "DrawThemeEdge", cast(void**)& DrawThemeEdge, 5, 1 },
@@ -2730,22 +2687,7 @@ static Symbol[] Symbols_UxTheme = [
 ];
 
 static void loadLib_UxTheme(){
-    version(Tango){
-        if (auto lib = tango.sys.SharedLib.SharedLib.load(`uxtheme.dll`)) {
-            foreach( inout s; Symbols_UxTheme ){
-                if( OS.WIN32_VERSION >= OS.VERSION( s.major, s.minor )){
-                    *s.symbol = lib.getSymbol( s.name.ptr );
-                    if( *s.symbol is null ){
-                        getDwtLogger.error( __FILE__, __LINE__, "UxTheme.dll: Symbol '{}' not found", s.name );
-                    }
-                }
-            }
-        } else {
-            getDwtLogger.error( __FILE__, __LINE__, "Could not load the library UxTheme.dll");
-        }
-    } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
-    }
+    SharedLib.loadLibSymbols( Symbols_UxTheme, "uxtheme.dll", WIN32_MAJOR, WIN32_MINOR );
 }
 //----------------------------------------------------------------------
 // Coreimm.lib (WinCE)
@@ -2775,7 +2717,7 @@ public static extern(Windows) {
 } // public static extern(Windows)
 
 
-static Symbol[] Symbols_CoreImm = [
+static SymbolVersioned2[] Symbols_CoreImm = [
 ];
 
 // user32.dll vista
@@ -2784,7 +2726,7 @@ public static extern(Windows){
     BOOL function( HWND hWnd )IsHungAppWindow;
 }
 
-static Symbol[] Symbols_User32 = [
+static SymbolVersioned2[] Symbols_User32 = [
     { "SetProcessDPIAware", cast(void**)& SetProcessDPIAware, 6, 0 },
     { "GetLayeredWindowAttributes", cast(void**)& GetLayeredWindowAttributes, 5, 1 },
     { "SetLayeredWindowAttributes", cast(void**)& SetLayeredWindowAttributes, 5, 0 },
@@ -2845,7 +2787,7 @@ LONG function(
 
 }
 
-static Symbol[] Symbols_Imm32 = [
+static SymbolVersioned2[] Symbols_Imm32 = [
     { "ImmAssociateContext", cast(void**)& ImmAssociateContext, 5, 1 },
     { "ImmCreateContext", cast(void**)& ImmCreateContext, 5, 1 },
     { "ImmDestroyContext", cast(void**)& ImmDestroyContext, 5, 1 },
@@ -2869,7 +2811,7 @@ static Symbol[] Symbols_Imm32 = [
 
 version(ANSI){
 }else{
-static Symbol[] Symbols_Kernel32 = [
+static SymbolVersioned2[] Symbols_Kernel32 = [
     { "CreateActCtxW", cast(void**)& CreateActCtx, 5, 1 },
     { "ActivateActCtx", cast(void**)& ActivateActCtx, 5, 1 },
     { "GetSystemDefaultUILanguage", cast(void**)& GetSystemDefaultUILanguage, 5, 0 },
