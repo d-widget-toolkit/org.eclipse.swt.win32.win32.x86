@@ -82,11 +82,11 @@ private class _DgSelectionListenerT(Dg,T...) : SelectionListener {
 
     version(Tango){
         alias ParameterTupleOf!(Dg) DgArgs;
-        static assert( is(DgArgs == Tuple!(CTabFolderEvent,T)),
+        static assert( is(DgArgs == Tuple!(SelectionEvent,T)),
                 "Delegate args not correct: "~DgArgs.stringof~" vs. (Event,"~T.stringof~")" );
     } else { // Phobos
         alias ParameterTypeTuple!(Dg) DgArgs;
-        static assert( is(DgArgs == TypeTuple!(CTabFolderEvent,T)),
+        static assert( is(DgArgs == TypeTuple!(SelectionEvent,T)),
                 "Delegate args not correct: "~DgArgs.stringof~" vs. (Event,"~T.stringof~")" );
     }
 
