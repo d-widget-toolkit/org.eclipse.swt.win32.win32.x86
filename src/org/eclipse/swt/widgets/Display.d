@@ -1654,7 +1654,7 @@ public Object getData (String key) {
     // SWT extension: allow null string
     //if (key is null) error (SWT.ERROR_NULL_ARGUMENT);
     if (key ==/*eq*/RUN_MESSAGES_IN_IDLE_KEY) {
-        return new ValueWrapperBool(runMessagesInIdle);
+        return new Boolean(runMessagesInIdle);
     }
     if (key.equals (RUN_MESSAGES_IN_MESSAGE_PROC_KEY)) {
         return new Boolean (runMessagesInMessageProc);
@@ -4130,7 +4130,7 @@ public void setData (String key, Object value) {
     //if (key is null) error (SWT.ERROR_NULL_ARGUMENT);
 
     if (key ==/*eq*/RUN_MESSAGES_IN_IDLE_KEY) {
-        auto data = cast(ValueWrapperBool) value;
+        auto data = cast(Boolean) value;
         runMessagesInIdle = data !is null && data.value;
         return;
     }

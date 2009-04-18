@@ -300,7 +300,7 @@ public PrinterData open() {
     PrinterData data = null;
     String key = "org.eclipse.swt.internal.win32.runMessagesInIdle"; //$NON-NLS-1$
     Object oldValue = display.getData(key);
-    display.setData(key, new ValueWrapperBool(true));
+    display.setData(key, new Boolean(true));
     bool success = cast(bool)OS.PrintDlg(&pd);
     display.setData(key, oldValue);
     if ((getStyle() & (SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL)) !is 0) {

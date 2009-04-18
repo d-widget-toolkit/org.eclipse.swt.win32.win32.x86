@@ -1141,8 +1141,8 @@ public class Accessible {
                 nextItems = new Object[endIndex - enumIndex + 1];
                 for (int i = 0; i < nextItems.length; i++) {
                     Object child = variants[enumIndex];
-                    if (auto val = cast(ValueWrapperInt)child ) {
-                        nextItems[i] = new ValueWrapperInt(childIDToOs(val.value));
+                    if (auto val = cast(Integer)child ) {
+                        nextItems[i] = new Integer(childIDToOs(val.intValue()));
                     } else {
                         nextItems[i] = child;
                     }
@@ -1153,8 +1153,8 @@ public class Accessible {
         if (nextItems !is null) {
             for (int i = 0; i < nextItems.length; i++) {
                 Object nextItem = nextItems[i];
-                if (auto val = cast(ValueWrapperInt)nextItem ) {
-                    int item = val.value;
+                if (auto val = cast(Integer)nextItem ) {
+                    int item = val.intValue();
                     rgvar[i].vt = COM.VT_I4;
                     rgvar[i].byRef = cast(void*)item;
                     COM.MoveMemory(rgvar + i * VARIANT.sizeof + 8, &item, 4);
