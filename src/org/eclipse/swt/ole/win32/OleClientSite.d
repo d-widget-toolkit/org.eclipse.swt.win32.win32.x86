@@ -1356,11 +1356,11 @@ extern (Windows):
     ULONG Release() { return parent.Release(); }
 
     // interface of IAdviseSink
-    void OnDataChange(FORMATETC *pFormatetc,STGMEDIUM *pStgmed) {return COM.S_OK; }
-    void OnViewChange(DWORD dwAspect, LONG lindex) {return COM.S_OK; }
-    void OnRename(IMoniker pmk) {return COM.S_OK; }
-    void OnSave() {return COM.S_OK; }
-    void OnClose() {return COM.S_OK; }
+    void OnDataChange(FORMATETC *pFormatetc,STGMEDIUM *pStgmed) { }
+    void OnViewChange(DWORD dwAspect, LONG lindex) { }
+    void OnRename(IMoniker pmk) { }
+    void OnSave() { }
+    void OnClose() { }
 }
 
 class _IOleClientSiteImpl : IOleClientSite {
