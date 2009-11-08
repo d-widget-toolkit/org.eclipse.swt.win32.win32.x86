@@ -22,22 +22,22 @@ import org.eclipse.swt.SWTException;
 import java.lang.all;
 
 version(build){
-    pragma(link, "advapi32.lib");
-    pragma(link, "comctl32.lib");
-    pragma(link, "comdlg32.lib");
-    pragma(link, "gdi32.lib");
-    pragma(link, "kernel32.lib");
-    pragma(link, "shell32.lib");
-    pragma(link, "ole32.lib");
-    pragma(link, "oleaut32.lib");
-    pragma(link, "olepro32.lib");
-    pragma(link, "oleacc.lib");
-    pragma(link, "user32.lib");
-    pragma(link, "usp10.lib");
-    pragma(link, "msimg32.lib");
-    pragma(link, "opengl32.lib");
-    pragma(link, "shlwapi.lib");
-    pragma(link, "org.eclipse.swt.win32.win32.x86.lib");
+    pragma(link, "advapi32");
+    pragma(link, "comctl32");
+    pragma(link, "comdlg32");
+    pragma(link, "gdi32");
+    pragma(link, "kernel32");
+    pragma(link, "shell32");
+    pragma(link, "ole32");
+    pragma(link, "oleaut32");
+    pragma(link, "olepro32");
+    pragma(link, "oleacc");
+    pragma(link, "user32");
+    pragma(link, "usp10");
+    pragma(link, "msimg32");
+    pragma(link, "opengl32");
+    pragma(link, "shlwapi");
+    pragma(link, "org.eclipse.swt.win32.win32.x86");
     //pragma(link, "gdiplus"); // load dynamic
     //pragma(link, "uxtheme"); // load dynamic
 }
