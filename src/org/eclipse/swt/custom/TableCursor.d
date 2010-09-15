@@ -208,7 +208,7 @@ public this(Table parent, int style) {
         public void handleEvent(Event event) {
             switch (event.type) {
                 case SWT.Dispose :
-                    dispose(event);
+                    TableCursor.dispose(event);
                     break;
                 case SWT.FocusIn :
                 case SWT.FocusOut :
