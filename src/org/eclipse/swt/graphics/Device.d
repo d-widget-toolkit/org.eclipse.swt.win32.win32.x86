@@ -110,11 +110,13 @@ public abstract class Device : Drawable {
 /*
 * TEMPORARY CODE.
 */
-static synchronized Device getDevice () {
-    if (DeviceFinder !is null) DeviceFinder.run();
-    Device device = CurrentDevice;
-    CurrentDevice = null;
-    return device;
+static Device getDevice () {
+    synchronized {
+        if (DeviceFinder !is null) DeviceFinder.run();
+        Device device = CurrentDevice;
+        CurrentDevice = null;
+        return device;
+    }
 }
 
 /**

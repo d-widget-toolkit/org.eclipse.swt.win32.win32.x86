@@ -546,7 +546,7 @@ LRESULT CDDS_ITEMPREPAINT (NMLVCUSTOMDRAW* nmcd, int wParam, int lParam) {
                     if ((dwExStyle & OS.LVS_EX_FULLROWSELECT) is 0) {
                         if ((nmcd.nmcd.uItemState & OS.CDIS_FOCUS) !is 0) {
                             nmcd.nmcd.uItemState &= ~OS.CDIS_FOCUS;
-                            OS.MoveMemory (cast(NMLVCUSTOMDRAW*)lParam, nmcd, OS.NMLVCUSTOMDRAW_sizeof);
+                            OS.MoveMemory (lParam, nmcd, OS.NMLVCUSTOMDRAW_sizeof);
                         }
                     }
                 }
@@ -3412,7 +3412,7 @@ void sendEraseItemEvent (TableItem item, NMLVCUSTOMDRAW* nmcd, int lParam, Event
             }
             if (!ignoreDrawFocus) {
                 nmcd.nmcd.uItemState &= ~OS.CDIS_FOCUS;
-                OS.MoveMemory (cast(void*)lParam, nmcd, OS.NMLVCUSTOMDRAW_sizeof);
+                OS.MoveMemory (lParam, nmcd, OS.NMLVCUSTOMDRAW_sizeof);
                 focusRect = new RECT;
                 *focusRect = textRect;
             }
@@ -5512,7 +5512,7 @@ override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
             if ((style & SWT.MIRRORED) !is 0) {
                 shdi.ptOffset.x = shdi.sizeDragImage.cx - shdi.ptOffset.x; 
             }
-            OS.MoveMemory (cast(void*)lParam, &shdi, SHDRAGIMAGE.sizeof);
+            OS.MoveMemory (lParam, &shdi, SHDRAGIMAGE.sizeof);
             return 1;
         }
     }
@@ -6795,13 +6795,13 @@ LRESULT wmNotifyToolTip (NMHDR* hdr, int /*long*/ wParam, int /*long*/ lParam) {
                             NMTTDISPINFO* lpnmtdi = null;
                             if (hdr.code is OS.TTN_GETDISPINFOA) {
                                 lpnmtdi = cast(NMTTDISPINFO*)new NMTTDISPINFOA;
-                                OS.MoveMemory (lpnmtdi, cast(void*) lParam, NMTTDISPINFOA.sizeof);
+                                OS.MoveMemory (cast(int) lpnmtdi, cast(void*) lParam, NMTTDISPINFOA.sizeof);
                                 if (lpnmtdi.lpszText !is null) {
                                     (cast(char*)lpnmtdi.lpszText)[0] = 0;
                                 }
                             } else {
                                 lpnmtdi = cast(NMTTDISPINFO*)new NMTTDISPINFOW;
-                                OS.MoveMemory (lpnmtdi, cast(void*) lParam, NMTTDISPINFOW.sizeof);
+                                OS.MoveMemory (lpnmtdi, lParam, NMTTDISPINFOW.sizeof);
                                 if (lpnmtdi.lpszText !is null) {
                                     (cast(wchar*)lpnmtdi.lpszText)[0] = 0;
                                 }

@@ -227,7 +227,11 @@ BOOL function(
 //     }
 
     /* Get the Windows version and the flags */
-    public static this() {
+    static this(){
+        static_this_1();
+        static_this_2();
+        static_this_3();
+        static_this_4();
         LDWTRESULT.ONE = new LDWTRESULT(1);
         LDWTRESULT.ZERO = new LDWTRESULT(0);
         /*
@@ -328,7 +332,7 @@ BOOL function(
         */
         if (!OS.IsWinCE && OS.WIN32_VERSION is OS.VERSION (5, 1)) {
             short langID = OS.GetSystemDefaultUILanguage ();
-            short primaryLang = OS.PRIMARYLANGID (langID);
+            short primaryLang = cast(short) OS.PRIMARYLANGID (langID);
             if (primaryLang is LANG_KOREAN) {
                 OSVERSIONINFOEX infoex;
                 infoex.dwOSVersionInfoSize = OSVERSIONINFOEX.sizeof;
@@ -2668,23 +2672,25 @@ public static extern(Windows) {
     ) SetWindowTheme;
 
 } // public static
-
-static SymbolVersioned2[] Symbols_UxTheme = [
-    { "IsAppThemed", cast(void**)& IsAppThemed, 5, 1 },
-    { "DrawThemeBackground", cast(void**)& DrawThemeBackground, 5, 1 },
-    { "DrawThemeEdge", cast(void**)& DrawThemeEdge, 5, 1 },
-    { "DrawThemeIcon", cast(void**)& DrawThemeIcon, 5, 1 },
-    { "DrawThemeParentBackground", cast(void**)& DrawThemeParentBackground, 5, 1 },
-    { "DrawThemeText", cast(void**)& DrawThemeText, 5, 1 },
-    { "OpenThemeData", cast(void**)& OpenThemeData, 5, 1 },
-    { "CloseThemeData", cast(void**)& CloseThemeData, 5, 1 },
-    { "GetThemeTextExtent", cast(void**)& GetThemeTextExtent, 5, 1 },
-    { "SetWindowTheme", cast(void**)& SetWindowTheme, 5, 1 },
-    { "BufferedPaintUnInit", cast(void**)& BufferedPaintUnInit, 6, 0 },
-    { "BufferedPaintInit", cast(void**)& BufferedPaintInit, 6, 0 },
-    { "BeginBufferedPaint", cast(void**)& BeginBufferedPaint, 6, 0 },
-    { "EndBufferedPaint", cast(void**)& EndBufferedPaint, 6, 0 },
-];
+static SymbolVersioned2[] Symbols_UxTheme;
+private static void static_this_1(){
+    Symbols_UxTheme = [
+        SymbolVersioned2( "IsAppThemed", cast(void**)& IsAppThemed, 5, 1 ),
+        SymbolVersioned2( "DrawThemeBackground", cast(void**)& DrawThemeBackground, 5, 1 ),
+        SymbolVersioned2( "DrawThemeEdge", cast(void**)& DrawThemeEdge, 5, 1 ),
+        SymbolVersioned2( "DrawThemeIcon", cast(void**)& DrawThemeIcon, 5, 1 ),
+        SymbolVersioned2( "DrawThemeParentBackground", cast(void**)& DrawThemeParentBackground, 5, 1 ),
+        SymbolVersioned2( "DrawThemeText", cast(void**)& DrawThemeText, 5, 1 ),
+        SymbolVersioned2( "OpenThemeData", cast(void**)& OpenThemeData, 5, 1 ),
+        SymbolVersioned2( "CloseThemeData", cast(void**)& CloseThemeData, 5, 1 ),
+        SymbolVersioned2( "GetThemeTextExtent", cast(void**)& GetThemeTextExtent, 5, 1 ),
+        SymbolVersioned2( "SetWindowTheme", cast(void**)& SetWindowTheme, 5, 1 ),
+        SymbolVersioned2( "BufferedPaintUnInit", cast(void**)& BufferedPaintUnInit, 6, 0 ),
+        SymbolVersioned2( "BufferedPaintInit", cast(void**)& BufferedPaintInit, 6, 0 ),
+        SymbolVersioned2( "BeginBufferedPaint", cast(void**)& BeginBufferedPaint, 6, 0 ),
+        SymbolVersioned2( "EndBufferedPaint", cast(void**)& EndBufferedPaint, 6, 0 )
+    ];
+}
 
 static void loadLib_UxTheme(){
     SharedLib.loadLibSymbols( Symbols_UxTheme, "uxtheme.dll", WIN32_MAJOR, WIN32_MINOR );
@@ -2726,13 +2732,16 @@ public static extern(Windows){
     BOOL function( HWND hWnd )IsHungAppWindow;
 }
 
-static SymbolVersioned2[] Symbols_User32 = [
-    { "SetProcessDPIAware", cast(void**)& SetProcessDPIAware, 6, 0 },
-    { "GetLayeredWindowAttributes", cast(void**)& GetLayeredWindowAttributes, 5, 1 },
-    { "SetLayeredWindowAttributes", cast(void**)& SetLayeredWindowAttributes, 5, 0 },
-    { "PrintWindow", cast(void**)& PrintWindow, 5, 1 },
-    { "IsHungAppWindow", cast(void**)& IsHungAppWindow, 5, 0 },
-];
+static SymbolVersioned2[] Symbols_User32;
+private static void static_this_2(){
+    Symbols_User32 = [
+        SymbolVersioned2( "SetProcessDPIAware", cast(void**)& SetProcessDPIAware, 6, 0 ),
+        SymbolVersioned2( "GetLayeredWindowAttributes", cast(void**)& GetLayeredWindowAttributes, 5, 1 ),
+        SymbolVersioned2( "SetLayeredWindowAttributes", cast(void**)& SetLayeredWindowAttributes, 5, 0 ),
+        SymbolVersioned2( "PrintWindow", cast(void**)& PrintWindow, 5, 1 ),
+        SymbolVersioned2( "IsHungAppWindow", cast(void**)& IsHungAppWindow, 5, 0 )
+    ];
+}
 
 // Imm32.lib
 public static extern(Windows) {
@@ -2787,39 +2796,45 @@ LONG function(
 
 }
 
-static SymbolVersioned2[] Symbols_Imm32 = [
-    { "ImmAssociateContext", cast(void**)& ImmAssociateContext, 5, 1 },
-    { "ImmCreateContext", cast(void**)& ImmCreateContext, 5, 1 },
-    { "ImmDestroyContext", cast(void**)& ImmDestroyContext, 5, 1 },
-    { "ImmGetContext", cast(void**)& ImmGetContext, 5, 1 },
-    { "ImmGetConversionStatus", cast(void**)& ImmGetConversionStatus, 5, 1 },
-    { "ImmGetDefaultIMEWnd", cast(void**)& ImmGetDefaultIMEWnd, 5, 1 },
-    { "ImmGetOpenStatus", cast(void**)& ImmGetOpenStatus, 5, 1 },
-    { "ImmReleaseContext", cast(void**)& ImmReleaseContext, 5, 1 },
-    { "ImmSetCompositionFontW", cast(void**)& ImmSetCompositionFont, 5, 1 },
-    { "ImmGetCompositionStringW", cast(void**)& ImmGetCompositionString, 5, 1 },
-    { "ImmGetCompositionFontW", cast(void**)& ImmGetCompositionFont, 5, 1 },
-    { "ImmSetCompositionWindow", cast(void**)& ImmSetCompositionWindow, 5, 1 },
-    { "ImmSetConversionStatus", cast(void**)& ImmSetConversionStatus, 5, 1 },
-    { "ImmSetOpenStatus", cast(void**)& ImmSetOpenStatus, 5, 1 },
-    { "ImmDisableTextFrameService", cast(void**)& ImmDisableTextFrameService, 5, 1 },
-    { "ImmNotifyIME", cast(void**)& ImmNotifyIME, 5, 1 },
-    { "ImmGetCompositionStringW", cast(void**)& ImmGetCompositionStringW, 5, 1 },
-    { "ImmGetCompositionStringA", cast(void**)& ImmGetCompositionStringA, 5, 1 },
-    { "ImmSetCandidateWindow", cast(void**)& ImmSetCandidateWindow, 5, 1 },
-];
+static SymbolVersioned2[] Symbols_Imm32;
+private static void static_this_3(){
+    Symbols_Imm32 = [
+        SymbolVersioned2( "ImmAssociateContext", cast(void**)& ImmAssociateContext, 5, 1 ),
+        SymbolVersioned2( "ImmCreateContext", cast(void**)& ImmCreateContext, 5, 1 ),
+        SymbolVersioned2( "ImmDestroyContext", cast(void**)& ImmDestroyContext, 5, 1 ),
+        SymbolVersioned2( "ImmGetContext", cast(void**)& ImmGetContext, 5, 1 ),
+        SymbolVersioned2( "ImmGetConversionStatus", cast(void**)& ImmGetConversionStatus, 5, 1 ),
+        SymbolVersioned2( "ImmGetDefaultIMEWnd", cast(void**)& ImmGetDefaultIMEWnd, 5, 1 ),
+        SymbolVersioned2( "ImmGetOpenStatus", cast(void**)& ImmGetOpenStatus, 5, 1 ),
+        SymbolVersioned2( "ImmReleaseContext", cast(void**)& ImmReleaseContext, 5, 1 ),
+        SymbolVersioned2( "ImmSetCompositionFontW", cast(void**)& ImmSetCompositionFont, 5, 1 ),
+        SymbolVersioned2( "ImmGetCompositionStringW", cast(void**)& ImmGetCompositionString, 5, 1 ),
+        SymbolVersioned2( "ImmGetCompositionFontW", cast(void**)& ImmGetCompositionFont, 5, 1 ),
+        SymbolVersioned2( "ImmSetCompositionWindow", cast(void**)& ImmSetCompositionWindow, 5, 1 ),
+        SymbolVersioned2( "ImmSetConversionStatus", cast(void**)& ImmSetConversionStatus, 5, 1 ),
+        SymbolVersioned2( "ImmSetOpenStatus", cast(void**)& ImmSetOpenStatus, 5, 1 ),
+        SymbolVersioned2( "ImmDisableTextFrameService", cast(void**)& ImmDisableTextFrameService, 5, 1 ),
+        SymbolVersioned2( "ImmNotifyIME", cast(void**)& ImmNotifyIME, 5, 1 ),
+        SymbolVersioned2( "ImmGetCompositionStringW", cast(void**)& ImmGetCompositionStringW, 5, 1 ),
+        SymbolVersioned2( "ImmGetCompositionStringA", cast(void**)& ImmGetCompositionStringA, 5, 1 ),
+        SymbolVersioned2( "ImmSetCandidateWindow", cast(void**)& ImmSetCandidateWindow, 5, 1 )
+    ];
+}
 
 version(ANSI){
 }else{
-static SymbolVersioned2[] Symbols_Kernel32 = [
-    { "CreateActCtxW", cast(void**)& CreateActCtx, 5, 1 },
-    { "ActivateActCtx", cast(void**)& ActivateActCtx, 5, 1 },
-    { "GetSystemDefaultUILanguage", cast(void**)& GetSystemDefaultUILanguage, 5, 0 },
-    { "EnumSystemLanguageGroupsW", cast(void**)& EnumSystemLanguageGroupsW, 4, 0 },
-    { "EnumSystemLanguageGroupsA", cast(void**)& EnumSystemLanguageGroupsA, 4, 0 },
-    { "EnumSystemLocalesW", cast(void**)& EnumSystemLocalesW, 4, 0 },
-    { "EnumSystemLocalesA", cast(void**)& EnumSystemLocalesA, 4, 0 },
-];
+static SymbolVersioned2[] Symbols_Kernel32;
+private static void static_this_4(){
+    Symbols_Kernel32 = [
+        SymbolVersioned2( "CreateActCtxW", cast(void**)& CreateActCtx, 5, 1 ),
+        SymbolVersioned2( "ActivateActCtx", cast(void**)& ActivateActCtx, 5, 1 ),
+        SymbolVersioned2( "GetSystemDefaultUILanguage", cast(void**)& GetSystemDefaultUILanguage, 5, 0 ),
+        SymbolVersioned2( "EnumSystemLanguageGroupsW", cast(void**)& EnumSystemLanguageGroupsW, 4, 0 ),
+        SymbolVersioned2( "EnumSystemLanguageGroupsA", cast(void**)& EnumSystemLanguageGroupsA, 4, 0 ),
+        SymbolVersioned2( "EnumSystemLocalesW", cast(void**)& EnumSystemLocalesW, 4, 0 ),
+        SymbolVersioned2( "EnumSystemLocalesA", cast(void**)& EnumSystemLocalesA, 4, 0 )
+    ];
+}
 }
 
 
@@ -3568,7 +3583,7 @@ static int strlen( PCHAR ptr ){
     }
 }
 
-static void POINTSTOPOINT( inout POINT pt, int pts) {
+static void POINTSTOPOINT( ref POINT pt, int pts) {
     pt.x = cast(SHORT) LOWORD(pts);
     pt.y = cast(SHORT) HIWORD(pts);
 }

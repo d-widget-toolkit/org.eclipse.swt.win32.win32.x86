@@ -32,6 +32,14 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swt.custom.CTabFolder;
 
+version(Tango){
+    import tango.text.convert.Utf;
+} else {
+    import std.conv;
+    alias to!(string) toString;
+    alias to!(dstring) toString32;
+}
+
 /**
  * Instances of this class represent a selectable user interface object
  * that represent a page in a notebook widget.
@@ -173,7 +181,7 @@ String shortenText(GC gc, String text, int width, String ellipses) {
         end = layout.getPreviousOffset(end, SWT.MOVEMENT_CLUSTER);
     }
     layout.dispose();
-    return end is 0 ? text.substring(0, 1) : text ~ ellipses;
+    return end is 0 ? .toString(toString32(text)[0 .. 1]) : text ~ ellipses;
 }
 
 public override void dispose() {
@@ -859,14 +867,14 @@ int preferredWidth(GC gc, bool isSelected, bool minimum) {
     if (minimum) {
         int minChars = parent.minChars;
         text = minChars is 0 ? null : getText();
-        if (text !is null && text.length > minChars) {
+        if (text !is null && toString32(text).length > minChars) {
             if (useEllipses()) {
                 int end = minChars < ELLIPSIS.length + 1 ? minChars : minChars - ELLIPSIS.length;
-                text = text[ 0 .. end ];
+                text = .toString(toString32(text)[ 0 .. end ]);
                 if (minChars > ELLIPSIS.length + 1) text ~= ELLIPSIS;
             } else {
                 int end = minChars;
-                text = text[ 0 .. end ];
+                text = .toString(toString32(text)[ 0 .. end ]);
             }
         }
     } else {

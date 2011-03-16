@@ -7284,14 +7284,14 @@ public void setKeyBinding(int key, int action) {
     if (Compatibility.isLetter(keyChar)) {
         // make the keybinding case insensitive by adding it
         // in its upper and lower case form
-        char ch = CharacterToUpper(keyChar);
+        char ch = cast(char) CharacterToUpper(keyChar);
         int newKey = ch | modifierValue;
         if (action is SWT.NULL) {
             keyActionMap.remove(newKey);
         } else {
             keyActionMap[newKey] = action;
         }
-        ch = CharacterToLower(keyChar);
+        ch = cast(char) CharacterToLower(keyChar);
         newKey = ch | modifierValue;
         if (action is SWT.NULL) {
             keyActionMap.remove(newKey);

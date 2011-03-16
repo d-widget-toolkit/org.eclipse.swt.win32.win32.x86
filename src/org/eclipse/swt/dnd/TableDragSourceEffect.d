@@ -132,7 +132,7 @@ public class TableDragSourceEffect : DragSourceEffect {
                     OS.BitBlt (memHdc, 0, 0, srcWidth, srcHeight, srcHdc, 0, 0, OS.SRCCOPY);
                     //byte[] srcData = new byte [sizeInBytes];
                     //OS.MoveMemory (srcData, dibBM.bmBits, sizeInBytes);
-                    byte[] srcData = (cast(byte*) dibBM.bmBits)[ 0 .. BITMAPINFOHEADER.sizeof ];
+                    byte[] srcData = (cast(byte*) dibBM.bmBits)[ 0 .. sizeInBytes ];
 
                     PaletteData palette = new PaletteData(0xFF00, 0xFF0000, 0xFF000000);
                     ImageData data = new ImageData(srcWidth, srcHeight, bm.bmBitsPixel, palette, bm.bmWidthBytes, srcData);

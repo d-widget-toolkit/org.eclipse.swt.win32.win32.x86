@@ -900,7 +900,7 @@ int utf8AdjustOffset( int offset ){
         return offset;
     }
     if (!gapExists() || (offset < gapStart)){
-        while( textStore[offset] & 0xC0 is 0x80 ){
+        while( (textStore[offset] & 0xC0) is 0x80 ){
             offset--;
         }
         return offset;
@@ -909,7 +909,7 @@ int utf8AdjustOffset( int offset ){
     if( offset+gapLength >= textStore.length ){
         return offset;
     }
-    while( textStore[offset+gapLength] & 0xC0 is 0x80 ){
+    while( (textStore[offset+gapLength] & 0xC0) is 0x80 ){
         offset--;
     }
     return offset;

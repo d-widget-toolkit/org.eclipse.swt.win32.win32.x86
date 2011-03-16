@@ -127,7 +127,7 @@ final class GIFFileFormat : FileFormat {
                 if (id > 0) {
                     /* We read the terminator earlier. */
                     byte[1] arr;
-                    arr[0] = id;
+                    arr[0] = cast(byte) id;
                     inputStream.unread( arr );
                 }
             } catch (IOException e) {
@@ -172,7 +172,7 @@ final class GIFFileFormat : FileFormat {
         if (id is GIF_IMAGE_BLOCK_ID || id is GIF_TRAILER_ID) {
             try {
                 byte[1] arr;
-                arr[0] = id;
+                arr[0] = cast(byte) id;
                 inputStream.unread(arr);
             } catch (IOException e) {
                 SWT.error(SWT.ERROR_IO, e);

@@ -861,7 +861,7 @@ public static const int STATE_SYSTEM_MULTISELECTABLE = 0x1000000;
  */
 // BSTR is aliased to wchar*
 // Note : Free the "bstr" memory if freeTheString is true, default false
-String BSTRToStr( /*BSTR*/ inout wchar* bstr, bool freeTheString = false){
+String BSTRToStr( /*BSTR*/ ref wchar* bstr, bool freeTheString = false){
     if(bstr is null) return null;
     int size = (SysStringByteLen(bstr) + 1)/wchar.sizeof;
     String result = WCHARzToStr(bstr, size);

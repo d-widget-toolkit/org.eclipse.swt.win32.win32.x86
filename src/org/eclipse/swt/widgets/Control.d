@@ -3556,7 +3556,7 @@ bool traverse (Event event) {
         case SWT.TRAVERSE_TAB_PREVIOUS: return traverseGroup (false);
         case SWT.TRAVERSE_ARROW_NEXT:       return traverseItem (true);
         case SWT.TRAVERSE_ARROW_PREVIOUS:   return traverseItem (false);
-        case SWT.TRAVERSE_MNEMONIC:     return traverseMnemonic (event.character);
+        case SWT.TRAVERSE_MNEMONIC:     return traverseMnemonic (cast(char) event.character);
         case SWT.TRAVERSE_PAGE_NEXT:        return traversePage (true);
         case SWT.TRAVERSE_PAGE_PREVIOUS:    return traversePage (false);
         default:
@@ -4564,9 +4564,9 @@ LRESULT WM_SYSCOMMAND (int /*long*/ wParam, int /*long*/ lParam) {
                         Decorations shell = menuShell ();
                         Menu menu = shell.getMenuBar ();
                         if (menu !is null) {
-                            char key = Display.mbcsToWcs (lParam);
+                            char key = cast(char) Display.mbcsToWcs (lParam, 0);
                             if (key !is 0) {
-                                key = CharacterToLower (key);
+                                key = cast(char) CharacterToLower (key);
                                 MenuItem [] items = menu.getItems ();
                                 for (int i=0; i<items.length; i++) {
                                     MenuItem item = items [i];

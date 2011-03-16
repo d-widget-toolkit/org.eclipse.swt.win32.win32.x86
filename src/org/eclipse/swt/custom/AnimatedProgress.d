@@ -119,11 +119,13 @@ private static int checkStyle (int style) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  */
-public synchronized void clear(){
-    checkWidget();
-    if (active) stop();
-    showStripes = false;
-    redraw();
+public void clear(){
+    synchronized {
+        checkWidget();
+        if (active) stop();
+        showStripes = false;
+        redraw();
+    }
 }
 public override Point computeSize(int wHint, int hHint, bool changed) {
     checkWidget();
@@ -208,38 +210,42 @@ void paintStripes(GC gc) {
 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
 * </ul>
 */
-public synchronized void start() {
-    checkWidget();
-    if (active) return;
+public void start() {
+    synchronized {
+        checkWidget();
+        if (active) return;
 
-    active = true;
-    showStripes = true;
+        active = true;
+        showStripes = true;
 
-    Display display = getDisplay();
-    Runnable [] timer = new Runnable [1];
+        Display display = getDisplay();
+        Runnable [] timer = new Runnable [1];
 
-    timer [0] = new class( display, timer ) Runnable {
-        Display disp;
-        Runnable [] runs;
-        this( Display disp, Runnable[] runs ){
-            this.disp = disp;
-            this.runs = runs;
-        }
-        public void run () {
-            if (!active) return;
-            GC gc = new GC(this.outer);
-            paintStripes(gc);
-            gc.dispose();
-            disp.timerExec (SLEEP, runs [0]);
-        }
-    };
-    display.timerExec (SLEEP, timer [0]);
+        timer [0] = new class( display, timer ) Runnable {
+            Display disp;
+            Runnable [] runs;
+            this( Display disp, Runnable[] runs ){
+                this.disp = disp;
+                this.runs = runs;
+            }
+            public void run () {
+                if (!active) return;
+                GC gc = new GC(this.outer);
+                paintStripes(gc);
+                gc.dispose();
+                disp.timerExec (SLEEP, runs [0]);
+            }
+        };
+        display.timerExec (SLEEP, timer [0]);
+    }
 }
 /**
 * Stop the animation.   Freeze the presentation at its current appearance.
 */
-public synchronized void stop() {
-    //checkWidget();
-    active = false;
+public void stop() {
+    synchronized {
+        //checkWidget();
+        active = false;
+    }
 }
 }

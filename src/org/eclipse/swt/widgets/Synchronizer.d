@@ -25,6 +25,7 @@ import java.lang.Thread;
 version(Tango){
     import tango.core.Exception: SyncException;
 } else { // Phobos
+    import core.sync.exception: SyncException;
 }
 
 /**
@@ -194,14 +195,10 @@ public void syncExec (Runnable runnable) {
     synchronized (lock) {
         bool interrupted = false;
         while (!lock.done ()) {
-            version(Tango){
-                try {
-                    lock.wait ();
-                } catch (SyncException e) {
-                    interrupted = true;
-                }
-            } else { // Phobos
-                implMissing( __FILE__, __LINE__ );
+            try {
+                lock.wait ();
+            } catch (SyncException e) {
+                interrupted = true;
             }
         }
         if (interrupted) {

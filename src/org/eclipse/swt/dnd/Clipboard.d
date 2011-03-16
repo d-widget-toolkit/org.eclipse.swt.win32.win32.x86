@@ -557,7 +557,7 @@ LRESULT EnumFormatEtc(int dwDirection, IEnumFORMATETC* ppenumFormatetc) {
     }
     // include the drop effect format to specify a copy operation
     FORMATETC* dropeffect = new FORMATETC();
-    dropeffect.cfFormat = CFSTR_PREFERREDDROPEFFECT;
+    dropeffect.cfFormat = cast(ushort) CFSTR_PREFERREDDROPEFFECT;
     dropeffect.dwAspect = COM.DVASPECT_CONTENT;
     dropeffect.lindex = -1;
     dropeffect.tymed = COM.TYMED_HGLOBAL;

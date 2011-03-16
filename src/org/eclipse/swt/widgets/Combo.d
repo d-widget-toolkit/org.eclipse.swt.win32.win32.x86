@@ -1340,7 +1340,7 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
     }
     if (event.character is 0) return true;
     if (!hooks (SWT.Verify) && !filters (SWT.Verify)) return true;
-    char key = event.character;
+    char key = cast(char) event.character;
     int stateMask = event.stateMask;
 
     /*

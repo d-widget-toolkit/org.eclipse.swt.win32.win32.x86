@@ -829,7 +829,7 @@ public char getEchoChar () {
     checkWidget ();
     wchar echo = cast(wchar) OS.SendMessage (handle, OS.EM_GETPASSWORDCHAR, 0, 0);
     if (echo !is 0 && (echo = Display.mbcsToWcs (echo, getCodePage ())) is 0) echo = '*';
-    return echo;
+	return cast(char) echo;
 }
 
 /**
@@ -1405,7 +1405,7 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
     }
     if (event.character is 0) return true;
     if (!hooks (SWT.Verify) && !filters (SWT.Verify)) return true;
-    char key = event.character;
+    char key = cast(char) event.character;
     int stateMask = event.stateMask;
 
     /*

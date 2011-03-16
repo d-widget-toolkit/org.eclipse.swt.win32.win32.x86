@@ -535,7 +535,7 @@ void destroy () {
     OS.OleUninitialize();
 }
 
-SCRIPT_ANALYSIS cloneScriptAnalysis ( inout SCRIPT_ANALYSIS src) {
+SCRIPT_ANALYSIS cloneScriptAnalysis ( ref SCRIPT_ANALYSIS src) {
     SCRIPT_ANALYSIS dst;
     dst.eScript = src.eScript;
     dst.fRTL = src.fRTL;
@@ -2960,7 +2960,7 @@ void shape (HDC hdc, StyleItem run) {
     if (run.visAttrs is null) SWT.error(SWT.ERROR_NO_HANDLES);
     run.psc = cast(SCRIPT_CACHE*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, (void*).sizeof);
     if (run.psc is null) SWT.error(SWT.ERROR_NO_HANDLES);
-    short script = run.analysis.eScript;
+    short script = cast(short) run.analysis.eScript;
     SCRIPT_PROPERTIES sp = *device.scripts[script];
     bool shapeSucceed = shape(hdc, run, wchars, buffer,  maxGlyphs, &sp);
 int res;

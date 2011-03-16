@@ -136,7 +136,7 @@ public TransferData[] getSupportedTypes() {
         data[i] = new TransferData();
         data[i].type = types[i];
         data[i].formatetc = new FORMATETC();
-        data[i].formatetc.cfFormat = types[i];
+        data[i].formatetc.cfFormat = cast(ushort) types[i];
         data[i].formatetc.dwAspect = COM.DVASPECT_CONTENT;
         data[i].formatetc.lindex = -1;
         data[i].formatetc.tymed = COM.TYMED_HGLOBAL;

@@ -37,7 +37,7 @@ version(build){
     pragma(link, "msimg32");
     pragma(link, "opengl32");
     pragma(link, "shlwapi");
-    pragma(link, "org.eclipse.swt.win32.win32.x86");
+    //pragma(link, "org.eclipse.swt.win32.win32.x86");
     //pragma(link, "gdiplus"); // load dynamic
     //pragma(link, "uxtheme"); // load dynamic
 }
@@ -57,7 +57,7 @@ pragma(lib, "usp10.lib");
 pragma(lib, "msimg32.lib");
 pragma(lib, "opengl32.lib");
 pragma(lib, "shlwapi.lib");
-pragma(lib, "org.eclipse.swt.win32.win32.x86.lib");
+//pragma(lib, "org.eclipse.swt.win32.win32.x86.lib");
 //pragma(link, "gdiplus"); // load dynamic
 //pragma(link, "uxtheme"); // load dynamic
 

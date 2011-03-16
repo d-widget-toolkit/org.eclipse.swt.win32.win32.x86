@@ -706,7 +706,7 @@ void layoutItems () {
 }
 
 override bool mnemonicHit (wchar ch) {
-    int key = Display.wcsToMbcs (ch);
+    int key = Display.wcsToMbcs (ch, 0);
     int id;
     if (OS.SendMessage (handle, OS.TB_MAPACCELERATOR, key, &id) is 0) {
         return false;
@@ -720,7 +720,7 @@ override bool mnemonicHit (wchar ch) {
 }
 
 override bool mnemonicMatch (wchar ch) {
-    int key = Display.wcsToMbcs (ch);
+    int key = Display.wcsToMbcs (ch, 0);
     int id;
     if (OS.SendMessage (handle, OS.TB_MAPACCELERATOR, key, &id) is 0) {
         return false;

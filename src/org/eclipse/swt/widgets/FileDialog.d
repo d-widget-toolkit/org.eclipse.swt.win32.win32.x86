@@ -244,7 +244,7 @@ public String open () {
     auto hHeap = OS.GetProcessHeap ();
 
     /* Get the owner HWND for the dialog */
-    HWND hwndOwner;
+    HWND hwndOwner = parent.handle;
     auto hwndParent = parent.handle;
 
     /*

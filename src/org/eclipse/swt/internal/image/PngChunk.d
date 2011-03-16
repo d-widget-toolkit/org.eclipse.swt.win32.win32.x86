@@ -50,17 +50,21 @@ class PngChunk {
     static /*const*/ byte[] TYPE_IEND = cast(byte[])"IEND";//{(byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D'};
     static /*const*/ byte[] TYPE_tRNS = cast(byte[])"tRNS";//{(byte) 't', (byte) 'R', (byte) 'N', (byte) 'S'};
 
-    static int[] CRC_TABLE;
+    private static int[] _CRC_TABLE = null;
+    static int[] CRC_TABLE() {
+        if (!_CRC_TABLE) static_this();
+        return _CRC_TABLE;
+    }
     //public static void static_this() {
-    static this() {
-        CRC_TABLE = new int[256];
+    private static void static_this() {
+        _CRC_TABLE = new int[256];
         for (int i = 0; i < 256; i++) {
-            CRC_TABLE[i] = i;
+            _CRC_TABLE[i] = i;
             for (int j = 0; j < 8; j++) {
-                if ((CRC_TABLE[i] & 0x1) is 0) {
-                    CRC_TABLE[i] = (CRC_TABLE[i] >> 1) & 0x7FFFFFFF;
+                if ((_CRC_TABLE[i] & 0x1) is 0) {
+                    _CRC_TABLE[i] = (_CRC_TABLE[i] >> 1) & 0x7FFFFFFF;
                 } else {
-                    CRC_TABLE[i] = 0xEDB88320 ^ ((CRC_TABLE[i] >> 1) & 0x7FFFFFFF);
+                    _CRC_TABLE[i] = 0xEDB88320 ^ ((_CRC_TABLE[i] >> 1) & 0x7FFFFFFF);
                 }
             }
         }

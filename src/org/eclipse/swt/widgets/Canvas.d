@@ -395,7 +395,7 @@ override LRESULT WM_IME_COMPOSITION (int /*long*/ wParam, int /*long*/ lParam) {
     if (!OS.IsWinCE && OS.WIN32_VERSION is OS.VERSION (5, 1)) {
         if (OS.IsDBLocale) {
             short langID = OS.GetSystemDefaultUILanguage ();
-            short primaryLang = OS.PRIMARYLANGID (langID);
+            short primaryLang = cast(short) OS.PRIMARYLANGID (langID);
             if (primaryLang is OS.LANG_KOREAN) {
                 if (caret !is null && caret.isFocusCaret ()) {
                     POINT ptCurrentPos;

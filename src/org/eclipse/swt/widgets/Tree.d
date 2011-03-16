@@ -1193,7 +1193,7 @@ LRESULT CDDS_ITEMPREPAINT (NMTVCUSTOMDRAW* nmcd, int wParam, int lParam) {
             }
             if (explorerTheme) {
                 if (selected || (hot && ignoreDrawHot)) nmcd.nmcd.uItemState &= ~OS.CDIS_HOT;
-                OS.MoveMemory (cast(void*)lParam, nmcd, NMTVCUSTOMDRAW.sizeof);
+                OS.MoveMemory (lParam, nmcd, NMTVCUSTOMDRAW.sizeof);
             }
             RECT* itemRect = item.getBounds (index, true, true, false, false, false, hDC);
             OS.SaveDC (hDC);
@@ -1229,7 +1229,7 @@ LRESULT CDDS_ITEMPREPAINT (NMTVCUSTOMDRAW* nmcd, int wParam, int lParam) {
                     if (OS.IsWindowEnabled (handle)) drawBackground (hDC, &rect);
                 }
                 nmcd.nmcd.uItemState &= ~OS.CDIS_FOCUS;
-                OS.MoveMemory (cast(void*)lParam, nmcd, NMTVCUSTOMDRAW.sizeof);
+                OS.MoveMemory (lParam, nmcd, NMTVCUSTOMDRAW.sizeof);
             }
         }
     }
@@ -2728,7 +2728,7 @@ override void enableWidget (bool enabled) {
     updateFullSelection ();
 }
 
-bool findCell (int x, int y, inout TreeItem item, inout int index, inout RECT* cellRect, inout RECT* itemRect) {
+bool findCell (int x, int y, ref TreeItem item, ref int index, ref RECT* cellRect, ref RECT* itemRect) {
     bool found = false;
     TVHITTESTINFO lpht;
     lpht.pt.x = x;
@@ -5842,7 +5842,7 @@ override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
             if ((style & SWT.MIRRORED) !is 0) {
                 shdi.ptOffset.x = shdi.sizeDragImage.cx - shdi.ptOffset.x; 
             }
-            OS.MoveMemory (cast(void*)lParam, &shdi, SHDRAGIMAGE.sizeof);
+            OS.MoveMemory (lParam, &shdi, SHDRAGIMAGE.sizeof);
             return 1;
         }
     }

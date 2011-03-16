@@ -2348,7 +2348,7 @@ static void jinit_d_coef_controller (jpeg_decompress_struct cinfo, bool need_ful
 //      #endif
     } else {
         /* We only need a single-MCU buffer. */
-        foreach( inout el; coef.MCU_buffer ){
+        foreach( ref el; coef.MCU_buffer ){
             el = new short[](DCTSIZE2);
         }
 //      coef.consume_data = dummy_consume_data;

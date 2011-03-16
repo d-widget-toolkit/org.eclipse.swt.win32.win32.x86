@@ -3356,7 +3356,7 @@ public bool post (Event event) {
             KEYBDINPUT inputs;
             inputs.wVk = cast(short) untranslateKey (event.keyCode);
                 if (inputs.wVk is 0) {
-                    char key = event.character;
+                    char key = cast(char) event.character;
                     switch (key) {
                         case SWT.BS: inputs.wVk = cast(short) OS.VK_BACK; break;
                         case SWT.CR: inputs.wVk = cast(short) OS.VK_RETURN; break;

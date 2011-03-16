@@ -410,7 +410,7 @@ LRESULT WM_IME_COMPOSITION (int /*long*/ wParam, int /*long*/ lParam) {
                         dchar c = chars[ i .. $ ].firstCodePoint();
                         display.lastAscii = c;
                         event = new Event ();
-                        event.character = c;
+                        event.character = cast(wchar) c;
                         parent.sendEvent (SWT.KeyDown, event);
                     }
                 }
