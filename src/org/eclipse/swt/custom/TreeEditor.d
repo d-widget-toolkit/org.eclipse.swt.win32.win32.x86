@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.custom.ControlEditor;
-import java.lang.Runnable;
 
 /**
 *

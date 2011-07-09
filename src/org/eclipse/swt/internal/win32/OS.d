@@ -21,15 +21,17 @@ import java.lang.all;
 import java.nonstandard.SharedLib;
 
 version(Tango){
-static import tango.sys.Common;
+    static import tango.sys.Common;
 
-static import tango.stdc.stdlib;
-static import tango.stdc.string;
-import tango.sys.win32.CodePage : CodePage;
-private import tango.stdc.stringz;
-
-
+    static import tango.stdc.stdlib;
+    static import tango.stdc.string; //for strlen
+    import tango.sys.win32.CodePage : CodePage;
+    private import tango.stdc.stringz;
 } else { // Phobos
+    static import core.stdc.string; //for strlen
+    static import std.windows.charset; //for toMBSz
+    static import std.c.windows.windows; //for GetLastError
+    static import std.windows.syserror; //for sysErrorString
 }
 
 alias org.eclipse.swt.internal.win32.WINAPI DWTWINAPI;
@@ -387,7 +389,8 @@ BOOL function(
                 char[2000] buf;
                 getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, CodePage.from( winMsg, buf ) );
             } else { // Phobos
-                implMissing( __FILE__, __LINE__ );
+                auto err = std.c.windows.windows.GetLastError();
+                getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, std.windows.syserror.sysErrorString(err) );
             }
         }
         TCHAR[] buffer = new TCHAR[ MAX_PATH ];
@@ -3578,8 +3581,7 @@ static int strlen( PCHAR ptr ){
     version(Tango){
         return tango.stdc.string.strlen( cast(char*)ptr );
     } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
-        return 0;
+        return core.stdc.string.strlen( cast(char*)ptr );
     }
 }
 
@@ -3593,7 +3595,7 @@ alias DWTWINAPI.GetScrollBarInfo GetScrollBarInfo;
 //-----------------------------------------------------------------------------
 // convert UTF-8 to MBCS
 alias StrToMBCS StrToMBCSs;
-public CHAR[] StrToMBCS(CString sc, uint codepage = 0) {
+public CHAR[] StrToMBCS(in char[] sc, uint codepage = 0) {
     CHAR[] ret = cast(CHAR[]) sc;
     try{
         foreach (char c; sc){
@@ -3616,8 +3618,7 @@ public CHAR[] StrToMBCS(CString sc, uint codepage = 0) {
 }
 
 // convert UTF-8 to MBCSz
-public char* StrToMBCSz(CString sc) {
-    char* ret = null;
+public TryConst!(char)* StrToMBCSz(in char[] sc) {
     version(Tango){
         try{
             if( CodePage.isAscii( sc )){
@@ -3628,19 +3629,18 @@ public char* StrToMBCSz(CString sc) {
             return toStringz( tango.sys.win32.CodePage.CodePage.into( sc, dst ));
         }catch(Exception e){
             // do nothing
-            ret = "";
+            return "".ptr;
         }
 
     } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
+        return std.windows.charset.toMBSz(sc);
     }
-    return ret;
 }
 
-public String16 StrToWCHARs(uint codepage , CString sc, bool terminated = false ) {
+public String16 StrToWCHARs(uint codepage , in char[] sc, bool terminated = false ) {
     return StrToWCHARs( sc, terminated );
 }
-public String16 StrToWCHARs(CString sc, bool terminated = false ) {
+public String16 StrToWCHARs(in char[] sc, bool terminated = false ) {
     String16 ret;
     try{
         ret = toWCharArray(sc);
@@ -3654,19 +3654,19 @@ public String16 StrToWCHARs(CString sc, bool terminated = false ) {
     return ret;
 }
 
-public LPCWSTR StrToWCHARz( uint codepage, CString sc, uint* length = null ) {
+public LPCWSTR StrToWCHARz( uint codepage, in char[] sc, uint* length = null ) {
     return StrToWCHARz( sc, length );
 }
 
-public LPCWSTR StrToWCHARz(CString sc, uint* length = null ) {
+public LPCWSTR StrToWCHARz(in char[] sc, uint* length = null ) {
     return StrToWCHARs(sc, true ).ptr;
 }
 
-public CString MBCSsToStr(CHAR[] string, uint codepage = 0){
+public String MBCSsToStr(in CHAR[] string, uint codepage = 0){
     return MBCSzToStr( string.ptr, string.length, codepage);
 }
 
-public CString MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
+public String MBCSzToStr(in PCHAR pString, int _length = -1, uint codepage = 0) {
     // null terminated string pointer
     if(_length == -1){
         _length = 0;
@@ -3678,19 +3678,19 @@ public CString MBCSzToStr(PCHAR pString, int _length = -1, uint codepage = 0) {
         return null;
 
     String16 wcs = _mbcszToWs(pString, _length, codepage);
-    String result;
-    try{
-        result = String_valueOf(wcs);
-    }catch(Exception e){
+    
+    try {
+        return String_valueOf(wcs);
+    } catch {
+        return null;
     }
-    return result;
 }
 
-public String WCHARsToStr(CString16 string){
+public String WCHARsToStr(in WCHAR[] string){
     return WCHARzToStr(string.ptr, string.length);
 }
 
-public String WCHARzToStr(LPCWSTR pString, int _length = -1)
+public String WCHARzToStr(in LPCWSTR pString, int _length = -1)
 {
     if( pString is null ){
         return null;
@@ -3706,13 +3706,11 @@ public String WCHARzToStr(LPCWSTR pString, int _length = -1)
     // convert wchar* to UTF-8
     auto wcs = pString[0.._length];
 
-    String result;
-    try{
-        result = String_valueOf(wcs);
-    }catch(Exception e){
-        // do nothing
+    try {
+        return String_valueOf(wcs);
+    } catch {
+        return null;
     }
-    return result;
 }
 
 /**
@@ -3726,7 +3724,7 @@ version(OLE_COM)
 {
 // BSTR is aliased to wchar*
 // Note : Free the "bstr" memory if freeTheString is true, default false
-static char[] BSTRToStr(/*BSTR*/ inout wchar* bstr, bool freeTheString = false){
+static char[] BSTRToStr(/*BSTR*/ ref wchar* bstr, bool freeTheString = false){
     if(bstr is null) return null;
     int size = (SysStringByteLen(bstr) + 1)/wchar.sizeof;
     char[] result = WCHARzToStr(bstr, size);
@@ -3740,7 +3738,7 @@ static char[] BSTRToStr(/*BSTR*/ inout wchar* bstr, bool freeTheString = false){
 } // end of OLE_COM
 
 
-public static String16 _mbcszToWs(PCHAR pMBCS, int len, uint codepage = 0)
+public static String16 _mbcszToWs(in PCHAR pMBCS, int len, uint codepage = 0)
 {
     wchar[] wbuf;
     // Convert MBCS to unicode
@@ -3757,26 +3755,6 @@ public int _tcslen(TCHAR* pString){
         ++_length;
 
     return _length;
-}
-
-/**
- * There is a bug in Phobos std.string.toupper() to lower() with
- std.string.toupper() and std.string.tolower() give a wrong result when deal with a mixture of upper/lower English and Chinese characters. e.g.
-char[] a = "AbCd中文eFgH";
-char[] b = std.string.toupper(a);
-char[] c = std.string.tolower(a);
-The length of a is 11, but the length of b,c is 18 now.
- *
- */
-public String tolower(char[] string) {
-    LPCTSTR ps = StrToTCHARz(string);
-    LPCTSTR ps2 = OS.CharLower(cast(LPTSTR)ps);
-    return TCHARzToStr(ps2);
-}
-public String toupper(char[] string) {
-    LPCTSTR ps = StrToTCHARz(string);
-    LPCTSTR ps2 = OS.CharUpper(cast(LPTSTR)ps);
-    return TCHARzToStr(ps2);
 }
 
 version(ANSI){

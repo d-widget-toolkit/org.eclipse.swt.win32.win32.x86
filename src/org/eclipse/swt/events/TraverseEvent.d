@@ -114,7 +114,7 @@ public final class TraverseEvent : KeyEvent {
      */
     public int detail;
 
-    //static final long serialVersionUID = 3257565105301239349L;
+    //static const long serialVersionUID = 3257565105301239349L;
 
 /**
  * Constructs a new instance of this class based on the
@@ -134,6 +134,6 @@ public this(Event e) {
  * @return a string representation of the event
  */
 public override String toString() {
-    return Format( "{} detail={}}", super.toString[ 0 .. $-2 ], detail );
+    return Format( "{} detail={}}", super.toString[ 0 .. $-1 ], detail );
 }
 }

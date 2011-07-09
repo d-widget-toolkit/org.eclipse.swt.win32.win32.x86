@@ -201,7 +201,7 @@ static int checkStyle (int style) {
 //protected void checkSubclass () {
 //  String name = getClass().getName ();
 //  String validName = ViewForm.class.getName();
-//  if (!validName.equals(name)) {
+//  if (validName != (name)) {
 //      SWT.error (SWT.ERROR_INVALID_SUBCLASS);
 //  }
 //}

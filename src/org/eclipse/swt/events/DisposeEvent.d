@@ -26,7 +26,7 @@ import org.eclipse.swt.events.TypedEvent;
 
 public final class DisposeEvent : TypedEvent {
 
-    //static final long serialVersionUID = 3257566187633521206L;
+    //static const long serialVersionUID = 3257566187633521206L;
 
 /**
  * Constructs a new instance of this class based on the

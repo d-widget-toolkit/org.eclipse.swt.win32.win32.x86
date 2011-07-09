@@ -26,7 +26,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public final class TreeEvent : SelectionEvent {
 
-    //static final long serialVersionUID = 3257282548009677109L;
+    //static const long serialVersionUID = 3257282548009677109L;
 
 /**
  * Constructs a new instance of this class based on the

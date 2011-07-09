@@ -24,7 +24,7 @@ public class PngHuffmanTables {
     static PngHuffmanTable FixedDistanceTable;
 
     static const int LiteralTableSize = 288;
-    static const int[] FixedLiteralLengths = [
+    static int[] FixedLiteralLengths = [
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -40,7 +40,7 @@ public class PngHuffmanTables {
     ];
 
     static const int DistanceTableSize = 32;
-    static const int[] FixedDistanceLengths = [
+    static int[] FixedDistanceLengths = [
         5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
         5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
     ];

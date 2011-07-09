@@ -13,6 +13,7 @@
 module org.eclipse.swt.internal.image.TIFFModifiedHuffmanCodec;
 
 import org.eclipse.swt.SWT;
+import java.lang.all;
 
 /*
 * Decoder for
@@ -144,7 +145,7 @@ bool decodeRow() {
 int decodeRunLength() {
     int runLength = 0;
     int partialRun = 0;
-    short[][][] huffmanCode = isWhite ? WHITE_CODE : BLACK_CODE;
+    TryConst!(short[][][]) huffmanCode = isWhite ? WHITE_CODE : BLACK_CODE;
     while (true) {
         bool found = false;
         nbrBits = isWhite ? WHITE_MIN_BITS : BLACK_MIN_BITS;

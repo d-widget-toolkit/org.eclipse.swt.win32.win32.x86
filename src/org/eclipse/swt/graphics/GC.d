@@ -244,7 +244,7 @@ void checkGC(int mask) {
             }
         }
         if ((state & LINE_STYLE) !is 0) {
-            float[] dashes = null;
+            TryConst!(float)[] dashes = null;
             float dashOffset = 0;
             int dashStyle = Gdip.DashStyleSolid;
             switch (data.lineStyle) {
@@ -256,12 +256,13 @@ void checkGC(int mask) {
                 case SWT.LINE_CUSTOM: {
                     if (data.lineDashes !is null) {
                         dashOffset = data.lineDashesOffset / Math.max (1.0f, width);
-                        dashes = new float[data.lineDashes.length * 2];
+                        float[] dashes_ = new float[data.lineDashes.length * 2];
                         for (int i = 0; i < data.lineDashes.length; i++) {
                             float dash = data.lineDashes[i] / Math.max (1.0f, width);
-                            dashes[i] = dash;
-                            dashes[i + data.lineDashes.length] = dash;
+                            dashes_[i] = dash;
+                            dashes_[i + data.lineDashes.length] = dash;
                         }
+                        dashes = dashes_;
                     }
                 }
                 default:
@@ -2443,7 +2444,7 @@ public void drawText (String string, int x, int y, int flags) {
  *
  * @see #hashCode
  */
-public bool equals (Object object) {
+public override equals_t opEquals (Object object) {
     return (object is this) || (null !is (cast(GC)object) && (handle is (cast(GC)object).handle));
 }
 
@@ -2966,8 +2967,7 @@ public int getAdvanceWidth(char ch) {
     }
     int tch = ch;
     if (ch > 0x7F) {
-        char[1] str;
-        str[0] = ch;
+        TryImmutable!(char)[1] str = ch;
         StringT buffer = StrToTCHARs( str );
         tch = buffer[0];
     }
@@ -3112,8 +3112,7 @@ public int getCharWidth(char ch) {
     static if (!OS.IsWinCE) {
         int tch = ch;
         if (ch > 0x7F) {
-            char[1] str;
-            str[0] = ch;
+            TryImmutable!(char)[1] str = ch;
             StringT buffer = StrToTCHARs( str );
             tch = buffer[0];
         }
@@ -3127,8 +3126,7 @@ public int getCharWidth(char ch) {
     TEXTMETRIC lptm;
     OS.GetTextMetrics(handle, &lptm);
     SIZE size;
-    char[1] str;
-    str[0] = ch;
+    TryImmutable!(char)[1] str = ch;
     OS.GetTextExtentPoint32W(handle, StrToWCHARz( str ), 1, &size);
     return size.cx - lptm.tmOverhang;
 }

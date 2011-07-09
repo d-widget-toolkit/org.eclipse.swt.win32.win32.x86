@@ -12,6 +12,7 @@
  *******************************************************************************/
 module org.eclipse.swt.events.TypedEvent;
 
+
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -55,7 +56,7 @@ public class TypedEvent : SWTEventObject {
      */
     public Object data;
 
-    //static final long serialVersionUID = 3257285846578377524L;
+    //static const long serialVersionUID = 3257285846578377524L;
 
 /**
  * Constructs a new instance of this class.
@@ -87,10 +88,10 @@ public this(Event e) {
  * @return the name of the event
  */
 String getName () {
-    String str = this.classinfo.name;
-    int index = str.lastIndexOf ('.');
-    if (index is -1) return str;
-    return str.substring (index + 1, str.length );
+    String string = this.classinfo.name;
+    int index = string.lastIndexOf ('.');
+    if (index is -1) return string;
+    return string.substring (index + 1, string.length ());
 }
 
 /**
@@ -102,6 +103,6 @@ String getName () {
 public override String toString() {
     String str_widget = widget is null ? "null" : widget.toString;
     String str_data   = data is null ? "null" : data.toString;
-    return Format( "{}{{time={} data={}}", str_widget, time, str_data );
+    return Format( "{}{{{} time={} data={}}", getName(), str_widget, time, str_data );
 }
 }

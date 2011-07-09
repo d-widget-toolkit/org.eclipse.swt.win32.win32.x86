@@ -28,7 +28,6 @@ import org.eclipse.swt.custom.ControlEditor;
 import org.eclipse.swt.custom.TableTree;
 import org.eclipse.swt.custom.TableTreeItem;
 
-import java.lang.Runnable;
 
 /**
 *

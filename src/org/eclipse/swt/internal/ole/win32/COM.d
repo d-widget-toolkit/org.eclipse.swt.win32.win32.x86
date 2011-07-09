@@ -35,7 +35,7 @@ template IIDFromStringT(String g) {
    static if (g.length == 38)
      const GUID IIDFromStringT = IIDFromStringT!(g[1..$-1]);
    else static if (g.length == 36)
-     const GUID IIDFromStringT = {
+     const GUID IIDFromStringT = GUID (
         mixin("0x" ~ g[0..8]),
         mixin("0x" ~ g[9..13]),
         mixin("0x" ~ g[14..18]),
@@ -47,7 +47,7 @@ template IIDFromStringT(String g) {
             mixin("0x" ~ g[28..30]),
             mixin("0x" ~ g[30..32]),
             mixin("0x" ~ g[32..34]),
-            mixin("0x" ~ g[34..36]) ] };
+            mixin("0x" ~ g[34..36]) ] );
    else
      static assert(false, "Incorrect format for GUID. "~g);
 }

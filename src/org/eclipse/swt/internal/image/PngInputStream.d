@@ -13,7 +13,6 @@
 module org.eclipse.swt.internal.image.PngInputStream;
 
 import java.io.InputStream;
-import java.lang.System;
 import org.eclipse.swt.internal.image.PngIdatChunk;
 import org.eclipse.swt.internal.image.PngChunkReader;
 import org.eclipse.swt.internal.image.PngChunk;

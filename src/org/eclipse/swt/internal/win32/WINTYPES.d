@@ -3,6 +3,7 @@
  */
 
 module org.eclipse.swt.internal.win32.WINTYPES;
+import java.nonstandard.SafeUtf;
 
 version(Tango){
     public import tango.sys.win32.Types;
@@ -38,13 +39,8 @@ version(Tango){
     alias WINBOOL BOOL;
     alias uint CALTYPE;
     alias uint CALID;
-    version(D_Version2){
-        mixin("alias const(char) CCHAR;");
-        mixin("alias const(wchar) CWCHAR;");
-    } else { // D1
-        alias char CCHAR;
-        alias wchar CWCHAR;
-    }
+    alias TryConst!(char) CCHAR;
+    alias TryConst!(wchar) CWCHAR;
     alias char* PCHAR;
     alias uint COLORREF;
     alias uint TCOLORREF;
@@ -124,21 +120,12 @@ version(Tango){
     alias WINBOOL* LPBOOL;
     alias ubyte* LPBYTE;
     alias COLORREF* LPCOLORREF;
-    version(D_Version2){
-        mixin( "alias const(char)* LPCCH;");
-        mixin( "alias const(char)* LPCH;");
-        mixin( "alias const(char)* LPCSTR;");
-        mixin( "alias const(TCHAR)* LPCTSTR;");
-        mixin( "alias const(wchar)* LPCWCH;");
-        mixin( "alias const(wchar)* LPCWSTR;");
-    } else {
-        alias PCHAR LPCCH;
-        alias PCHAR LPCH;
-        alias PCHAR LPCSTR;
-        alias TCHAR* LPCTSTR;
-        alias wchar* LPCWCH;
-        alias wchar* LPCWSTR;
-    }
+    alias TryConst!(char)* LPCCH;
+    alias TryConst!(char)* LPCH;
+    alias TryConst!(char)* LPCSTR;
+    alias TryConst!(TCHAR)* LPCTSTR;
+    alias TryConst!(wchar)* LPCWCH;
+    alias TryConst!(wchar)* LPCWSTR;
     alias DWORD* LPDWORD;
     alias HANDLE* LPHANDLE;
     alias int* LPINT;
@@ -148,11 +135,7 @@ version(Tango){
     alias TCHAR* LPTSTR;
     alias int LRESULT;
     alias POINTER LPVOID;
-    version(D_Version2){
-        mixin( "alias const(void)* LPCVOID;");
-    } else {
-        alias POINTER LPCVOID;
-    }
+    alias TryConst!(void)* LPCVOID;
     alias wchar* LPWCH;
     alias wchar* LPWORD;
     alias wchar* LPWSTR;
@@ -15474,7 +15457,7 @@ struct SCRIPT_FONTPROPERTIES {
 }
 
 struct SCRIPT_ITEM {
-    int iCharPos;
+    UTF16index iCharPos;
     SCRIPT_ANALYSIS a;
 }
 

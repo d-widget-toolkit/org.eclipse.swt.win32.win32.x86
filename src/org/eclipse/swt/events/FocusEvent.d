@@ -26,7 +26,7 @@ import org.eclipse.swt.events.TypedEvent;
 
 public final class FocusEvent : TypedEvent {
 
-    //static final long serialVersionUID = 3258134643684227381L;
+    //static const long serialVersionUID = 3258134643684227381L;
 
 /**
  * Constructs a new instance of this class based on the

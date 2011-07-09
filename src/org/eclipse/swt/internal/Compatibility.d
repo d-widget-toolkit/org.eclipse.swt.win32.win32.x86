@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
 version(Tango){
 static import tango.text.Unicode;
 static import tango.sys.Process;
-static import tango.io.Path;
 } else { // Phobos
 }
 
@@ -121,15 +120,8 @@ public static int ceil(int p, int q) {
  * @return true if the file exists
  */
 public static bool fileExists(String parent, String child) {
-    version(Tango){
-        return tango.io.Path.exists(
-                tango.io.Path.join(
-                    tango.io.Path.standard(parent),
-                    tango.io.Path.standard(child)));
-    } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
-        return false;
-    }
+    scope f = new File(parent, child);
+    return f.exists();
 }
 
 /**
@@ -289,7 +281,7 @@ public static void exec(String prog) {
         auto proc = new tango.sys.Process.Process( prog );
         proc.execute;
     } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
+        implMissingInPhobos();
     }
 }
 
@@ -310,7 +302,7 @@ public static void exec(String[] progArray) {
         auto proc = new tango.sys.Process.Process( progArray );
         proc.execute;
     } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
+        implMissingInPhobos();
     }
 }
 
@@ -426,20 +418,7 @@ public static void interrupt() {
  * @return true if the two instances of class String are equal
  */
 public static bool equalsIgnoreCase(String s1, String s2) {
-    version(Tango){
-        String s1b = new char[ s1.length ];
-        String s2b = new char[ s1.length ];
-        scope(exit){
-            delete s1b;
-            delete s2b;
-        }
-        String s1c = tango.text.Unicode.toFold( s1, s1b );
-        String s2c = tango.text.Unicode.toFold( s2, s2b );
-        return s1c == s2c;
-    } else { // Phobos
-        implMissing( __FILE__, __LINE__ );
-        return false;
-    }
+    return .equalsIgnoreCase(s1, s2);
 }
 
 }

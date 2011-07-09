@@ -78,7 +78,7 @@ void writeShort(ByteArrayOutputStream baos, int theShort) {
 
     byte byte1 = cast(byte) ((theShort >> 8) & 0xff);
     byte byte2 = cast(byte) (theShort & 0xff);
-    byte[] temp = [byte1, byte2];
+    byte[2] temp = [byte1, byte2];
     baos.write(temp, 0, 2);
 
 }
@@ -89,12 +89,12 @@ void writeInt(ByteArrayOutputStream baos, int theInt) {
     byte byte2 = cast(byte) ((theInt >> 16) & 0xff);
     byte byte3 = cast(byte) ((theInt >> 8) & 0xff);
     byte byte4 = cast(byte) (theInt & 0xff);
-    byte[] temp = [byte1, byte2, byte3, byte4];
+    byte[4] temp = [byte1, byte2, byte3, byte4];
     baos.write(temp, 0, 4);
 
 }
 
-void writeChunk(byte[] tag, byte[] buffer) {
+void writeChunk(in byte[] tag, in byte[] buffer) {
 
     int bufferLength = (buffer !is null) ? buffer.length : 0;
 

@@ -493,7 +493,7 @@ final class GIFFileFormat : FileFormat {
 
         try {
             /* Step 3: Write the GIF89a Header and Logical Screen Descriptor. */
-            outputStream.write(cast(byte[])GIF89a);
+            outputStream.write(GIF89a);
             int bitField = globalTable*128 + (depth-1)*16 + depth-1;
             outputStream.writeShort(cast(short)logicalScreenWidth);
             outputStream.writeShort(cast(short)logicalScreenHeight);
@@ -516,7 +516,7 @@ final class GIFFileFormat : FileFormat {
                 outputStream.write(GIF_EXTENSION_BLOCK_ID);
                 outputStream.write(GIF_APPLICATION_EXTENSION_BLOCK_ID);
                 outputStream.write(NETSCAPE2_0.length);
-                outputStream.write(cast(byte[])NETSCAPE2_0);
+                outputStream.write(NETSCAPE2_0);
                 outputStream.write(3); // Three bytes follow
                 outputStream.write(1); // Extension type
                 outputStream.writeShort(cast(short) repeatCount);

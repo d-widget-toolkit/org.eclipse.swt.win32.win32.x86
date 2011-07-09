@@ -28,7 +28,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class ExpandEvent : SelectionEvent {
 
-    //static final long serialVersionUID = 3976735856884987356L;
+    //static const long serialVersionUID = 3976735856884987356L;
 
 /**
  * Constructs a new instance of this class based on the

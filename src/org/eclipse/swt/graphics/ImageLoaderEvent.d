@@ -87,7 +87,7 @@ public this(ImageLoader source, ImageData imageData, int incrementCount, bool en
  * @return a string representation of the event
  */
 public override String toString () {
-    return Format( "ImageLoaderEvent {source={} imageData={} incrementCount={} endOfImage={}}", source, imageData, incrementCount, endOfImage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    return Format( "ImageLoaderEvent {{source={} imageData={} incrementCount={} endOfImage={}}", source, imageData, incrementCount, endOfImage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 }
 
 }

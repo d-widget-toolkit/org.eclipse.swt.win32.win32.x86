@@ -22,7 +22,7 @@ String getName () {
     String str = this.classinfo.name;
     int index = str.lastIndexOf ('.');
     if (index is -1) return str;
-    return str.substring (index + 1, str.length ());
+    return str[ index + 1 .. $ ];
 }
 
 /**

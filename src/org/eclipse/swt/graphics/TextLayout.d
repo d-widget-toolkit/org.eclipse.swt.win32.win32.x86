@@ -23,7 +23,7 @@ module org.eclipse.swt.graphics.TextLayout;
  + 'text' is the original user text, 'segmentsText' is the user text stuffed with
  + RTL/LTR markers for each line or in addition for User supplied segments. A segment
  + is a range where Bidi char reordering can happen.
- + The 'runs' are those ranges with an idiviual style.
+ + The 'runs' are those ranges with an idividual style.
  +/
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -46,6 +46,7 @@ import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.graphics.TextStyle;
 
 import java.lang.all;
+import java.nonstandard.SafeUtf;
 
 
 /**
@@ -68,8 +69,8 @@ import java.lang.all;
  * @since 3.0
  */
 public final class TextLayout : Resource {
-
     alias Resource.init_ init_;
+private:
 
 /++
  +  SWT doku
@@ -89,8 +90,8 @@ public final class TextLayout : Resource {
     String16 wtext;
     String  segmentsText;
     String16 segmentsWText; // DWT
-    int[]   index8to16; // DWT
-    int[]   index16to8; // DWT
+    UTF16index[] index8to16; // DWT
+    UTF8index[] index16to8; // DWT
     int lineSpacing;
     int ascent, descent;
     int alignment;
@@ -99,36 +100,40 @@ public final class TextLayout : Resource {
     int indent;
     bool justify;
     int[] tabs;
-    int[] segments; // indices in 'text'
-    int[] wsegments; // SWT indices in 'wtext'
+    UTF8index[] segments; // indices in 'text'
+    UTF16index[] wsegments; // SWT indices in 'wtext'
     StyleItem[] styles;
     int stylesCount;
 
     StyleItem[] allRuns;
     StyleItem[][] runs;
-    int[] lineOffset, lineY, lineWidth;
+    UTF8index[] lineOffset;
+    int[] lineY, lineWidth;
     void* mLangFontLink2;
 
     static const dchar LTR_MARK = '\u200E', RTL_MARK = '\u200F';
     static const wchar LTR_MARKw = '\u200E', RTL_MARKw = '\u200F';
     static const String STR_LTR_MARK = "\u200E", STR_RTL_MARK = "\u200F";
     static const wchar[] WSTR_LTR_MARK = "\u200E"w, WSTR_RTL_MARK = "\u200F"w;
-    static const int MARK_SIZE = 3;
-    static const int WMARK_SIZE = 1;
+    static const UTF8shift MARK_SIZE = { STR_LTR_MARK.length };
+    static const UTF16shift WMARK_SIZE = WSTR_LTR_MARK.length;
+    static assert(MARK_SIZE.internalValue == 3 && WMARK_SIZE == 1);
     static const int SCRIPT_VISATTR_SIZEOF = 2;
     static const int GOFFSET_SIZEOF = 8;
-    private static byte[16] CLSID_CMultiLanguage;
-    private static byte[16] IID_IMLangFontLink2;
-    private static bool static_this_completed = false;
-    private static void static_this() {
+mixin(gshared!("
+    static byte[16] CLSID_CMultiLanguage;
+    static byte[16] IID_IMLangFontLink2;
+    static bool static_this_completed = false;
+"));
+    static void static_this() {
         // in case of allready initialized, we can check and leave without lock
         if( static_this_completed ){
             return;
         }
         synchronized {
             if( !static_this_completed ){
-                OS.IIDFromString("{275c23e2-3747-11d0-9fea-00aa003f8646}\0".toWCharArray().ptr, CLSID_CMultiLanguage.ptr);
-                OS.IIDFromString("{DCCFC162-2B38-11d2-B7EC-00C04F8F5D9A}\0".toWCharArray().ptr, IID_IMLangFontLink2.ptr);
+                OS.IIDFromString("{275c23e2-3747-11d0-9fea-00aa003f8646}\0"w.ptr, CLSID_CMultiLanguage.ptr);
+                OS.IIDFromString("{DCCFC162-2B38-11d2-B7EC-00C04F8F5D9A}\0"w.ptr, IID_IMLangFontLink2.ptr);
                 static_this_completed = true;
             }
         }
@@ -139,10 +144,14 @@ public final class TextLayout : Resource {
     static const int UNDERLINE_IME_DASH = 2 << 16;
     static const int UNDERLINE_IME_THICK = 3 << 16;
 
-    class StyleItem {
+    static class StyleItem {
         TextStyle style;
-        // SWT: start, lenght relative to segmentsText
-        int start, length;
+        // DWT: start, lenght relative to segmentsText
+        UTF8index UTF8start;
+        UTF8shift UTF8length;
+        UTF8index UTF8end() {
+            return UTF8start + UTF8length;
+        }
         bool lineBreak, softBreak, tab;
 
         /*Script cache and analysis */
@@ -221,7 +230,7 @@ public final class TextLayout : Resource {
         lineBreak = softBreak = false;
     }
     override public String toString () {
-        return Format( "StyleItem {{{}, {}}", start, style );
+        return Format( "StyleItem {{{}, {}}", UTF8start, style );
     }
     }
 
@@ -261,11 +270,11 @@ public this (Device device) {
 
 void breakRun(StyleItem run) {
     if (run.psla !is null) return;
-    String16 chars = segmentsWText[ index8to16[ run.start ] .. index8to16[ run.start + run.length ] ];
+    String16 wchars = segmentsWText[ getUTF16index(run.UTF8start) .. getUTF16index(run.UTF8start + run.UTF8length) ];
     auto hHeap = OS.GetProcessHeap();
-    run.psla = cast(SCRIPT_LOGATTR*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, SCRIPT_LOGATTR.sizeof * chars.length);
+    run.psla = cast(SCRIPT_LOGATTR*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, SCRIPT_LOGATTR.sizeof * wchars.length);
     if (run.psla is null) SWT.error(SWT.ERROR_NO_HANDLES);
-    OS.ScriptBreak(chars.ptr, chars.length, &run.analysis, run.psla);
+    OS.ScriptBreak(wchars.ptr, wchars.length, &run.analysis, run.psla);
 }
 
 void checkLayout () {
@@ -276,7 +285,13 @@ void checkLayout () {
 *  Compute the runs: itemize, shape, place, and reorder the runs.
 *   Break paragraphs into lines, wraps the text, and initialize caches.
 */
-void computeRuns (GC gc) {
+void computeRuns (GC gc)
+out {
+    foreach(run; allRuns) {
+        segmentsText.validateUTF8index(run.UTF8start);
+        segmentsText.validateUTF8index(run.UTF8start + run.UTF8length);
+    }
+} body {
     if (runs !is null) return;
     auto hDC = gc !is null ? gc.handle : device.internal_new_GC(null);
     auto srcHdc = OS.CreateCompatibleDC(hDC);
@@ -291,8 +306,9 @@ void computeRuns (GC gc) {
     int lineWidth = indent, lineStart = 0, lineCount = 1;
     for (int i=0; i<allRuns.length - 1; i++) {
         StyleItem run = allRuns[i];
-        if (run.length is 1) {
-            char ch = segmentsText.charAt(run.start);
+        if (run.UTF8length.internalValue is 1) {
+            char ch = segmentsText.charAt( run.UTF8start.internalValue );
+            assert(ch == segmentsText.dcharAt(run.UTF8start));
             switch (ch) {
                 case '\t': {
                     run.tab = true;
@@ -321,8 +337,8 @@ void computeRuns (GC gc) {
                 case '\r': {
                     run.lineBreak = true;
                     StyleItem next = allRuns[i + 1];
-                    if (next.length !is 0 && segmentsText.charAt(next.start) is '\n') {
-                        run.length += 1;
+                    if (next.UTF8length.internalValue !is 0 && segmentsText.charAt( next.UTF8start.internalValue ) is '\n') {
+                        run.UTF8length.internalValue += 1;
                         next.free();
                         StyleItem[] newAllRuns = new StyleItem[allRuns.length - 1];
                         System.arraycopy(allRuns, 0, newAllRuns, 0, i + 1);
@@ -335,26 +351,27 @@ void computeRuns (GC gc) {
             }
         }
         if (wrapWidth !is -1 && lineWidth + run.width > wrapWidth && !run.tab) {
-            int start = 0;
-            int[] piDx = new int[run.length];
+            UTF16index wstart = 0;
+            UTF16shift cChars = getUTF16length(run);
+            int[] piDx = new int[cChars];
             if (run.style !is null && run.style.metrics !is null) {
                 piDx[0] = run.width;
             } else {
-                OS.ScriptGetLogicalWidths(&run.analysis, run.length, run.glyphCount, run.advances, run.clusters, run.visAttrs, piDx.ptr);
+                OS.ScriptGetLogicalWidths(&run.analysis, cChars, run.glyphCount, run.advances, run.clusters, run.visAttrs, piDx.ptr);
             }
             int width = 0, maxWidth = wrapWidth - lineWidth;
-            while (width + piDx[start] < maxWidth) {
-                width += piDx[start++];
+            while (width + piDx[wstart] < maxWidth) {
+                width += piDx[wstart++];
             }
-            int firstStart = start;
+            UTF16index firstWstart = wstart;
             int firstIndice = i;
             while (i >= lineStart) {
                 breakRun(run);
-                while (start >= 0) {
-                    logAttr = run.psla + start;
+                while (wstart >= 0) {
+                    logAttr = run.psla + wstart;
                     //OS.MoveMemory(logAttr, run.psla + (start * SCRIPT_LOGATTR.sizeof), SCRIPT_LOGATTR.sizeof);
                     if (logAttr.fSoftBreak || logAttr.fWhiteSpace) break;
-                    start--;
+                    wstart--;
                 }
 
                 /*
@@ -362,7 +379,7 @@ void computeRuns (GC gc) {
                 *  after a letter with an accent. This cause a break line to be set in the middle of a word.
                 *  The fix is to detect the case and ignore fSoftBreak forcing the algorithm keep searching.
                 */
-                if (start is 0 && i !is lineStart && !run.tab) {
+                if (wstart is 0 && i !is lineStart && !run.tab) {
                     if (logAttr.fSoftBreak && !logAttr.fWhiteSpace) {
                         properties = device.scripts[run.analysis.eScript];
                         //OS.MoveMemory(properties, device.scripts[run.analysis.eScript], SCRIPT_PROPERTIES.sizeof);
@@ -371,44 +388,46 @@ void computeRuns (GC gc) {
                         //OS.MoveMemory(properties, device.scripts[pRun.analysis.eScript], SCRIPT_PROPERTIES.sizeof);
                         if (properties.langid is langID || langID is OS.LANG_NEUTRAL || properties.langid is OS.LANG_NEUTRAL) {
                             breakRun(pRun);
-                            logAttr = pRun.psla + (pRun.length - 1);
+                            logAttr = pRun.psla + (getUTF16length(pRun) - 1);
                             //OS.MoveMemory(logAttr, pRun.psla + ((pRun.length - 1) * SCRIPT_LOGATTR.sizeof), SCRIPT_LOGATTR.sizeof);
-                            if (!logAttr.fWhiteSpace) start = -1;
+                            if (!logAttr.fWhiteSpace) wstart = cast(UTF16index)-1;
                         }
                     }
                 }
-                if (start >= 0 || i is lineStart) break;
+                if (wstart >= 0 || i is lineStart) break;
                 run = allRuns[--i];
-                start = run.length - 1;
+                wstart = cast(UTF16index)(getUTF16length(run) - 1);
             }
-            if (start is 0 && i !is lineStart && !run.tab) {
+            if (wstart is 0 && i !is lineStart && !run.tab) {
                 run = allRuns[--i];
-            } else  if (start <= 0 && i is lineStart) {
+            } else  if (wstart <= 0 && i is lineStart) {
                 if (lineWidth is wrapWidth && firstIndice > 0) {
                     i = firstIndice - 1;
                     run = allRuns[i];
-                    start = run.length;
+                    wstart = cast(UTF16index)getUTF16length(run);
                 } else {
                     i = firstIndice;
                     run = allRuns[i];
-                    start = Math.max(1, firstStart);
+                    wstart = cast(UTF16index)Math.max(1, firstWstart);
                 }
             }
             breakRun(run);
-            while (start < run.length) {
-                logAttr = run.psla + start;
+            UTF16shift runWlength = getUTF16length(run);
+            while (wstart < runWlength) {
+                logAttr = run.psla + wstart;
                 //OS.MoveMemory(logAttr, run.psla + (start * SCRIPT_LOGATTR.sizeof), SCRIPT_LOGATTR.sizeof);
                 if (!logAttr.fWhiteSpace) break;
-                start++;
+                wstart++;
             }
-            if (0 < start && start < run.length) {
+            if (0 < wstart && wstart < runWlength) {
                 StyleItem newRun = new StyleItem();
-                newRun.start = run.start + start;
-                newRun.length = run.length - start;
+                UTF8shift UTF8startShift = getUTF8index(getUTF16index(run.UTF8start) + wstart) - run.UTF8start;
+                newRun.UTF8start = run.UTF8start + UTF8startShift;
+                newRun.UTF8length = run.UTF8length - UTF8startShift;
                 newRun.style = run.style;
                 newRun.analysis = cloneScriptAnalysis(run.analysis);
                 run.free();
-                run.length = start;
+                run.UTF8length = UTF8startShift;
                 OS.SelectObject(srcHdc, getItemFont(run));
                 run.analysis.fNoGlyphIndex = false;
                 shape (srcHdc, run);
@@ -434,7 +453,7 @@ void computeRuns (GC gc) {
     }
     lineWidth = 0;
     runs = new StyleItem[][](lineCount);
-    lineOffset = new int[lineCount + 1];
+    lineOffset = new UTF8index[lineCount + 1];
     lineY = new int[lineCount + 1];
     this.lineWidth = new int[lineCount];
     int lineRunCount = 0, line = 0;
@@ -489,7 +508,7 @@ void computeRuns (GC gc) {
             this.lineWidth[line] = lineWidth;
 
             StyleItem lastRun = runs[line][lineRunCount - 1];
-            int lastOffset = lastRun.start + lastRun.length;
+            UTF8index lastOffset = lastRun.UTF8start + lastRun.UTF8length;
             runs[line] = reorder(runs[line], i is allRuns.length - 1);
             lastRun = runs[line][lineRunCount - 1];
             if (run.softBreak && run !is lastRun) {
@@ -596,8 +615,8 @@ public void draw (GC gc, int x, int y) {
  *    <li>ERROR_NULL_ARGUMENT - if the gc is null</li>
  * </ul>
  */
-public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Color selectionForeground, Color selectionBackground) {
-    draw(gc, x, y, selectionStart, selectionEnd, selectionForeground, selectionBackground, 0);
+public void draw (GC gc, int x, int y, int i_selectionStart, int i_selectionEnd, Color selectionForeground, Color selectionBackground) {
+    draw(gc, x, y, i_selectionStart, i_selectionEnd, selectionForeground, selectionBackground, 0);
 }
 
 /**
@@ -627,9 +646,11 @@ public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Col
  *
  * @since 3.3
  */
-public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Color selectionForeground, Color selectionBackground, int flags) {
+public void draw (GC gc, int x, int y, int i_selectionStart, int i_selectionEnd, Color selectionForeground, Color selectionBackground, int flags) {
     checkLayout();
     computeRuns(gc);
+    UTF8index selectionStart = text.takeIndexArg(i_selectionStart, "selectionStart@draw");
+    UTF8index selectionEnd = text.takeIndexArg(i_selectionEnd, "selectionEnd@draw");
     if (gc is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (gc.isDisposed()) SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     if (selectionForeground !is null && selectionForeground.isDisposed()) SWT.error(SWT.ERROR_INVALID_ARGUMENT);
@@ -694,10 +715,10 @@ public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Col
             OS.DeleteObject(clipRgn);
         }
     }
-    bool hasSelection = selectionStart <= selectionEnd && selectionStart !is -1 && selectionEnd !is -1;
+    bool hasSelection = selectionStart <= selectionEnd && selectionStart.internalValue !is -1 && selectionEnd.internalValue !is -1;
     if (hasSelection || (flags & SWT.LAST_LINE_SELECTION) !is 0) {
-        selectionStart = Math.min(Math.max(0, selectionStart), length - 1);
-        selectionEnd = Math.min(Math.max(0, selectionEnd), length - 1);
+        selectionStart = Math.min(Math.max(text.firstIndex(), selectionStart), text.beforeEndIndex());
+        selectionEnd = Math.min(Math.max(text.firstIndex(), selectionEnd), text.beforeEndIndex());
         if (selectionForeground is null) selectionForeground = device.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT);
         if (selectionBackground is null) selectionBackground = device.getSystemColor(SWT.COLOR_LIST_SELECTION);
         selectionStart = translateOffset(selectionStart);
@@ -740,9 +761,9 @@ public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Col
             } else {
                 StyleItem run = lineRuns[lineRuns.length - 1];
                 if (run.lineBreak && !run.softBreak) {
-                    if (selectionStart <= run.start && run.start <= selectionEnd) extents = true;
+                    if (selectionStart <= run.UTF8start && run.UTF8start <= selectionEnd) extents = true;
                 } else {
-                    int endOffset = segmentsText.getAbsoluteCodePointOffset( run.start + run.length, -1 );
+                    UTF8index endOffset = segmentsText.offsetBefore(run.UTF8start + run.UTF8length);
                     if (selectionStart <= endOffset && endOffset < selectionEnd && (flags & SWT.FULL_SELECTION) !is 0) {
                         extents = true;
                     }
@@ -774,12 +795,12 @@ public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Col
         int alignmentX = drawX;
         for (int i = 0; i < lineRuns.length; i++) {
             StyleItem run = lineRuns[i];
-            if (run.length is 0) continue;
+            if (run.UTF8length.internalValue is 0) continue;
             if (drawX > clip.x + clip.width) break;
             if (drawX + run.width >= clip.x) {
                 if (!run.lineBreak || run.softBreak) {
-                    int end = segmentsText.getAbsoluteCodePointOffset( run.start + run.length, -1 );
-                    bool fullSelection = hasSelection && selectionStart <= run.start && selectionEnd >= end;
+                    UTF8index end = segmentsText.offsetBefore(run.UTF8start + run.UTF8length);
+                    bool fullSelection = hasSelection && selectionStart <= run.UTF8start && selectionEnd >= end;
                     if (fullSelection) {
                         if (gdip) {
                             Gdip.Graphics_FillRectangle(gdipGraphics, cast(Gdip.Brush)selBrush, drawX, drawY, run.width, lineHeight);
@@ -805,11 +826,11 @@ public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Col
                                 OS.DeleteObject(hBrush);
                             }
                         }
-                        bool partialSelection = hasSelection && !(selectionStart > end || run.start > selectionEnd);
+                        bool partialSelection = hasSelection && !(selectionStart > end || run.UTF8start > selectionEnd);
                         if (partialSelection) {
-                            int selStart = index8to16[ Math.max(selectionStart, run.start) ] - index8to16[run.start];
-                            int selEnd = index8to16[ Math.min(selectionEnd, end) ] - index8to16[ run.start ];
-                            int cChars = index8to16[run.start+run.length] - index8to16[run.start]; // make it wchar
+                            UTF16index selStart = getUTF16index(Math.max(selectionStart, run.UTF8start)) - getUTF16index(run.UTF8start);
+                            UTF16index selEnd = getUTF16index(Math.min(selectionEnd, end)) - getUTF16index(run.UTF8start);
+                            UTF16shift cChars = getUTF16length(run); // make it wchar
                             int gGlyphs = run.glyphCount;
                             int piX;
                             int* advances = run.justify !is null ? run.justify : run.advances;
@@ -842,19 +863,19 @@ public void draw (GC gc, int x, int y, int selectionStart, int selectionEnd, Col
         drawX = alignmentX;
         for (int i = 0; i < lineRuns.length; i++) {
             StyleItem run = lineRuns[i];
-            if (run.length is 0) continue;
+            if (run.UTF8length.internalValue is 0) continue;
             if (drawX > clip.x + clip.width) break;
             if (drawX + run.width >= clip.x) {
                 if (!run.tab && (!run.lineBreak || run.softBreak) && !(run.style !is null && run.style.metrics !is null)) {
-                    int end = run.start + run.length - 1;
-                    bool fullSelection = hasSelection && selectionStart <= run.start && selectionEnd >= end;
-                    bool partialSelection = hasSelection && !fullSelection && !(selectionStart > end || run.start > selectionEnd);
+                    UTF8index end = segmentsText.offsetBefore(run.UTF8start + run.UTF8length);
+                    bool fullSelection = hasSelection && selectionStart <= run.UTF8start && selectionEnd >= end;
+                    bool partialSelection = hasSelection && !fullSelection && !(selectionStart > end || run.UTF8start > selectionEnd);
                     OS.SelectObject(hdc, getItemFont(run));
                     int drawRunY = drawY + (baseline - run.ascent);
                     if (partialSelection) {
-                        int selStart = Math.max(index8to16[selectionStart], index8to16[run.start]) - index8to16[run.start];
-                        int selEnd = Math.min(index8to16[selectionEnd], index8to16[end]) - index8to16[run.start];
-                        int cChars = index8to16[run.start+run.length] - index8to16[run.start]; // make it wchar
+                        UTF16index selStart = Math.max(getUTF16index(selectionStart), getUTF16index(run.UTF8start)) - getUTF16index(run.UTF8start);
+                        UTF16index selEnd = Math.min(getUTF16index(selectionEnd), getUTF16index(end)) - getUTF16index(run.UTF8start);
+                        UTF16shift cChars = getUTF16length(run); // make it wchar
                         int gGlyphs = run.glyphCount;
                         int piX;
                         int* advances = run.justify !is null ? run.justify : run.advances;
@@ -1185,7 +1206,7 @@ void drawLines(bool advance, void* graphics, int x, int lineBaseline, int lineUn
     }
 }
 
-RECT* drawBorder(bool advance, void* graphics, int x, int y, int lineHeight, void* color, void* selectionColor, bool fullSelection, RECT* clipRect, RECT* rect, int alpha, StyleItem[] line, int index, int selectionStart, int selectionEnd) {
+RECT* drawBorder(bool advance, void* graphics, int x, int y, int lineHeight, void* color, void* selectionColor, bool fullSelection, RECT* clipRect, RECT* rect, int alpha, StyleItem[] line, int index, UTF8index selectionStart, UTF8index selectionEnd) {
     StyleItem run = line[index];
     TextStyle style = run.style;
     if (style is null) return null;
@@ -1196,14 +1217,14 @@ RECT* drawBorder(bool advance, void* graphics, int x, int y, int lineHeight, voi
             OS.SetRect(clipRect, -1, rect.top, -1, rect.bottom);
         }
         bool isRTL = (orientation & SWT.RIGHT_TO_LEFT) !is 0;
-        if (run.start <= selectionStart && selectionStart <= run.start + run.length) {
+        if (run.UTF8start <= selectionStart && selectionStart <= run.UTF8start + run.UTF8length) {
             if (run.analysis.fRTL ^ isRTL) {
                 clipRect.right = rect.left;
             } else {
                 clipRect.left = rect.left;
             }
         }
-        if (run.start <= selectionEnd && selectionEnd <= run.start + run.length) {
+        if (run.UTF8start <= selectionEnd && selectionEnd <= run.UTF8start + run.UTF8length) {
             if (run.analysis.fRTL ^ isRTL) {
                 clipRect.left = rect.right;
             } else {
@@ -1433,14 +1454,15 @@ public Rectangle getBounds () {
  *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
-public Rectangle getBounds (int start, int end) {
+public Rectangle getBounds (int i_start, int i_end) {
     checkLayout();
     computeRuns(null);
-    int length = text.length;
-    if (length is 0) return new Rectangle(0, 0, 0, 0);
+    UTF8index start = text.takeIndexArg(i_start, "start@getBounds");
+    UTF8index end = text.takeIndexArg(i_end, "end@getBounds");
+    if (text.length is 0) return new Rectangle(0, 0, 0, 0);
     if (start > end) return new Rectangle(0, 0, 0, 0);
-    start = Math.min(Math.max(0, start), length - 1);
-    end = Math.min(Math.max(0, end), length - 1);
+    start = Math.min(Math.max(text.firstIndex(), start), text.beforeEndIndex());
+    end = Math.min(Math.max(text.firstIndex(), end), text.beforeEndIndex());
     start = translateOffset(start);
     end = translateOffset(end);
     int left = 0x7fffffff, right = 0;
@@ -1448,21 +1470,22 @@ public Rectangle getBounds (int start, int end) {
     bool isRTL = (orientation & SWT.RIGHT_TO_LEFT) !is 0;
     for (int i = 0; i < allRuns.length - 1; i++) {
         StyleItem run = allRuns[i];
-        int runEnd = run.start + run.length;
+        UTF8index runEnd = run.UTF8start + run.UTF8length;
         if (runEnd <= start) continue;
-        if (run.start > end) break;
+        if (run.UTF8start > end) break;
         int runLead = run.x;
         int runTrail = run.x + run.width;
-        if (run.start <= start && start < runEnd) {
+        if (run.UTF8start <= start && start < runEnd) {
             int cx = 0;
             if (run.style !is null && run.style.metrics !is null) {
                 GlyphMetrics metrics = run.style.metrics;
-                cx = metrics.width * (index8to16[start] - index8to16[run.start]);
+                cx = metrics.width * (getUTF16index(start) - getUTF16index(run.UTF8start));
             } else if (!run.tab) {
+                UTF16index iCP = getUTF16index(start) - getUTF16index(run.UTF8start);
+                UTF16shift cChars = getUTF16length(run);
                 int piX;
                 int* advances = run.justify !is null ? run.justify : run.advances;
-                int wlength = index8to16[ run.start+run.length] - index8to16[run.start];
-                OS.ScriptCPtoX(index8to16[start] - index8to16[run.start], false, wlength, run.glyphCount, run.clusters, run.visAttrs, advances, &run.analysis, &piX);
+                OS.ScriptCPtoX(iCP, false, cChars, run.glyphCount, run.clusters, run.visAttrs, advances, &run.analysis, &piX);
                 cx = isRTL ? run.width - piX : piX;
             }
             if (run.analysis.fRTL ^ isRTL) {
@@ -1471,16 +1494,17 @@ public Rectangle getBounds (int start, int end) {
                 runLead = run.x + cx;
             }
         }
-        if (run.start <= end && end < runEnd) {
+        if (run.UTF8start <= end && end < runEnd) {
             int cx = run.width;
             if (run.style !is null && run.style.metrics !is null) {
                 GlyphMetrics metrics = run.style.metrics;
-                cx = metrics.width * (index8to16[end] - index8to16[run.start] + 1);
+                cx = metrics.width * (getUTF16index(end) - getUTF16index(run.UTF8start) + 1);
             } else if (!run.tab) {
+                UTF16index iCP = getUTF16index(end) - getUTF16index(run.UTF8start);
+                UTF16shift cChars = getUTF16length(run);
                 int piX;
                 int* advances = run.justify !is null ? run.justify : run.advances;
-                int wlength = index8to16[ run.start+run.length] - index8to16[run.start];
-                OS.ScriptCPtoX(index8to16[end] - index8to16[run.start], true, wlength, run.glyphCount, run.clusters, run.visAttrs, advances, &run.analysis, &piX);
+                OS.ScriptCPtoX(iCP, true, cChars, run.glyphCount, run.clusters, run.visAttrs, advances, &run.analysis, &piX);
                 cx = isRTL ? run.width - piX : piX;
             }
             if (run.analysis.fRTL ^ isRTL) {
@@ -1490,7 +1514,7 @@ public Rectangle getBounds (int start, int end) {
             }
         }
         int lineIndex = 0;
-        while (lineIndex < runs.length && lineOffset[lineIndex + 1] <= run.start) {
+        while (lineIndex < runs.length && lineOffset[lineIndex + 1] <= run.UTF8start) {
             lineIndex++;
         }
         left = Math.min(left, runLead);
@@ -1592,14 +1616,15 @@ HFONT getItemFont (StyleItem item) {
  * @exception SWTException <ul>
  *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
  */
-public int getLevel (int offset) {
+public int getLevel (int i_offset) {
     checkLayout();
     computeRuns(null);
+    UTF8index offset = text.takeIndexArg(i_offset, "offset@getLevel");
     int length = text.length;
-    if (!(0 <= offset && offset <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
+    if (!(0 <= offset.internalValue && offset.internalValue <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
     offset = translateOffset(offset);
     for (int i=1; i<allRuns.length; i++) {
-        if (allRuns[i].start > offset) {
+        if (allRuns[i].UTF8start > offset) {
             return allRuns[i - 1].analysis.s.uBidiLevel;
         }
     }
@@ -1691,11 +1716,12 @@ int getLineIndent (int lineIndex) {
  *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
-public int getLineIndex (int offset) {
+public int getLineIndex (int i_offset) {
     checkLayout();
     computeRuns(null);
+    UTF8index offset = text.takeIndexArg(i_offset, "offset@getLineIndex");
     int length = text.length;
-    if (!(0 <= offset && offset <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
+    if (!(0 <= offset.internalValue && offset.internalValue <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
     offset = translateOffset(offset);
     for (int line=0; line<runs.length; line++) {
         if (lineOffset[line + 1] > offset) {
@@ -1789,12 +1815,13 @@ public int[] getLineOffsets () {
  * @see #getOffset(Point, int[])
  * @see #getOffset(int, int, int[])
  */
-public Point getLocation (int offset, bool trailing) {
+public Point getLocation (int i_offset, bool trailing) {
     checkLayout();
     computeRuns(null);
-    int length = text.length;
-    if (!(0 <= offset && offset <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
-    length = segmentsText.length;
+    UTF8index offset = text.takeIndexArg(i_offset, "offset@getLocation");
+    UTF8index length = text.endIndex();
+    if (!(0 <= offset.internalValue && offset <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
+    length = segmentsText.endIndex();
     offset = translateOffset(offset);
     int line;
     for (line=0; line<runs.length; line++) {
@@ -1809,20 +1836,20 @@ public Point getLocation (int offset, bool trailing) {
     while (high - low > 1) {
         int index = ((high + low) / 2);
         StyleItem run = allRuns[index];
-        if (run.start > offset) {
+        if (run.UTF8start > offset) {
             high = index;
-        } else if (run.start + run.length <= offset) {
+        } else if (run.UTF8start + run.UTF8length <= offset) {
             low = index;
         } else {
             int width;
             if (run.style !is null && run.style.metrics !is null) {
                 GlyphMetrics metrics = run.style.metrics;
-                width = metrics.width * (offset - run.start + (trailing ? 1 : 0));
+                width = metrics.width * (getUTF16index(offset) - getUTF16index(run.UTF8start) + trailing);
             } else if (run.tab) {
                 width = (trailing || (offset is length)) ? run.width : 0;
             } else {
-                int runOffset = index8to16[offset] - index8to16[run.start];
-                int cChars = index8to16[run.start+run.length] - index8to16[run.start]; // make it wchar
+                UTF16index runOffset = getUTF16index(offset) - getUTF16index(run.UTF8start);
+                UTF16shift cChars = getUTF16length(run); // make it wchar
                 int gGlyphs = run.glyphCount;
                 int piX;
                 int* advances = run.justify !is null ? run.justify : run.advances;
@@ -1854,20 +1881,21 @@ public Point getLocation (int offset, bool trailing) {
  *
  * @see #getPreviousOffset(int, int)
  */
-public int getNextOffset (int offset, int movement) {
+public int getNextOffset (int i_offset, int movement) {
     checkLayout();
-    return _getOffset (offset, movement, true);
+    return _getOffset (i_offset, movement, true);
 }
 
-int _getOffset(int offset, int movement, bool forward) {
+int _getOffset(int i_offset, int movement, bool forward) {
     computeRuns(null);
-    int length = text.length;
-    if (!(0 <= offset && offset <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
-    if (forward && offset is length) return length;
-    if (!forward && offset is 0) return 0;
+    UTF8index offset = text.takeIndexArg(i_offset, "offset@_getOffset");
+    UTF8index length = text.endIndex();
+    if (!(0 <= offset.internalValue && offset <= length)) SWT.error(SWT.ERROR_INVALID_RANGE);
+    if (forward && offset is length) return length.internalValue;
+    if (!forward && offset.internalValue is 0) return 0;
     int step = forward ? 1 : -1;
-    if ((movement & SWT.MOVEMENT_CHAR) !is 0) return offset + step;
-    length = segmentsText.length;
+    if ((movement & SWT.MOVEMENT_CHAR) !is 0) return (offset + text.toUTF8shift(offset, step)).internalValue;
+    length = segmentsText.endIndex();
     offset = translateOffset(offset);
     SCRIPT_LOGATTR* logAttr;
     SCRIPT_PROPERTIES* properties;
@@ -1875,15 +1903,15 @@ int _getOffset(int offset, int movement, bool forward) {
     offset = validadeOffset(offset, step);
     do {
         StyleItem run = allRuns[i];
-        if (run.start <= offset && offset < run.start + run.length) {
-            if (run.lineBreak && !run.softBreak) return untranslateOffset(run.start);
-            if (run.tab) return untranslateOffset(run.start);
+        if (run.UTF8start <= offset && offset < run.UTF8start + run.UTF8length) {
+            if (run.lineBreak && !run.softBreak) return untranslateOffset(run.UTF8start);
+            if (run.tab) return untranslateOffset(run.UTF8start);
             properties = device.scripts[run.analysis.eScript];
             bool isComplex = properties.fNeedsCaretInfo || properties.fNeedsWordBreaking;
             if (isComplex) breakRun(run);
-            while (run.start <= offset && offset < run.start + run.length) {
+            while (run.UTF8start <= offset && offset < run.UTF8start + run.UTF8length) {
                 if (isComplex) {
-                    logAttr = run.psla + (index8to16[offset] - index8to16[run.start]);
+                    logAttr = run.psla + (getUTF16index(offset) - getUTF16index(run.UTF8start));
                 }
                 switch (movement) {
                     case SWT.MOVEMENT_CLUSTER: {
@@ -1899,11 +1927,11 @@ int _getOffset(int offset, int movement, bool forward) {
                         if (properties.fNeedsWordBreaking) {
                             if (!logAttr.fInvalid && logAttr.fWordStop) return untranslateOffset(offset);
                         } else {
-                            if (offset > 0) {
-                                bool letterOrDigit = Compatibility.isLetterOrDigit(segmentsText.charAt(offset));
-                                bool previousLetterOrDigit = Compatibility.isLetterOrDigit(segmentsText.charAt(offset - 1));
+                            if (offset.internalValue > 0) {
+                                bool letterOrDigit = Compatibility.isLetterOrDigit(segmentsText.dcharAt(offset));
+                                bool previousLetterOrDigit = Compatibility.isLetterOrDigit(segmentsText.dcharBefore(offset));
                                 if (letterOrDigit !is previousLetterOrDigit || !letterOrDigit) {
-                                    if (!Compatibility.isWhitespace(segmentsText[offset..$].firstCodePoint())) {
+                                    if (!Compatibility.isWhitespace(segmentsText.dcharAt(offset))) {
                                         return untranslateOffset(offset);
                                     }
                                 }
@@ -1912,9 +1940,9 @@ int _getOffset(int offset, int movement, bool forward) {
                         break;
                     }
                     case SWT.MOVEMENT_WORD_END: {
-                        if (offset > 0) {
-                            bool isLetterOrDigit = Compatibility.isLetterOrDigit(segmentsText.charAt(offset));
-                            bool previousLetterOrDigit = Compatibility.isLetterOrDigit(segmentsText[offset - 1.. $].firstCodePoint());
+                        if (offset.internalValue > 0) {
+                            bool isLetterOrDigit = Compatibility.isLetterOrDigit(segmentsText.dcharAt(offset));
+                            bool previousLetterOrDigit = Compatibility.isLetterOrDigit(segmentsText.dcharBefore(offset));
                             if (!isLetterOrDigit && previousLetterOrDigit) {
                                 return untranslateOffset(offset);
                             }
@@ -1927,7 +1955,7 @@ int _getOffset(int offset, int movement, bool forward) {
             }
         }
         i += step;
-    } while (0 <= i && i < allRuns.length - 1 && 0 <= offset && offset < length);
+    } while (0 <= i && i < allRuns.length - 1 && 0 <= offset.internalValue && offset < length);
     return forward ? text.length : 0;
 }
 
@@ -2008,35 +2036,38 @@ public int getOffset (int x, int y, int[] trailing) {
         } else if (run.x + run.width <= x) {
             low = index;
         } else {
-            if (run.lineBreak && !run.softBreak) return untranslateOffset(run.start);
+            if (run.lineBreak && !run.softBreak) return untranslateOffset(run.UTF8start);
             int xRun = x - run.x;
             if (run.style !is null && run.style.metrics !is null) {
                 GlyphMetrics metrics = run.style.metrics;
                 if (metrics.width > 0) {
+                    UTF8index res = addUTF16shift(run.UTF8start, cast(UTF16shift)(xRun / metrics.width));
                     if (trailing !is null) {
-                        trailing[0] = (xRun % metrics.width < metrics.width / 2) ? 0 : 1;
+                        trailing[0] = (xRun % metrics.width < metrics.width / 2) ? 0 : segmentsText.UTF8strideAt(res).internalValue;
                     }
-                    return untranslateOffset(run.start + xRun / metrics.width);
+                    return untranslateOffset(res);
                 }
             }
             if (run.tab) {
-                if (trailing !is null) trailing[0] = x < (run.x + run.width / 2) ? 0 : 1;
-                return untranslateOffset(run.start);
+                UTF8index res = run.UTF8start;
+                if (trailing !is null) trailing[0] = x < (run.x + run.width / 2) ? 0 : segmentsText.UTF8strideAt(res).internalValue;
+                return untranslateOffset(res);
             }
-            int cChars = index8to16[run.start+run.length] - index8to16[run.start]; // make it wchar
+            UTF16shift cChars = getUTF16length(run); // make it wchar
             int cGlyphs = run.glyphCount;
-            int piCP;
-            int piTrailing;
+            UTF16shift piCP;
+            UTF16shift piTrailing;
             if ((orientation & SWT.RIGHT_TO_LEFT) !is 0) {
                 xRun = run.width - xRun;
             }
             int* advances = run.justify !is null ? run.justify : run.advances;
             OS.ScriptXtoCP(xRun, cChars, cGlyphs, run.clusters, run.visAttrs, advances, &run.analysis, &piCP, &piTrailing);
-            if (trailing !is null) trailing[0] = piTrailing;
-
-            // SWT: back from codepoints to utf8 index
-            int offsetIndex = segmentsText[ run.start .. $ ].codepointIndexToIndex( piCP );
-            return untranslateOffset(run.start + offsetIndex);
+            
+            // DWT: back from UTF-16 to UTF-8
+            UTF8index res = addUTF16shift(run.UTF8start, piCP);
+            if (trailing !is null)
+                trailing[0] = (addUTF16shift(res, piTrailing) - res).internalValue;
+            return untranslateOffset(res);
         }
     }
     if (trailing !is null) trailing[0] = 0;
@@ -2076,9 +2107,9 @@ public int getOrientation () {
  *
  * @see #getNextOffset(int, int)
  */
-public int getPreviousOffset (int offset, int movement) {
+public int getPreviousOffset (int i_offset, int movement) {
     checkLayout();
-    return _getOffset (offset, movement, false);
+    return _getOffset (i_offset, movement, false);
 }
 
 /**
@@ -2101,8 +2132,8 @@ public int[] getRanges () {
     int count = 0;
     for (int i=0; i<stylesCount - 1; i++) {
         if (styles[i].style !is null) {
-            result[count++] = styles[i].start;
-            result[count++] = styles[i + 1].start - 1;
+            result[count++] = styles[i].UTF8start.internalValue;
+            result[count++] = getUTF8index(cast(UTF16index)(getUTF16index(styles[i + 1].UTF8start) - 1)).internalValue;
         }
     }
     if (count !is result.length) {
@@ -2124,28 +2155,30 @@ public int[] getRanges () {
  */
 public int[] getSegments () {
     checkLayout();
-    return segments;
+    return cast(int[])segments;
 }
 
 void getSegmentsText( out String resUtf8, out String16 resUtf16 ) {
 
     void buildIndexTables() { // build the index translation tables.
-        index8to16.length = resUtf8.length + 1;
         index16to8.length = resUtf16.length + 1;
+        index8to16.length = resUtf8.length + 1;
+        index16to8[] = resUtf8.preFirstIndex();
+        index8to16[] = -1;
 
-        int idx8, idx16;
-        while( idx8 < resUtf8.length ){
-            int ate8, ate16;
-            dchar d8 = resUtf8[ idx8 .. $ ].firstCodePoint( ate8 );
-            dchar d16 = resUtf16[ idx16 .. $ ].firstCodePoint( ate16 );
-            assert( d8 is d16 );
-            index16to8[ idx16 .. idx16 +ate16 ] = idx8;
-            index8to16[ idx8  .. idx8  +ate8  ] = idx16;
-            idx8  += ate8;
-            idx16 += ate16;
+        UTF8index idx8;
+        UTF16index idx16;
+        for(;;) {
+            index16to8[ idx16 ] = idx8;
+            index8to16[ idx8.internalValue  ] = idx16;
+            if(idx8 == resUtf8.endIndex()) {
+                assert(idx16 == resUtf16.length);
+                break;
+            }
+            assert(resUtf8.dcharAt(idx8) == resUtf16.dcharAt(idx16));
+            idx8  += resUtf8.UTF8strideAt(idx8);
+            idx16 += resUtf16.UTF16strideAt(idx16);
         }
-        index16to8[ resUtf16.length ] = resUtf8.length;
-        index8to16[ resUtf8.length  ] = resUtf16.length;
     }
 
     if (segments is null) {
@@ -2170,7 +2203,7 @@ void getSegmentsText( out String resUtf8, out String16 resUtf16 ) {
         return;
     }
     if (nSegments is 2) {
-        if (segments[0] is 0 && segments[1] is length_) {
+        if (segments[0].internalValue is 0 && segments[1].internalValue is length_) {
             resUtf8 = text;
             resUtf16 = wtext;
             buildIndexTables();
@@ -2179,29 +2212,28 @@ void getSegmentsText( out String resUtf8, out String16 resUtf16 ) {
     }
     {
         auto oldChars = text;
-        // SWT: MARK is now 3 chars long
+        // DWT: MARK is now 3 chars long
         String separator = orientation is SWT.RIGHT_TO_LEFT ? STR_RTL_MARK : STR_LTR_MARK;
-        assert( separator.length is MARK_SIZE );
-        char[] newChars = new char[length_ + nSegments*MARK_SIZE];
+        char[] newChars = new char[length_ + nSegments*MARK_SIZE.internalValue];
 
         int charCount = 0, segmentCount = 0;
         while (charCount < length_) {
-            if (segmentCount < nSegments && charCount is segments[segmentCount]) {
-                int start = charCount + (segmentCount*MARK_SIZE);
-                newChars[ start .. start + MARK_SIZE ] = separator;
+            if (segmentCount < nSegments && charCount is segments[segmentCount].internalValue) {
+                int start = charCount + (segmentCount*MARK_SIZE.internalValue);
+                newChars[ start .. start + MARK_SIZE.internalValue ] = separator;
                 segmentCount++;
             } else {
-                newChars[charCount + (segmentCount*MARK_SIZE)] = oldChars[charCount];
+                newChars[charCount + (segmentCount*MARK_SIZE.internalValue)] = oldChars[charCount];
                 charCount++;
             }
         }
         if (segmentCount < nSegments) {
-            segments[segmentCount] = charCount;
-            int start = charCount + (segmentCount*MARK_SIZE);
-            newChars[ start .. start + MARK_SIZE ] = separator;
+            segments[segmentCount] = asUTF8index( charCount );
+            int start = charCount + (segmentCount*MARK_SIZE.internalValue);
+            newChars[ start .. start + MARK_SIZE.internalValue ] = separator;
             segmentCount++;
         }
-        resUtf8 = cast(String)newChars[ 0 .. Math.min(charCount + (segmentCount*MARK_SIZE), newChars.length)];
+        resUtf8 = cast(String)newChars[ 0 .. Math.min(charCount + (segmentCount*MARK_SIZE.internalValue), newChars.length)];
     }
     // now for the wide chars
     {
@@ -2222,7 +2254,7 @@ void getSegmentsText( out String resUtf8, out String16 resUtf16 ) {
             }
         }
         if (segmentCount < nSegments) {
-            wsegments[segmentCount] = charCount;
+            wsegments[segmentCount] = cast(UTF16index) charCount;
             int start = charCount + (segmentCount*WMARK_SIZE);
             newWChars[ start .. start + WMARK_SIZE ] = wseparator;
             segmentCount++;
@@ -2259,12 +2291,13 @@ public int getSpacing () {
  *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
-public TextStyle getStyle (int offset) {
+public TextStyle getStyle (int i_offset) {
     checkLayout();
+    UTF8index offset = text.takeIndexArg(i_offset, "offset@getStyle");
     int length = text.length;
-    if (!(0 <= offset && offset < length)) SWT.error(SWT.ERROR_INVALID_RANGE);
+    if (!(0 <= offset.internalValue && offset.internalValue < length)) SWT.error(SWT.ERROR_INVALID_RANGE);
     for (int i=1; i<stylesCount; i++) {
-        if (styles[i].start > offset) {
+        if (styles[i].UTF8start > offset) {
             return styles[i - 1].style;
         }
     }
@@ -2363,7 +2396,7 @@ override public bool isDisposed () {
  *  Itemize the receiver text
  */
 StyleItem[] itemize () {
-    // SWT: itemize is the process of finding changes in direction
+    // DWT: itemize is the process of finding changes in direction
     getSegmentsText(segmentsText, segmentsWText );
     int length = segmentsText.length;
     SCRIPT_CONTROL scriptControl;
@@ -2379,11 +2412,11 @@ StyleItem[] itemize () {
     }
 
     auto hHeap = OS.GetProcessHeap();
-    auto pItems = cast(SCRIPT_ITEM*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, MAX_ITEM * SCRIPT_ITEM.sizeof);
+    auto pItems = cast(SCRIPT_ITEM*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, MAX_ITEM * SCRIPT_ITEM.sizeof + 1);
     if (pItems is null) SWT.error(SWT.ERROR_NO_HANDLES);
     int pcItems;
-    String16 chars = segmentsWText;
-    OS.ScriptItemize(chars.ptr, chars.length, MAX_ITEM, &scriptControl, &scriptState, pItems, &pcItems);
+    String16 wchars = segmentsWText;
+    OS.ScriptItemize(wchars.ptr, wchars.length, MAX_ITEM, &scriptControl, &scriptState, pItems, &pcItems);
 //  if (hr is E_OUTOFMEMORY) //TODO handle it
     // SWT pcItems is not inclusive the trailing item
 
@@ -2401,13 +2434,14 @@ StyleItem[] merge (SCRIPT_ITEM* items, int itemCount) {
         System.arraycopy(styles, 0, newStyles, 0, stylesCount);
         styles = newStyles;
     }
-    int count = 0, start = 0, end = segmentsText.length, itemIndex = 0, styleIndex = 0;
+    int count = 0, itemIndex = 0, styleIndex = 0;
+    UTF8index start = segmentsText.firstIndex(), end = segmentsText.endIndex();
     StyleItem[] runs = new StyleItem[itemCount + stylesCount];
     SCRIPT_ITEM* scriptItem;
     bool linkBefore = false;
     while (start < end) {
         StyleItem item = new StyleItem();
-        item.start = start;
+        item.UTF8start = start;
         item.style = styles[styleIndex].style;
         runs[count++] = item;
         scriptItem = items + itemIndex;
@@ -2418,14 +2452,14 @@ StyleItem[] merge (SCRIPT_ITEM* items, int itemCount) {
         }
         //scriptItem.a = new SCRIPT_ANALYSIS();
         scriptItem = items + (itemIndex + 1);
-        int itemLimit = index16to8[scriptItem.iCharPos];
-        int styleLimit = translateOffset(styles[styleIndex + 1].start);
+        UTF8index itemLimit = getUTF8index(scriptItem.iCharPos);
+        UTF8index styleLimit = translateOffset(styles[styleIndex + 1].UTF8start);
         if (styleLimit <= itemLimit) {
             styleIndex++;
             start = styleLimit;
-            if (start < itemLimit && 0 < start && start < end) {
-                dchar pChar = segmentsText[ segmentsText.getAbsoluteCodePointOffset(start, -1) ..$].firstCodePoint();
-                dchar tChar = segmentsText[start     ..$].firstCodePoint();
+            if (start < itemLimit && 0 < start.internalValue && start < end) {
+                dchar pChar = segmentsText.dcharBefore(start);
+                dchar tChar = segmentsText.dcharAt(start);
                 if (Compatibility.isLetter(pChar) && Compatibility.isLetter(tChar)) {
                     item.analysis.fLinkAfter = true;
                     linkBefore = true;
@@ -2436,10 +2470,10 @@ StyleItem[] merge (SCRIPT_ITEM* items, int itemCount) {
             itemIndex++;
             start = itemLimit;
         }
-        item.length = start - item.start;
+        item.UTF8length = start - item.UTF8start;
     }
     StyleItem item = new StyleItem();
-    item.start = end;
+    item.UTF8start = end;
     scriptItem = items + itemCount;
     item.analysis = scriptItem.a;
     runs[count++] = item;
@@ -2674,41 +2708,35 @@ public void setOrientation (int orientation) {
  *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
-public void setSegments(int[] segments) {
+public void setSegments(int[] i_segments) {
     checkLayout();
-    if (this.segments is null && segments is null) return;
-    if (this.segments !is null && segments !is null) {
-        if (this.segments.length is segments.length) {
+    if (this.segments is null && i_segments is null) return;
+    if (this.segments !is null && i_segments !is null)
+        if (this.segments.length is i_segments.length) {
             int i;
-            for (i = 0; i <segments.length; i++) {
-                if (this.segments[i] !is segments[i]) break;
+            for (i = 0; i <i_segments.length; i++) {
+                if (this.segments[i] !is text.takeIndexArg(i_segments[i], "segments@setSegments")) break;
             }
-            if (i is segments.length) return;
+            if (i is i_segments.length) return;
         }
-    }
     freeRuns();
-    this.segments  = segments.dup;
+    this.segments.length = i_segments.length;
+    foreach(i, ref s; this.segments)
+        s = text.takeIndexArg(i_segments[i], "segments@setSegments");
 
-    // SWT: create the wsegments ...
-    this.wsegments.length = segments.length;
-    uint index8, index16;
-    uint segIndex = 1;
-    while(index8 < text.length ){
-        int ate8;
-        int ate16;
-        dchar d8 = text[ index8 .. $ ].firstCodePoint( ate8 );
-        dchar d16 = wtext[ index16 .. $ ].firstCodePoint( ate16 );
-        assert( d8 is d16 );
-        assert( ate8 > 0 );
-        assert( ate16 > 0 );
-        index8 += ate8;
-        index16 += ate16;
-        if( segments[segIndex] is index8 ){
-            wsegments[segIndex] = index16;
+    // DWT: create the wsegments ...
+    this.wsegments.length = this.segments.length;
+    UTF8index idx8;
+    UTF16index idx16;
+    foreach(i, ref wsegment; this.wsegments) {
+        while( this.segments[i] != idx8 ) {
+            assert(text.dcharAt(idx8) == wtext.dcharAt(idx16));
+            idx8  += text.UTF8strideAt(idx8);
+            idx16 += wtext.UTF16strideAt(idx16);
+            assert(idx8 <= this.segments[i]);
         }
+        wsegment = idx16;
     }
-    assert( index16 is wtext.length );
-    assert( segIndex is segments.length );
 }
 
 /**
@@ -2745,18 +2773,21 @@ public void setSpacing (int spacing) {
  *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
-public void setStyle (TextStyle style, int start, int end) {
+public void setStyle (TextStyle style, int i_start, int i_end) {
     checkLayout();
+    UTF8index start = text.takeIndexArg(i_start, "start@setStyle");
+    UTF8index end = text.takeIndexArg(i_end, "end@setStyle");
     int length = text.length;
     if (length is 0) return;
+    UTF8index endOffset = text.beforeEndIndex();
     if (start > end) return;
-    start = Math.min(Math.max(0, start), length - 1);
-    end = Math.min(Math.max(0, end), length - 1);
+    start = Math.min(Math.max(text.firstIndex(), start), endOffset);
+    end = Math.min(Math.max(text.firstIndex(), end), endOffset);
     int low = -1;
     int high = stylesCount;
     while (high - low > 1) {
         int index = (high + low) / 2;
-        if (styles[index + 1].start > start) {
+        if (styles[index + 1].UTF8start > start) {
             high = index;
         } else {
             low = index;
@@ -2764,7 +2795,7 @@ public void setStyle (TextStyle style, int start, int end) {
     }
     if (0 <= high && high < stylesCount) {
         StyleItem item = styles[high];
-        if (item.start is start && styles[high + 1].start - 1 is end) {
+        if (item.UTF8start is start && text.offsetBefore(styles[high + 1].UTF8start) is end) {
             if (style is null) {
                 if (item.style is null) return;
             } else {
@@ -2776,12 +2807,12 @@ public void setStyle (TextStyle style, int start, int end) {
     int modifyStart = high;
     int modifyEnd = modifyStart;
     while (modifyEnd < stylesCount) {
-        if (styles[modifyEnd + 1].start > end) break;
+        if (styles[modifyEnd + 1].UTF8start > end) break;
         modifyEnd++;
     }
     if (modifyStart is modifyEnd) {
-        int styleStart = styles[modifyStart].start;
-        int styleEnd = styles[modifyEnd + 1].start - 1;
+        UTF8index styleStart = styles[modifyStart].UTF8start;
+        UTF8index styleEnd = text.offsetBefore(styles[modifyEnd + 1].UTF8start);
         if (styleStart is start && styleEnd is end) {
             styles[modifyStart].style = style;
             return;
@@ -2796,19 +2827,19 @@ public void setStyle (TextStyle style, int start, int end) {
             }
             System.arraycopy(styles, modifyEnd + 1, styles, modifyEnd + 3, stylesCount - modifyEnd - 1);
             StyleItem item = new StyleItem();
-            item.start = start;
+            item.UTF8start = start;
             item.style = style;
             styles[modifyStart + 1] = item;
             item = new StyleItem();
-            item.start = end + 1;
+            item.UTF8start = text.offsetAfter(end);
             item.style = styles[modifyStart].style;
             styles[modifyStart + 2] = item;
             stylesCount = newLength;
             return;
         }
     }
-    if (start is styles[modifyStart].start) modifyStart--;
-    if (end is styles[modifyEnd + 1].start - 1) modifyEnd++;
+    if (start is styles[modifyStart].UTF8start) modifyStart--;
+    if (end is text.offsetBefore(styles[modifyEnd + 1].UTF8start)) modifyEnd++;
     int newLength = stylesCount + 1 - (modifyEnd - modifyStart - 1);
     if (newLength > styles.length) {
         int newSize = Math.min(newLength + 1024, Math.max(64, newLength * 2));
@@ -2818,10 +2849,10 @@ public void setStyle (TextStyle style, int start, int end) {
     }
     System.arraycopy(styles, modifyEnd, styles, modifyStart + 2, stylesCount - modifyEnd);
     StyleItem item = new StyleItem();
-    item.start = start;
+    item.UTF8start = start;
     item.style = style;
     styles[modifyStart + 1] = item;
-    styles[modifyStart + 2].start = end + 1;
+    styles[modifyStart + 2].UTF8start = text.offsetAfter(end);
     stylesCount = newLength;
 }
 
@@ -2876,7 +2907,7 @@ public void setText (String text) {
     styles = new StyleItem[2];
     styles[0] = new StyleItem();
     styles[1] = new StyleItem();
-    styles[1].start = text.length;
+    styles[1].UTF8start = text.endIndex();
     stylesCount = 2;
 }
 
@@ -2949,7 +2980,7 @@ bool shape (HDC hdc, StyleItem run, String16 wchars, int[] glyphCount, int maxGl
  */
 void shape (HDC hdc, StyleItem run) {
     int[1] buffer;
-    auto wchars = segmentsWText[ index8to16[ run.start ] .. index8to16[ run.start + run.length ] ];
+    auto wchars = segmentsWText[ getUTF16index(run.UTF8start) .. getUTF16index(run.UTF8start + run.UTF8length) ];
     int maxGlyphs = (wchars.length * 3 / 2) + 16;
     auto hHeap = OS.GetProcessHeap();
     run.glyphs = cast(ushort*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, maxGlyphs * 2);
@@ -2963,7 +2994,7 @@ void shape (HDC hdc, StyleItem run) {
     short script = cast(short) run.analysis.eScript;
     SCRIPT_PROPERTIES sp = *device.scripts[script];
     bool shapeSucceed = shape(hdc, run, wchars, buffer,  maxGlyphs, &sp);
-int res;
+    int res;
     if (!shapeSucceed) {
         auto hFont = OS.GetCurrentObject(hdc, OS.OBJ_FONT);
         auto ssa = cast(SCRIPT_STRING_ANALYSIS*) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, SCRIPT_STRING_ANALYSIS.sizeof);
@@ -3110,18 +3141,34 @@ int res;
     }
 }
 
-int validadeOffset(int offset, int step) {
-    offset = segmentsText.toAbsoluteCodePointStartOffset( offset );
-    offset += segmentsText.getRelativeCodePointOffset( offset, step );
-    if (segments !is null && segments.length > 2) {
-        for (int i = 0; i < segments.length; i++) {
-            if (translateOffset(segments[i]) - 1 is offset) {
-                offset += step;
-                break;
-            }
-        }
-    }
-    return offset;
+UTF8index getUTF8index(UTF16index i) 
+out(res) {
+    assert(res != segmentsText.preFirstIndex());
+}
+body {
+    return index16to8[i];
+}
+
+UTF16index getUTF16index(UTF8index i) 
+out(res) {
+    assert(res != -1);
+}
+body {
+    return index8to16[i.internalValue];
+}
+
+UTF8index addUTF16shift(UTF8index i, UTF16shift dw) {
+    return getUTF8index(cast(UTF16index)(getUTF16index(i) + dw));
+}
+
+UTF16shift getUTF16length(StyleItem run) {
+    return cast(UTF16shift)(getUTF16index(run.UTF8start + run.UTF8length) - getUTF16index(run.UTF8start));
+}
+
+UTF8index validadeOffset(UTF8index offset, UCSindex step) {
+    offset = asUTF8index( untranslateOffset(offset) );
+	offset += text.toUTF8shift(offset, step);
+    return translateOffset(offset);
 }
 
 /**
@@ -3135,33 +3182,33 @@ override public String toString () {
     return "TextLayout {}";
 }
 
-int translateOffset(int offset) {
+UTF8index translateOffset(UTF8index offset) {
     if (segments is null) return offset;
     int nSegments = segments.length;
     if (nSegments <= 1) return offset;
     int length = text.length;
     if (length is 0) return offset;
     if (nSegments is 2) {
-        if (segments[0] is 0 && segments[1] is length) return offset;
+        if (segments[0].internalValue is 0 && segments[1].internalValue is length) return offset;
     }
-    for (int i = 0; i < nSegments && offset - i >= segments[i]; i++) {
+    for (int i = 0; i < nSegments && offset.internalValue - i >= segments[i].internalValue; i++) {
         offset+=MARK_SIZE;
     }
     return offset;
 }
 
-int untranslateOffset(int offset) {
-    if (segments is null) return offset;
+int untranslateOffset(UTF8index offset) {
+    if (segments is null) return offset.internalValue;
     int nSegments = segments.length;
-    if (nSegments <= 1) return offset;
+    if (nSegments <= 1) return offset.internalValue;
     int length = text.length;
-    if (length is 0) return offset;
+    if (length is 0) return offset.internalValue;
     if (nSegments is 2) {
-        if (segments[0] is 0 && segments[1] is length) return offset;
+        if (segments[0].internalValue is 0 && segments[1].internalValue is length) return offset.internalValue;
     }
     for (int i = 0; i < nSegments && offset > segments[i]; i++) {
         offset-=MARK_SIZE;
     }
-    return offset;
+    return offset.internalValue;
 }
 }

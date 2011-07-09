@@ -71,7 +71,7 @@ public class MouseEvent : TypedEvent {
      */
     public int count;
 
-    //static final long serialVersionUID = 3257288037011566898L;
+    //static const long serialVersionUID = 3257288037011566898L;
 
 /**
  * Constructs a new instance of this class based on the

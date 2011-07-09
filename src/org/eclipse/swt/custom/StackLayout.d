@@ -133,7 +133,7 @@ String getName () {
     String string = this.classinfo.name;
     int index = string.lastIndexOf ('.');
     if (index is -1 ) return string;
-    return string.substring (index + 1, string.length );
+    return string[ index + 1 .. $ ];
 }
 
 /**

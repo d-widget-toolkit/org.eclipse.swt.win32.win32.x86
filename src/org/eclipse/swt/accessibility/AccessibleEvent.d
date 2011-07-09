@@ -66,6 +66,6 @@ public this(Object source) {
  * @return a string representation of the event
  */
 override public String toString () {
-    return Format( "AccessibleEvent {childID={} result={}}", childID, result );
+    return Format( "AccessibleEvent {{childID={} result={}}", childID, result );
 }
 }

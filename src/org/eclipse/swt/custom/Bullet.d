@@ -17,7 +17,6 @@ import java.lang.all;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.ST;
-import java.lang.System;
 
 /**
  * Instances of this class represent bullets in the <code>StyledText</code>.

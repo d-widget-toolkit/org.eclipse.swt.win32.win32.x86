@@ -708,7 +708,7 @@ public this (Device device, String filename) {
                                         RGB[] rgbs = new RGB[colorPalette.Count];
                                         paletteData = new PaletteData(rgbs);
                                         for (int i = 0; i < colorPalette.Count; i++) {
-                                            // SWT: access palette.Entries without array bounds checking
+                                            // DWT: access palette.Entries without array bounds checking
                                             if (((*(palette.Entries.ptr + i) >> 24) & 0xFF) is 0 && (colorPalette.Flags & Gdip.PaletteFlagsHasAlpha) !is 0) {
                                                 transparentPixel = i;
                                             }

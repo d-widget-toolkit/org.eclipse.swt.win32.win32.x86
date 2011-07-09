@@ -38,7 +38,9 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+
 import java.lang.all;
+import java.nonstandard.UnsafeUtf;
 
 /**
  * A Label which supports aligned text and/or an image and different border styles.
@@ -173,7 +175,7 @@ private static int checkStyle (int style) {
 //protected void checkSubclass () {
 //  String name = getClass().getName ();
 //  String validName = CLabel.class.getName();
-//  if (!validName.equals(name)) {
+//  if (validName != (name)) {
 //      SWT.error (SWT.ERROR_INVALID_SUBCLASS);
 //  }
 //}
@@ -210,17 +212,14 @@ private void drawBevelRect(GC gc, int x, int y, int w, int h, Color topleft, Col
  * an '&' character in the given string. If there are no '&'
  * characters in the given string, return '\0'.
  */
-dchar _findMnemonic (String string) {
-    if (string is null) return '\0';
+dchar _findMnemonic (String str) {
+    if (str is null) return '\0';
     int index = 0;
-    int length = string.length;
+    int length = str.length;
     do {
-        while (index < length && string[index] !is '&') index++;
+        while (index < length && str[index] !is '&') index++;
         if (++index >= length) return '\0';
-        dchar d = string[index..$].firstCodePoint();
-        if (d !is '&') {
-            return Character.toLowerCase( d );
-        }
+        if (str[index] !is '&') return Character.toLowerCase( str.dcharAt(index) );
         index++;
     } while (index < length);
     return '\0';
@@ -825,10 +824,10 @@ private String[] splitString(String text) {
     do {
         pos = text.indexOf('\n', start);
         if (pos is -1) {
-            lines[lines.length - 1] = text.substring(start);
+            lines[lines.length - 1] = text[start .. $ ];
         } else {
-            bool crlf = (pos > 0) && (text.charAt(pos - 1) is '\r');
-            lines[lines.length - 1] = text.substring(start, pos - (crlf ? 1 : 0));
+            bool crlf = (pos > 0) && (text[ pos - 1 ] is '\r');
+            lines[lines.length - 1] = text[ start .. pos - (crlf ? 1 : 0)];
             start = pos + 1;
             String[] newLines = new String[lines.length+1];
             System.arraycopy(lines, 0, newLines, 0, lines.length);

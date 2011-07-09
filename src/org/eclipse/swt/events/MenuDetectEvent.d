@@ -48,7 +48,7 @@ public final class MenuDetectEvent : TypedEvent {
      */
     public bool doit;
 
-    //private static final long serialVersionUID = -3061660596590828941L;
+    //private static const long serialVersionUID = -3061660596590828941L;
 
 /**
  * Constructs a new instance of this class based on the
@@ -70,6 +70,6 @@ public this(Event e) {
  * @return a string representation of the event
  */
 public override String toString() {
-    return Format( "{} x={} y={} doit={}}", super.toString[ 0 .. $-2 ], x, y, doit );
+    return Format( "{} x={} y={} doit={}}", super.toString[ 0 .. $-1 ], x, y, doit );
 }
 }

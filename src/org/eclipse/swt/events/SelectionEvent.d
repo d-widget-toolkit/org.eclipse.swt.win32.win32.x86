@@ -103,7 +103,7 @@ public class SelectionEvent : TypedEvent {
      */
     public bool doit;
 
-    //static final long serialVersionUID = 3976735856884987953L;
+    //static const long serialVersionUID = 3976735856884987953L;
 
 /**
  * Constructs a new instance of this class based on the
@@ -132,7 +132,7 @@ public this(Event e) {
  */
 public override String toString() {
     return Format( "{} item={} detail={} x={} y={} width={} height={} stateMask={} text={} doit={}}",
-        super.toString[ 0 .. $-2 ],
+        super.toString[ 0 .. $-1 ],
         item,
         detail,
         x,

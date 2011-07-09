@@ -26,7 +26,7 @@ import org.eclipse.swt.events.TypedEvent;
 
 public final class ModifyEvent : TypedEvent {
 
-    //static final long serialVersionUID = 3258129146227011891L;
+    //static const long serialVersionUID = 3258129146227011891L;
 
 /**
  * Constructs a new instance of this class based on the

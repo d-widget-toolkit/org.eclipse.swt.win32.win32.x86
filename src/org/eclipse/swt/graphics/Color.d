@@ -150,7 +150,7 @@ void destroy() {
  *
  * @see #hashCode
  */
-public bool equals (Object object) {
+public override equals_t opEquals (Object object) {
     if (object is this) return true;
     if (!(cast(Color)object)) return false;
     Color color = cast(Color) object;

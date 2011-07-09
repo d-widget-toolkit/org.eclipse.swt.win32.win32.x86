@@ -504,13 +504,12 @@ char [] fixMnemonic (String string) {
 }
 
 char [] fixMnemonic (String string, bool spaces) {
-    char[] buffer = (string ~ '\0').dup;
+    char[] buffer = cast(char[])string ~ '\0';
     int i = 0, j = 0;
     while (i < buffer.length) {
         if (buffer [i] is '&') {
             if (i + 1 < buffer.length && buffer [i + 1] is '&') {
-                if (spaces) buffer [j] = ' ';
-                j++;
+                buffer [j++] = spaces ? ' ' : buffer [i];
                 i++;
             }
             i++;
@@ -518,8 +517,8 @@ char [] fixMnemonic (String string, bool spaces) {
             buffer [j++] = buffer [i++];
         }
     }
-    while (j < buffer.length) buffer [j++] = 0;
-    return buffer;
+    if (j < buffer.length) buffer [j++] = 0;
+    return buffer[0 .. j];
 }
 
 /**

@@ -21,7 +21,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.Compatibility;
 import org.eclipse.swt.internal.image.FileFormat;
 
-//import tango.core.Array;
 import java.util.Vector;
 import java.lang.all;
 

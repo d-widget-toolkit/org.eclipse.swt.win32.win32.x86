@@ -44,11 +44,11 @@ class PngChunk {
     // Non-critical chunks.
     static const int CHUNK_tRNS = 5;
 
-    static /*const*/ byte[] TYPE_IHDR = cast(byte[])"IHDR";//{(byte) 'I', (byte) 'H', (byte) 'D', (byte) 'R'};
-    static /*const*/ byte[] TYPE_PLTE = cast(byte[])"PLTE";//{(byte) 'P', (byte) 'L', (byte) 'T', (byte) 'E'};
-    static /*const*/ byte[] TYPE_IDAT = cast(byte[])"IDAT";//{(byte) 'I', (byte) 'D', (byte) 'A', (byte) 'T'};
-    static /*const*/ byte[] TYPE_IEND = cast(byte[])"IEND";//{(byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D'};
-    static /*const*/ byte[] TYPE_tRNS = cast(byte[])"tRNS";//{(byte) 't', (byte) 'R', (byte) 'N', (byte) 'S'};
+    static const byte[] TYPE_IHDR = cast(byte[])"IHDR";//{(byte) 'I', (byte) 'H', (byte) 'D', (byte) 'R'};
+    static const byte[] TYPE_PLTE = cast(byte[])"PLTE";//{(byte) 'P', (byte) 'L', (byte) 'T', (byte) 'E'};
+    static const byte[] TYPE_IDAT = cast(byte[])"IDAT";//{(byte) 'I', (byte) 'D', (byte) 'A', (byte) 'T'};
+    static const byte[] TYPE_IEND = cast(byte[])"IEND";//{(byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D'};
+    static const byte[] TYPE_tRNS = cast(byte[])"tRNS";//{(byte) 't', (byte) 'R', (byte) 'N', (byte) 'S'};
 
     private static int[] _CRC_TABLE = null;
     static int[] CRC_TABLE() {
@@ -190,7 +190,7 @@ byte[] getTypeBytes() {
  * The fourth byte is upper case if the chunk is unsafe to copy.
  * Public chunk types are defined by the PNG Development Group.
  */
-void setType(byte[] value) {
+void setType(in byte[] value) {
     if (value.length !is TYPE_FIELD_LENGTH) {
         SWT.error (SWT.ERROR_INVALID_ARGUMENT);
     }
@@ -218,7 +218,7 @@ byte[] getData() {
  * 2. It will set the CRC field to the computed CRC
  *    value of the data array given.
  */
-void setData(byte[] data) {
+void setData(in byte[] data) {
     setLength(data.length);
     System.arraycopy(data, 0, reference, DATA_OFFSET, data.length);
     setCRC(computeCRC());
@@ -276,7 +276,7 @@ int computeCRC() {
     return ~crc;
 }
 
-bool typeMatchesArray(byte[] array) {
+bool typeMatchesArray(in byte[] array) {
     for (int i = 0; i < TYPE_FIELD_LENGTH; i++) {
         if (reference[TYPE_OFFSET + i] !is array[i]){
             return false;

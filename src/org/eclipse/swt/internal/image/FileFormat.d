@@ -36,6 +36,7 @@ version(Tango){
     import tango.core.Tuple;
 } else { // Phobos
     import std.typetuple;
+    alias TypeTuple Tuple;
 }
 
 /**
@@ -47,12 +48,7 @@ public abstract class FileFormat {
     static const String FORMAT_PACKAGE = "org.eclipse.swt.internal.image"; //$NON-NLS-1$
     static const String FORMAT_SUFFIX = "FileFormat"; //$NON-NLS-1$
     static const String[] FORMATS = [ "WinBMP"[], "WinBMP", "GIF", "WinICO", "JPEG", "PNG", "TIFF", "OS2BMP" ]; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$//$NON-NLS-5$ //$NON-NLS-6$//$NON-NLS-7$//$NON-NLS-8$
-    version(Tango){
-        alias Tuple!( WinBMPFileFormat, WinBMPFileFormat, GIFFileFormat, WinICOFileFormat, JPEGFileFormat, PNGFileFormat, TIFFFileFormat, OS2BMPFileFormat ) TFormats;
-    } else { // Phobos
-        alias TypeTuple!( WinBMPFileFormat, WinBMPFileFormat, GIFFileFormat, WinICOFileFormat, JPEGFileFormat, PNGFileFormat, TIFFFileFormat, OS2BMPFileFormat ) TFormats;
-    }
-
+    alias Tuple!( WinBMPFileFormat, WinBMPFileFormat, GIFFileFormat, WinICOFileFormat, JPEGFileFormat, PNGFileFormat, TIFFFileFormat, OS2BMPFileFormat ) TFormats;
     LEDataInputStream inputStream;
     LEDataOutputStream outputStream;
     ImageLoader loader;

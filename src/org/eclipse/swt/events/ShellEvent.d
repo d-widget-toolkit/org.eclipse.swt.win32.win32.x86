@@ -34,7 +34,7 @@ public final class ShellEvent : TypedEvent {
      */
     public bool doit;
 
-    //static final long serialVersionUID = 3257569490479888441L;
+    //static const long serialVersionUID = 3257569490479888441L;
 
 /**
  * Constructs a new instance of this class based on the
@@ -54,7 +54,7 @@ public this(Event e) {
  * @return a string representation of the event
  */
 public override String toString() {
-    return Format( "{} doit={}}", super.toString[ 0 .. $-2 ], doit );
+    return Format( "{} doit={}}", super.toString[ 0 .. $-1 ], doit );
 }
 }
 

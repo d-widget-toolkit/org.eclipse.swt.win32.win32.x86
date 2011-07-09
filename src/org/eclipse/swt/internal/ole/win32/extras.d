@@ -9,6 +9,7 @@ module org.eclipse.swt.internal.ole.win32.extras;
 //public import std.c.windows.windows;
 import org.eclipse.swt.internal.win32.WINTYPES;
 import org.eclipse.swt.internal.ole.win32.COMTYPES;
+import java.lang.util;
 
 enum
 {
@@ -158,11 +159,7 @@ extern (C)
     extern IID IID_IEnumOLEVERB;
 }
 
-version(D_Version2){
-    mixin("alias const(IID) *REFCIID;");
-} else { // D1
-    alias IID *REFCIID;
-}
+alias TryConst!(IID) *REFCIID;
 extern (Windows) export {
     DWORD   CoBuildVersion();
 
@@ -207,11 +204,7 @@ alias PDWORD PLCID;
 //typedef GUID CLSID;
 //alias CLSID * LPCLSID;
 alias GUID *REFGUID;
-version(D_Version2){
-    mixin("alias const(GUID) *REFCGUID;");
-} else { // D1
-    alias GUID *REFCGUID;
-}
+alias TryConst!(GUID) *REFCGUID;
 
 //alias IID *REFIID;
 

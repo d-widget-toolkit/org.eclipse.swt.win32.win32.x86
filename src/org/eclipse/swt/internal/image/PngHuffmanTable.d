@@ -27,7 +27,7 @@ this (int[] lengths) {
     generateTable(lengths);
 }
 
-private void initialize(int[] lengths) {
+private void initialize(in int[] lengths) {
     codeValues = new int[lengths.length];
     for (int i = 0; i < codeValues.length; i++) {
         codeValues[i] = i;

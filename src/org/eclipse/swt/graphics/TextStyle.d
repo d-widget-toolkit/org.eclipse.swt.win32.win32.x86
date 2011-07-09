@@ -225,14 +225,14 @@ public override equals_t opEquals(Object object) {
     if (strikeout !is style.strikeout) return false;
     if (rise !is style.rise) return false;
     if (underlineColor !is null) {
-        if (!underlineColor.equals(style.underlineColor)) return false;
+        if (underlineColor != (style.underlineColor)) return false;
     } else if (style.underlineColor !is null) return false;
     if (strikeoutColor !is null) {
-        if (!strikeoutColor.equals(style.strikeoutColor)) return false;
+        if (strikeoutColor != (style.strikeoutColor)) return false;
     } else if (style.strikeoutColor !is null) return false;
     if (underlineStyle !is style.underlineStyle) return false;
     if (borderColor !is null) {
-        if (!borderColor.equals(style.borderColor)) return false;
+        if (borderColor != (style.borderColor)) return false;
     } else if (style.borderColor !is null) return false;
     return true;
 }
@@ -268,7 +268,7 @@ bool isAdherentBorder(TextStyle style) {
     if (style is null) return false;
     if (borderStyle !is style.borderStyle) return false;
     if (borderColor !is null) {
-        if (!borderColor.equals(style.borderColor)) return false;
+        if (borderColor != (style.borderColor)) return false;
     } else if (style.borderColor !is null) return false;
     return true;
 }
@@ -279,7 +279,7 @@ bool isAdherentUnderline(TextStyle style) {
     if (underline !is style.underline) return false;
     if (underlineStyle !is style.underlineStyle) return false;
     if (underlineColor !is null) {
-        if (!underlineColor.equals(style.underlineColor)) return false;
+        if (underlineColor != (style.underlineColor)) return false;
     } else if (style.underlineColor !is null) return false;
     return true;
 }
@@ -289,7 +289,7 @@ bool isAdherentStrikeout(TextStyle style) {
     if (style is null) return false;
     if (strikeout !is style.strikeout) return false;
     if (strikeoutColor !is null) {
-        if (!strikeoutColor.equals(style.strikeoutColor)) return false;
+        if (strikeoutColor != (style.strikeoutColor)) return false;
     } else if (style.strikeoutColor !is null) return false;
     return true;
 }

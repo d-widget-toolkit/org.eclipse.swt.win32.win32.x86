@@ -27,7 +27,7 @@ import org.eclipse.swt.events.MouseEvent;
 
 public final class DragDetectEvent : MouseEvent {
 
-    //private static final long serialVersionUID = -7229172519733647232L;
+    //private static const long serialVersionUID = -7229172519733647232L;
 
 /**
  * Constructs a new instance of this class based on the

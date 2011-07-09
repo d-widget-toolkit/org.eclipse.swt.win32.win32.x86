@@ -117,7 +117,7 @@ static bool extract (String fileName, String mappedName) {
                 }
                 os.close ();
                 is.close ();
-                if (!Platform.PLATFORM.equals ("win32")) { //$NON-NLS-1$
+                if (Platform.PLATFORM != ("win32")) { //$NON-NLS-1$
                     try {
                         Runtime.getRuntime ().exec (new String []{"chmod", "755", fileName}).waitFor(); //$NON-NLS-1$ //$NON-NLS-2$
                     } catch (Throwable e) {}

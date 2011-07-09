@@ -26,7 +26,7 @@ import org.eclipse.swt.events.TypedEvent;
 
 public final class HelpEvent : TypedEvent {
 
-    //static final long serialVersionUID = 3257001038606251315L;
+    //static const long serialVersionUID = 3257001038606251315L;
 
 /**
  * Constructs a new instance of this class based on the

@@ -1004,7 +1004,7 @@ public:
 
     **************************************************************************/
 
-    static Status Pen_SetDashPattern( Pen pen, float* dashArray, int count )
+    static Status Pen_SetDashPattern( Pen pen, in float* dashArray, int count )
     {
         return SetStatus(GdipSetPenDashArray(pen, dashArray, count));
     }

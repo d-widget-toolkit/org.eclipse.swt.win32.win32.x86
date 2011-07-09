@@ -39,6 +39,7 @@ import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledTextEvent;
 
 import java.lang.all;
+import java.nonstandard.UnsafeUtf;
 
 /**
  * A StyledTextRenderer renders the content of a StyledText widget.
@@ -398,7 +399,7 @@ int drawLine(int lineIndex, int paintX, int paintY, GC gc, Color widgetBackgroun
         styledText.drawBackground(gc, client.x, paintY, client.width, height);
     }
     gc.setForeground(widgetForeground);
-    if (selectionStart is selectionEnd || (selectionEnd <= 0 && selectionStart > lineLength - 1)) {
+    if (selectionStart is selectionEnd || (selectionEnd <= 0 && selectionStart >= lineLength)) {
         layout.draw(gc, paintX, paintY);
     } else {
         int start = Math.max(0, selectionStart);
@@ -414,7 +415,7 @@ int drawLine(int lineIndex, int paintX, int paintY, GC gc, Color widgetBackgroun
         if (selectionStart <= lineLength && lineLength < selectionEnd ) {
             flags |= SWT.LAST_LINE_SELECTION;
         }
-        layout.draw(gc, paintX, paintY, start, end - 1, selectionFg, selectionBg, flags);
+        layout.draw(gc, paintX, paintY, start, end > 0 ? line.offsetBefore(end) : end - 1, selectionFg, selectionBg, flags);
     }
 
     // draw objects
@@ -595,7 +596,7 @@ int getRangeIndex(int offset, int low, int high) {
 }
 int[] getRanges(int start, int length) {
     int[] newRanges;
-    int end = start + length - 1;
+    int end = start + length - 1; //not a valid index, but OK
     if (ranges !is null) {
         int rangeCount = styleCount << 1;
         int rangeStart = getRangeIndex(start, -1, rangeCount);
@@ -627,7 +628,7 @@ int[] getRanges(int start, int length) {
 }
 StyleRange[] getStyleRanges(int start, int length, bool includeRanges) {
     StyleRange[] newStyles;
-    int end = start + length - 1;
+    int end = start + length - 1; //not a valid index, but OK
     if (ranges !is null) {
         int rangeCount = styleCount << 1;
         int rangeStart = getRangeIndex(start, -1, rangeCount);
@@ -846,7 +847,7 @@ TextLayout getTextLayout(int lineIndex, int orientation, int width, int lineSpac
                 }
                 if (start >= length) break;
                 if (lastOffset < start) {
-                    layout.setStyle(null, lastOffset, start - 1);
+                    layout.setStyle(null, lastOffset, line.offsetBefore(start));
                 }
                 layout.setStyle(getStyleRange(styles[i >> 1]), start, end);
                 lastOffset = Math.max(lastOffset, end);
@@ -863,7 +864,7 @@ TextLayout getTextLayout(int lineIndex, int orientation, int width, int lineSpac
                 }
                 if (start >= length) break;
                 if (lastOffset < start) {
-                    layout.setStyle(null, lastOffset, start - 1);
+                    layout.setStyle(null, lastOffset, line.offsetBefore(start));
                 }
                 layout.setStyle(getStyleRange(styles[i]), start, end);
                 lastOffset = Math.max(lastOffset, end);
@@ -904,11 +905,11 @@ TextLayout getTextLayout(int lineIndex, int orientation, int width, int lineSpac
                         }
                     } else {
                         int start = compositionOffset - lineOffset;
-                        int end = start + compositionLength - 1;
+                        int end = line.offsetBefore(start + compositionLength);
                         TextStyle userStyle = layout.getStyle(start);
                         if (userStyle is null) {
-                            if (start > 0) userStyle = layout.getStyle(start - 1);
-                            if (userStyle is null && end + 1 < length) userStyle = layout.getStyle(end + 1);
+                            if (start > 0) userStyle = layout.getStyle(line.offsetBefore(start));
+                            if (userStyle is null && line.offsetAfter(end) < length) userStyle = layout.getStyle(line.offsetAfter(end));
                             if (userStyle !is null) {
                                 TextStyle newStyle = new TextStyle();
                                 newStyle.font = userStyle.font;

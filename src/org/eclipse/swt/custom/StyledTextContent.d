@@ -209,9 +209,4 @@ public void replaceTextRange(int start, int replaceLength, String text);
  */
 public void setText(String text);
 
-/++
- + SWT Extension
- +/
-int utf8AdjustOffset( int offset );
-
 }

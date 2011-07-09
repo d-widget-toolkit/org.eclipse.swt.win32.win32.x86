@@ -9,6 +9,7 @@ module org.eclipse.swt.internal.ole.win32.COMTYPES;
 
 private import org.eclipse.swt.internal.win32.WINTYPES;
 private import org.eclipse.swt.internal.ole.win32.extras;
+import java.lang.util;
 //private import std.c.windows.windows;
 //private import std.c.windows.com;
 
@@ -17,11 +18,7 @@ private import org.eclipse.swt.internal.ole.win32.extras;
 
 alias WCHAR OLECHAR;
 alias OLECHAR *LPOLESTR;
-version(D_Version2){
-    mixin("alias const(OLECHAR) *LPCOLESTR;");
-} else { // D1
-    alias OLECHAR *LPCOLESTR;
-}
+alias TryConst!(OLECHAR) *LPCOLESTR;
 
 alias IID* LPIID;
 alias HRESULT STDAPI;

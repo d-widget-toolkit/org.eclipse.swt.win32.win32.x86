@@ -7,6 +7,7 @@
 module org.eclipse.swt.internal.win32.WINAPI;
 
 public import org.eclipse.swt.internal.win32.WINTYPES;
+import java.nonstandard.SafeUtf;
 
 version(Tango){
     import tango.sys.win32.Types;
@@ -5153,14 +5154,14 @@ version(WinCE)
 // USP methods (Unicode Complex Script processor)
 HRESULT ScriptBreak(
   LPCWSTR pwcChars,
-  int cChars,
+  int cChars, //length of pwcChars
   SCRIPT_ANALYSIS *psa,
   SCRIPT_LOGATTR *psla
 );
 HRESULT ScriptCPtoX(
-  int iCP,
+  UTF16index iCP,//Logical character position in the run.
   BOOL fTrailing,
-  int cChars,
+  UTF16shift cChars,//Number of characters in the run.
   int cGlyphs,
   WORD *pwLogClust,
   SCRIPT_VISATTR *psva,
@@ -5183,7 +5184,7 @@ HRESULT ScriptGetFontProperties(
 );
 HRESULT ScriptGetLogicalWidths(
   SCRIPT_ANALYSIS *psa,
-  int cChars,
+  UTF16shift cChars,//Count of the logical code points in the run.
   int cGlyphs,
   int *piGlyphWidth,
   WORD *pwLogClust,
@@ -5198,14 +5199,14 @@ HRESULT ScriptGetCMap(
   HDC hdc,
   SCRIPT_CACHE* psc,
   LPCWSTR pwcInChars,
-  int cChars,
+  int cChars, //length of pwcChars
   DWORD dwFlags,
   WORD* pwOutGlyphs
 );
 HRESULT ScriptStringAnalyse(
   HDC hdc,
-  LPCVOID pString,
-  int cString,
+  LPCVOID pString,//It can be a Unicode string or use the character set from a Windows ANSI code page, as specified by the iCharset parameter.
+  int cString,//Length of the string to analyze.
   int cGlyphs,
   int iCharset,
   DWORD dwFlags,
@@ -5223,8 +5224,8 @@ HRESULT ScriptStringOut(
   int iY, 
   UINT uOptions, 
   RECT* prc, 
-  int iMinSel, 
-  int iMaxSel, 
+  UTF16index iMinSel, //starting pos for substringing output string
+  UTF16index iMaxSel, //ending pos for substringing output string
   BOOL fDisabled 
 );
 HRESULT ScriptStringFree(
@@ -5233,7 +5234,7 @@ HRESULT ScriptStringFree(
 
 HRESULT ScriptItemize(
   LPCWSTR pwcInChars,
-  int cInChars,
+  int cInChars, //length of pwcChars
   int cMaxItems,
   SCRIPT_CONTROL *psControl,
   SCRIPT_STATE *psState,
@@ -5261,7 +5262,7 @@ HRESULT ScriptShape(
   HDC hdc,              // in
   SCRIPT_CACHE *psc,    // in/out
   LPCWSTR pwcChars,      //
-  int cChars,
+  int cChars,//length of pwcChars; Number of characters in the Unicode run.
   int cMaxGlyphs,
   SCRIPT_ANALYSIS *psa,
   WORD *pwOutGlyphs,
@@ -5287,14 +5288,14 @@ HRESULT ScriptTextOut(
 );
 HRESULT ScriptXtoCP(
   int iX,
-  int cChars,
+  UTF16shift cChars,//Count of logical code points in the run.
   int cGlyphs,
   WORD *pwLogClust,         //
   SCRIPT_VISATTR *psva,     //
   int *piAdvance,           //
   SCRIPT_ANALYSIS *psa,     //
-  int *piCP,
-  int *piTrailing
+  UTF16shift *piCP,
+  UTF16shift *piTrailing
 );
 UINT SendInput(
     UINT nInputs,

@@ -102,7 +102,7 @@ public this(Event e) {
  */
 public override String toString() {
     return Format( "{} character={} keyCode={} stateMask={} doit={}}",
-        super.toString[ 0 .. $-2 ],
+        super.toString[ 0 .. $-1 ],
         character, keyCode, stateMask, doit );
 }
 }

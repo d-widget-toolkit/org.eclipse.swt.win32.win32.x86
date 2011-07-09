@@ -1126,6 +1126,7 @@ public String getText (int start, int end) {
     * which can reference a potentially large character
     * array.
     */
+    //FIXME: no UTF-8 support
     return getText ().substring (start, end + 1);
 }
 
@@ -1435,7 +1436,7 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
 
     /* Verify the character */
     String oldText = "";
-    int start, end;
+    int start, end; //Windows' indices: UTF-16 or Windows 8-bit character set
     OS.SendMessage (handle, OS.EM_GETSEL, &start, &end);
     switch (key) {
         case 0x08:  /* Bs */
@@ -1992,6 +1993,7 @@ String verifyText (String string, int start, int end, Event keyEvent) {
         event.start = mbcsToWcsPos (start);
         event.end = mbcsToWcsPos (end);
     }
+    //FIXME: start and end should be converted from UTF-16 to UTF-8
     /*
     * It is possible (but unlikely), that application
     * code could have disposed the widget in the verify

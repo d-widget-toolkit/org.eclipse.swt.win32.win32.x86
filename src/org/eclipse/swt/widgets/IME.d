@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Display;
 
 import java.lang.all;
+import java.nonstandard.UnsafeUtf;
 
 /**
  * Instances of this class represent input method editors.
@@ -406,8 +407,9 @@ LRESULT WM_IME_COMPOSITION (int /*long*/ wParam, int /*long*/ lParam) {
                     display.lastKey = 0;
                     display.lastVirtual = display.lastNull = display.lastDead = false;
                     length_ = chars.length;
-                    for (int i = 0; i < length_; i+=chars.getRelativeCodePointOffset(i,1)) {
-                        dchar c = chars[ i .. $ ].firstCodePoint();
+                    int di;
+                    for (int i = 0; i < length_; i += di) {
+                        dchar c = chars.dcharAt(i, di);
                         display.lastAscii = c;
                         event = new Event ();
                         event.character = cast(wchar) c;
