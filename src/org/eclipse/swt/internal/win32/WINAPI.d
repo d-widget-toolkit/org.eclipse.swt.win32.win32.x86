@@ -409,7 +409,7 @@ version(Tango){
     alias STDWINAPI.DdeInitializeA DdeInitializeA;
     alias STDWINAPI.DdeQueryStringA DdeQueryStringA;
     alias STDWINAPI.LogonUserA LogonUserA;
-    alias STDWINAPI.CreateProcessAsUserA CreateProcessAsUserA;
+    extern(Windows) WINBOOL CreateProcessAsUserA(HANDLE, LPCSTR, LPSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, WINBOOL, DWORD, LPVOID, LPCSTR, LPSTARTUPINFO, LPPROCESS_INFORMATION); //Workaround Tango bug
     alias STDWINAPI.GetBinaryTypeW GetBinaryTypeW;
     alias STDWINAPI.GetShortPathNameW GetShortPathNameW;
     alias STDWINAPI.GetEnvironmentStringsW GetEnvironmentStringsW;
@@ -1726,8 +1726,12 @@ version(Tango){
     alias STDWINAPI.SHFileOperationA SHFileOperationA;
     alias STDWINAPI.SHFileOperationW SHFileOperationW;
     alias STDWINAPI.SHFreeNameMappings SHFreeNameMappings;
-    alias STDWINAPI.SHGetFileInfo SHGetFileInfo;
-    alias STDWINAPI.SHGetPathFromIDList SHGetPathFromIDList;
+    extern(Windows) { //Workaround Tango bugs
+        DWORD SHGetFileInfoA(LPCSTR, DWORD, SHFILEINFOA*, UINT, UINT);
+        DWORD SHGetFileInfoW(LPCWSTR, DWORD, SHFILEINFOW*, UINT, UINT);
+        WINBOOL SHGetPathFromIDListA(LPCITEMIDLIST, LPSTR);
+        WINBOOL SHGetPathFromIDListW(LPCITEMIDLIST, LPWSTR);
+    }
     alias STDWINAPI.SHGetSpecialFolderLocation SHGetSpecialFolderLocation;
     alias STDWINAPI.CreateThread CreateThread;
     alias STDWINAPI.DdeSetQualityOfService DdeSetQualityOfService;
@@ -2150,7 +2154,7 @@ version(Tango){
             UINT DdeInitializeA(LPDWORD, PFNCALLBACK, DWORD, DWORD);
             DWORD DdeQueryStringA(DWORD, HSZ, PCHAR, DWORD, int);
             WINBOOL LogonUserA(LPSTR, LPSTR, LPSTR, DWORD, DWORD, PHANDLE);
-            WINBOOL CreateProcessAsUserA(HANDLE, LPCTSTR, LPTSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, WINBOOL, DWORD, LPVOID, LPCTSTR, LPSTARTUPINFO, LPPROCESS_INFORMATION);
+            WINBOOL CreateProcessAsUserA(HANDLE, LPCSTR, LPSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, WINBOOL, DWORD, LPVOID, LPCSTR, LPSTARTUPINFO, LPPROCESS_INFORMATION);
             WINBOOL GetBinaryTypeW(LPCWSTR, LPDWORD);
             DWORD GetShortPathNameW(LPCWSTR, LPWSTR, DWORD);
             LPWSTR GetEnvironmentStringsW();
@@ -3467,8 +3471,10 @@ version(Tango){
             int SHFileOperationA(LPSHFILEOPSTRUCTA);
             int SHFileOperationW(LPSHFILEOPSTRUCTW);
             void SHFreeNameMappings(HANDLE);
-            DWORD SHGetFileInfo(LPCTSTR, DWORD, SHFILEINFO*, UINT, UINT);
-            WINBOOL SHGetPathFromIDList(LPCITEMIDLIST, LPTSTR);
+            DWORD SHGetFileInfoA(LPCSTR, DWORD, SHFILEINFOA*, UINT, UINT);
+            DWORD SHGetFileInfoW(LPCWSTR, DWORD, SHFILEINFOW*, UINT, UINT);
+            WINBOOL SHGetPathFromIDListA(LPCITEMIDLIST, LPSTR);
+            WINBOOL SHGetPathFromIDListW(LPCITEMIDLIST, LPWSTR);
             HRESULT SHGetSpecialFolderLocation(HWND, int, LPITEMIDLIST*);
             THANDLE CreateThread(POINTER, DWORD, TFNTHREADSTARTROUTINE, POINTER, DWORD, DWORD*);
             BOOL DdeSetQualityOfService(HWND, TSECURITYQUALITYOFSERVICE*, PSECURITYQUALITYOFSERVICE);
@@ -3503,6 +3509,14 @@ version(Tango){
 
 
 
+}
+
+version(Win32SansUnicode) {
+    alias SHGetFileInfoA SHGetFileInfo;
+    alias SHGetPathFromIDListA SHGetPathFromIDList;
+} else {
+    alias SHGetFileInfoW SHGetFileInfo;
+    alias SHGetPathFromIDListW SHGetPathFromIDList;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -5133,14 +5147,6 @@ version(WinCE){
 HRESULT SHGetMalloc(
 //  LPMALLOC *ppMalloc
     LPVOID   *ppMalloc
-);
-BOOL SHGetPathFromIDListA(
-    LPCITEMIDLIST pidl,
-    LPSTR pszPath
-);
-BOOL SHGetPathFromIDListW(
-    LPCITEMIDLIST pidl,
-    LPWSTR pszPath
 );
 version(WinCE)
 {
