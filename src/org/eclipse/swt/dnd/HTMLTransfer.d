@@ -40,7 +40,7 @@ public class HTMLTransfer : ByteArrayTransfer {
 
     static HTMLTransfer _instance;
     static const String HTML_FORMAT = "HTML Format"; //$NON-NLS-1$
-    static const int HTML_FORMATID;
+    mixin(gshared!(`static const int HTML_FORMATID;`));
     static const String NUMBER = "00000000"; //$NON-NLS-1$
     static const String HEADER = "Version:0.9\r\nStartHTML:"~NUMBER~"\r\nEndHTML:"~NUMBER~"\r\nStartFragment:"~NUMBER~"\r\nEndFragment:"~NUMBER~"\r\n";
     static const String PREFIX = "<html><body><!--StartFragment-->"; //$NON-NLS-1$
@@ -48,9 +48,9 @@ public class HTMLTransfer : ByteArrayTransfer {
     static const String StartFragment = "StartFragment:"; //$NON-NLS-1$
     static const String EndFragment = "EndFragment:"; //$NON-NLS-1$
 
-static this(){
+mixin(sharedStaticThis!(`{
     HTML_FORMATID = registerType(HTML_FORMAT);
-}
+}`));
 
 private this() {}
 

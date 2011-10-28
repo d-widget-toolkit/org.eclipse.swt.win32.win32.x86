@@ -42,13 +42,13 @@ import java.lang.all;
  */
 public class ImageTransfer : ByteArrayTransfer {
 
-    private static ImageTransfer _instance;
+    mixin(gshared!(`private static ImageTransfer _instance;`));
     private static const String CF_DIB = "CF_DIB"; //$NON-NLS-1$
     private static const int CF_DIBID = COM.CF_DIB;
 
-static this(){
+mixin(sharedStaticThis!(`{
      _instance = new ImageTransfer();
-}
+}`));
 
 private this() {
 }

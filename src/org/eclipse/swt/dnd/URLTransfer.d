@@ -40,11 +40,11 @@ public class URLTransfer : ByteArrayTransfer {
 
     static URLTransfer _instance;
     static const String CFSTR_INETURL = "UniformResourceLocator"; //$NON-NLS-1$
-    static const int CFSTR_INETURLID;
+    mixin(gshared!(`static const int CFSTR_INETURLID;`));
 
-static this(){
+mixin(sharedStaticThis!(`{
     CFSTR_INETURLID = registerType(CFSTR_INETURL);
-}
+}`));
 
 private this() {}
 

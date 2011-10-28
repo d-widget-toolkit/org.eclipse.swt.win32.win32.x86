@@ -239,8 +239,8 @@ package:
     int indent;
     int lineSpacing;
 
-    const static bool IS_CARBON, IS_GTK, IS_MOTIF;
-mixin(sharedStaticThis!(`{
+    mixin(gshared!(`const static bool IS_CARBON, IS_GTK, IS_MOTIF;`));
+    mixin(sharedStaticThis!(`{
         String platform = SWT.getPlatform();
         IS_CARBON = ("carbon" == platform);
         IS_GTK    = ("gtk"    == platform);

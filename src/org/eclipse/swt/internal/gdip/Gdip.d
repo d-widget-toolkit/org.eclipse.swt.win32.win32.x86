@@ -22,6 +22,8 @@ import org.eclipse.swt.internal.win32.WINTYPES;
 import org.eclipse.swt.internal.win32.WINAPI;
 import org.eclipse.swt.internal.win32.OS;
 
+import java.lang.all;
+
 version(Tango){
     import tango.sys.win32.UserGdi;
 } else { // Phobos
@@ -38,11 +40,11 @@ alias org.eclipse.swt.internal.gdip.native.GdiplusStartupOutput GdiplusStartupOu
 
 public class Gdip : Platform
 {
-    static this(){
+    mixin(sharedStaticThis!(`{
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 1)) {
             loadLib_Gdip();
         }
-    }
+    }`));
     /**************************************************************************
 
     **************************************************************************/

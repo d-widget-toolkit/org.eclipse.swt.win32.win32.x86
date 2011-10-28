@@ -76,14 +76,14 @@ public final class Printer : Device {
     /**
      * strings used to access the Windows registry
      */
-    static StringT profile;
-    static StringT appName;
-    static StringT keyName;
-    static this() {
+    mixin(gshared!(`static StringT profile;`));
+    mixin(gshared!(`static StringT appName;`));
+    mixin(gshared!(`static StringT keyName;`));
+    mixin(sharedStaticThis!(`{
         profile = StrToTCHARs(0, "PrinterPorts", true); //$NON-NLS-1$
         appName = StrToTCHARs(0, "windows", true); //$NON-NLS-1$
         keyName = StrToTCHARs(0, "device", true); //$NON-NLS-1$
-    }
+    }`));
 
 /**
  * Returns an array of <code>PrinterData</code> objects

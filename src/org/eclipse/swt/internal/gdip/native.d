@@ -1198,8 +1198,8 @@ Status function(out Handle format) GdipStringFormatGetGenericTypographic;
 Status function(Handle format, in int hotkeyPrefix) GdipSetStringFormatHotkeyPrefix;
 Status function(Handle format, in float firstTabOffset, in int count, in float* tabStops) GdipSetStringFormatTabStops;
 
-Symbol[] symbols;
-static this(){
+mixin(gshared!(`Symbol[] symbols;`));
+mixin(sharedStaticThis!(`{
     symbols = [
         Symbol( "GdiplusStartup", cast(void**)& GdiplusStartup ),
         Symbol( "GdiplusShutdown", cast(void**)& GdiplusShutdown ),
@@ -1671,7 +1671,7 @@ static this(){
         Symbol( "GdipSetStringFormatHotkeyPrefix", cast(void**)& GdipSetStringFormatHotkeyPrefix ),
         Symbol( "GdipSetStringFormatTabStops", cast(void**)& GdipSetStringFormatTabStops )
     ];
-}
+}`));
 
 
 void loadLib_Gdip(){

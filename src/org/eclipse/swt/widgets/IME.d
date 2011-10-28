@@ -55,20 +55,20 @@ public class IME : Widget {
     int [] ranges;
     TextStyle [] styles;
 
-    static const int WM_MSIME_MOUSE;
+    mixin(gshared!(`static const int WM_MSIME_MOUSE;`));
 
-    static byte [16] IID_ITfInputProcessorProfiles;
-    static byte [16] IID_ITfDisplayAttributeProvider;
-    static byte [16] CLSID_TF_InputProcessorProfiles;
-    static byte [16] GUID_TFCAT_TIP_KEYBOARD;
-    static this() {
+    mixin(gshared!(`static byte [16] IID_ITfInputProcessorProfiles;`));
+    mixin(gshared!(`static byte [16] IID_ITfDisplayAttributeProvider;`));
+    mixin(gshared!(`static byte [16] CLSID_TF_InputProcessorProfiles;`));
+    mixin(gshared!(`static byte [16] GUID_TFCAT_TIP_KEYBOARD;`));
+    mixin(sharedStaticThis!(`{
         WM_MSIME_MOUSE = OS.RegisterWindowMessage (StrToTCHARz ("MSIMEMouseOperation"));
 
         OS.IIDFromString ("{1F02B6C5-7842-4EE6-8A0B-9A24183A95CA}\0"w.ptr, IID_ITfInputProcessorProfiles.ptr);
         OS.IIDFromString ("{fee47777-163c-4769-996a-6e9c50ad8f54}\0"w.ptr, IID_ITfDisplayAttributeProvider.ptr);
         OS.IIDFromString ("{33C53A50-F456-4884-B049-85FD643ECFED}\0"w.ptr, CLSID_TF_InputProcessorProfiles.ptr);
         OS.IIDFromString ("{34745C63-B2F0-4784-8B67-5E12C8701A31}\0"w.ptr, GUID_TFCAT_TIP_KEYBOARD.ptr);
-    }
+    }`));
 
     /* TextLayout has a copy of these constants */
     static const int UNDERLINE_IME_DOT = 1 << 16;

@@ -119,7 +119,7 @@ public class CTabFolder : Composite {
      *
      * @deprecated drop shadow border is no longer drawn in 3.0
      */
-    public static RGB borderInsideRGB;
+    mixin(gshared!(`public static RGB borderInsideRGB;`));
     /**
      * Color of middle line of drop shadow border.
      *
@@ -128,7 +128,7 @@ public class CTabFolder : Composite {
      *
      * @deprecated drop shadow border is no longer drawn in 3.0
      */
-    public static RGB borderMiddleRGB;
+    mixin(gshared!(`public static RGB borderMiddleRGB;`));
     /**
      * Color of outermost line of drop shadow border.
      *
@@ -137,7 +137,7 @@ public class CTabFolder : Composite {
      *
      * @deprecated drop shadow border is no longer drawn in 3.0
      */
-    public static RGB borderOutsideRGB;
+    mixin(gshared!(`public static RGB borderOutsideRGB;`));
 
     /* sizing, positioning */
     int xClient, yClient;
@@ -278,19 +278,19 @@ public class CTabFolder : Composite {
     static const int NORMAL = 1;
     static const int HOT = 2;
     static const int SELECTED = 3;
-    static const RGB CLOSE_FILL;
+    mixin(gshared!(`static const RGB CLOSE_FILL;`));
 
     static const int CHEVRON_CHILD_ID = 0;
     static const int MINIMIZE_CHILD_ID = 1;
     static const int MAXIMIZE_CHILD_ID = 2;
     static const int EXTRA_CHILD_ID_COUNT = 3;
 
-static this(){
+mixin(sharedStaticThis!(`{
     borderInsideRGB  = new RGB (132, 130, 132);
     borderMiddleRGB  = new RGB (143, 141, 138);
     borderOutsideRGB = new RGB (171, 168, 165);
     CLOSE_FILL = new RGB(252, 160, 160);
-}
+}`));
 
 /**
  * Constructs a new instance of this class given its parent

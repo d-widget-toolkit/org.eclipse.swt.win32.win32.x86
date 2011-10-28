@@ -76,8 +76,8 @@ Compile time versions
 public class LDWTRESULT {
     public int value;
     // initalize ONE and ZERO in static OS.this();
-    public static LDWTRESULT ONE;
-    public static LDWTRESULT ZERO;
+    mixin(gshared!(`public static LDWTRESULT ONE;`));
+    mixin(gshared!(`public static LDWTRESULT ZERO;`));
     public this (int value) { this.value = value; }
 }
 
@@ -150,25 +150,25 @@ BOOL function(
     /*
     * SWT Windows flags
     */
-    public static BOOL IsWin32s;
-    public static BOOL IsWin95;
-    public static BOOL IsWinNT;
+    mixin(gshared!(`public static BOOL IsWin32s;`));
+    mixin(gshared!(`public static BOOL IsWin95;`));
+    mixin(gshared!(`public static BOOL IsWinNT;`));
 
     version(WinCE) {
-        public const static BOOL IsWinCE = true;
-        public static const BOOL IsHPC   = false; //todo
+        mixin(gshared!(`public const static BOOL IsWinCE = true;`));
+        mixin(gshared!(`public static const BOOL IsHPC   = false`)); //todo
     }
     else {
-        public const static BOOL IsWinCE = false;
-        public static const BOOL IsHPC   = false;
+        mixin(gshared!(`public const static BOOL IsWinCE = false;`));
+        mixin(gshared!(`public static const BOOL IsHPC   = false;`));
     }
 
-    public static const BOOL IsPPC = false;
+    mixin(gshared!(`public static const BOOL IsPPC = false;`));
 
     // PORTING_FIXME, is it Windows WFSP?
-    public static const BOOL IsSP = false;
+    mixin(gshared!(`public static const BOOL IsSP = false;`));
 
-    public static const BOOL IsDBLocale;
+    mixin(gshared!(`public static const BOOL IsDBLocale;`));
 
     version(ANSI) {
         public const BOOL IsUnicode = false;
@@ -176,9 +176,9 @@ BOOL function(
         public const BOOL IsUnicode = true;
     }
 
-    public static const int WIN32_MAJOR, WIN32_MINOR, WIN32_VERSION;
-    public static const int COMCTL32_MAJOR, COMCTL32_MINOR, COMCTL32_VERSION;
-    public static const int SHELL32_MAJOR, SHELL32_MINOR, SHELL32_VERSION;
+    mixin(gshared!(`public static const int WIN32_MAJOR, WIN32_MINOR, WIN32_VERSION;`));
+    mixin(gshared!(`public static const int COMCTL32_MAJOR, COMCTL32_MINOR, COMCTL32_VERSION;`));
+    mixin(gshared!(`public static const int SHELL32_MAJOR, SHELL32_MINOR, SHELL32_VERSION;`));
 
     public static const char[] NO_MANIFEST = "org.eclipse.swt.internal.win32.OS.NO_MANIFEST";
 
@@ -229,7 +229,7 @@ BOOL function(
 //     }
 
     /* Get the Windows version and the flags */
-    static this(){
+    mixin(sharedStaticThis!(`{
         static_this_1();
         static_this_2();
         static_this_3();
@@ -288,7 +288,7 @@ BOOL function(
         WIN32_VERSION = VERSION (WIN32_MAJOR, WIN32_MINOR);
 
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 0)) {
-            SharedLib.loadLibSymbols( Symbols_Kernel32, `Kernel32.dll`, WIN32_MAJOR, WIN32_MINOR );
+            SharedLib.loadLibSymbols( Symbols_Kernel32, "Kernel32.dll", WIN32_MAJOR, WIN32_MINOR );
         }
 
         //PORTING_CHANGE: made by version
@@ -301,16 +301,16 @@ BOOL function(
 
         // when to load uxtheme
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 1)) {
-            SharedLib.loadLibSymbols( Symbols_UxTheme, `UxTheme.dll`, WIN32_MAJOR, WIN32_MINOR );
+            SharedLib.loadLibSymbols( Symbols_UxTheme, "UxTheme.dll", WIN32_MAJOR, WIN32_MINOR );
         }
         if (OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 1)) {
-            SharedLib.loadLibSymbols( Symbols_CoreImm, `Coreimm.dll`, WIN32_MAJOR, WIN32_MINOR );
+            SharedLib.loadLibSymbols( Symbols_CoreImm, "Coreimm.dll", WIN32_MAJOR, WIN32_MINOR );
         }
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (5, 0)) {
-            SharedLib.loadLibSymbols( Symbols_User32, `User32.dll`, WIN32_MAJOR, WIN32_MINOR );
+            SharedLib.loadLibSymbols( Symbols_User32, "User32.dll", WIN32_MAJOR, WIN32_MINOR );
         }
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (4, 0)) {
-            SharedLib.loadLibSymbols( Symbols_Imm32, `Imm32.dll`, WIN32_MAJOR, WIN32_MINOR );
+            SharedLib.loadLibSymbols( Symbols_Imm32, "Imm32.dll", WIN32_MAJOR, WIN32_MINOR );
         }
 
         /* Make the process DPI aware for Windows Vista */
@@ -376,7 +376,7 @@ BOOL function(
         SHELL32_MAJOR = dvi.dwMajorVersion;
         SHELL32_MINOR = dvi.dwMinorVersion;
         SHELL32_VERSION = VERSION (SHELL32_MAJOR, SHELL32_MINOR);
-    }
+    }`));
 
     /**************************************************************************
 
@@ -2675,7 +2675,7 @@ public static extern(Windows) {
     ) SetWindowTheme;
 
 } // public static
-static SymbolVersioned2[] Symbols_UxTheme;
+mixin(gshared!(`static SymbolVersioned2[] Symbols_UxTheme;`));
 private static void static_this_1(){
     Symbols_UxTheme = [
         SymbolVersioned2( "IsAppThemed", cast(void**)& IsAppThemed, 5, 1 ),
@@ -2726,8 +2726,8 @@ public static extern(Windows) {
 } // public static extern(Windows)
 
 
-static SymbolVersioned2[] Symbols_CoreImm = [
-];
+mixin(gshared!(`static SymbolVersioned2[] Symbols_CoreImm = [
+];`));
 
 // user32.dll vista
 public static extern(Windows){
@@ -2735,7 +2735,7 @@ public static extern(Windows){
     BOOL function( HWND hWnd )IsHungAppWindow;
 }
 
-static SymbolVersioned2[] Symbols_User32;
+mixin(gshared!(`static SymbolVersioned2[] Symbols_User32;`));
 private static void static_this_2(){
     Symbols_User32 = [
         SymbolVersioned2( "SetProcessDPIAware", cast(void**)& SetProcessDPIAware, 6, 0 ),
@@ -2799,7 +2799,7 @@ LONG function(
 
 }
 
-static SymbolVersioned2[] Symbols_Imm32;
+mixin(gshared!(`static SymbolVersioned2[] Symbols_Imm32;`));
 private static void static_this_3(){
     Symbols_Imm32 = [
         SymbolVersioned2( "ImmAssociateContext", cast(void**)& ImmAssociateContext, 5, 1 ),
@@ -2826,7 +2826,7 @@ private static void static_this_3(){
 
 version(ANSI){
 }else{
-static SymbolVersioned2[] Symbols_Kernel32;
+mixin(gshared!(`static SymbolVersioned2[] Symbols_Kernel32;`));
 private static void static_this_4(){
     Symbols_Kernel32 = [
         SymbolVersioned2( "CreateActCtxW", cast(void**)& CreateActCtx, 5, 1 ),

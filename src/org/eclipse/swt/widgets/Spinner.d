@@ -92,16 +92,16 @@ public class Spinner : Composite {
      *
      * @since 3.4
      */
-    public static int LIMIT;
+     mixin(gshared!(`public static int LIMIT;`));
 
     /*
      * These values can be different on different platforms.
      * Therefore they are not initialized in the declaration
      * to stop the compiler from inlining.
      */
-    static this() {
+    mixin(sharedStaticThis!(`{
         LIMIT = OS.IsWinNT ? 0x7FFFFFFF : 0x7FFF;
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

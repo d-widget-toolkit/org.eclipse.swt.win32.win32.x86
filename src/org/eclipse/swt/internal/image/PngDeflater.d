@@ -121,10 +121,10 @@ static class Code {
 
 }
 
-static TryConst!(Code[]) lengthCodes;
-static TryConst!(Code[]) distanceCodes;
+mixin(gshared!(`static TryConst!(Code[]) lengthCodes;`));
+mixin(gshared!(`static TryConst!(Code[]) distanceCodes;`));
 
-static this() {
+mixin(sharedStaticThis!(`{
     lengthCodes = [
         new Code(257, 0, 3, 3),
         new Code(258, 0, 4, 4),
@@ -187,7 +187,7 @@ static this() {
         new Code(27, 12, 12289, 16384),
         new Code(28, 13, 16385, 24576),
         new Code(29, 13, 24577, 32768)];
-}
+}`));
 
 void writeShortLSB(ByteArrayOutputStream baos, int theShort) {
 

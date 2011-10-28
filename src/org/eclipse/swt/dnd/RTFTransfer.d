@@ -41,11 +41,11 @@ public class RTFTransfer : ByteArrayTransfer {
 
     private static RTFTransfer _instance;
     private static const String CF_RTF = "Rich Text Format"; //$NON-NLS-1$
-    private static const int CF_RTFID;
+    mixin(gshared!(`private static const int CF_RTFID;`));
 
-static this(){
+mixin(sharedStaticThis!(`{
     CF_RTFID = registerType(CF_RTF);
-}
+}`));
 
 private this() {}
 

@@ -92,7 +92,7 @@ public class ViewForm : Composite {
      *
      * @deprecated
      */
-    public static RGB borderInsideRGB;
+    mixin(gshared!(`public static RGB borderInsideRGB;`));
     /**
      * Color of middle line of drop shadow border.
      *
@@ -101,7 +101,7 @@ public class ViewForm : Composite {
      *
      * @deprecated
      */
-    public static RGB borderMiddleRGB;
+    mixin(gshared!(`public static RGB borderMiddleRGB;`));
     /**
      * Color of outermost line of drop shadow border.
      *
@@ -110,7 +110,7 @@ public class ViewForm : Composite {
      *
      * @deprecated
      */
-    public static RGB borderOutsideRGB;
+    mixin(gshared!(`public static RGB borderOutsideRGB;`));
 
     // SWT widgets
     Control topLeft;
@@ -137,11 +137,11 @@ public class ViewForm : Composite {
     static const int SELECTION_BACKGROUND = SWT.COLOR_LIST_BACKGROUND;
 
 
-    static this(){
+    mixin(sharedStaticThis!(`{
         borderInsideRGB  = new RGB (132, 130, 132);
         borderMiddleRGB  = new RGB (143, 141, 138);
         borderOutsideRGB = new RGB (171, 168, 165);
-    }
+    }`));
 /**
  * Constructs a new instance of this class given its parent
  * and a style value describing its behavior and appearance.

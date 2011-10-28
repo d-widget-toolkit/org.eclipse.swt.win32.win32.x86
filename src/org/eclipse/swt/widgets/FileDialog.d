@@ -51,8 +51,8 @@ public class FileDialog : Dialog {
     bool overwrite = false;
     static const String FILTER = "*.*";
     static int BUFFER_SIZE = 1024 * 32;
-    static bool USE_HOOK = true;
-    static this() {
+    mixin(gshared!(`static bool USE_HOOK = true;`));
+    mixin(sharedStaticThis!(`{
         /*
         *  Feature in Vista.  When OFN_ENABLEHOOK is set in the
         *  save or open file dialog,  Vista uses the old XP look
@@ -64,7 +64,7 @@ public class FileDialog : Dialog {
         if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (6, 0)) {
             USE_HOOK = false;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given only its parent.

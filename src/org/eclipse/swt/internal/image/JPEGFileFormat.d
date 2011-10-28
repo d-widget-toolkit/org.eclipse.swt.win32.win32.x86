@@ -126,7 +126,7 @@ final class JPEGFileFormat : FileFormat {
     public static const int ID_Y        = 1 - 1;
     public static const int ID_CB   = 2 - 1;
     public static const int ID_CR   = 3 - 1;
-    public static /*const*/ RGB[] RGB16;
+    mixin(gshared!(`public static /*const*/ RGB[] RGB16;`));
     public static const int[] ExtendTest = [
         0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048,
         4096, 8192, 16384, 32768, 65536, 131072, 262144
@@ -146,11 +146,11 @@ final class JPEGFileFormat : FileFormat {
         53, 60, 61, 54, 47, 55, 62, 63
     ];
 
-    public static int[] CrRTable, CbBTable, CrGTable, CbGTable;
-    public static int[] RYTable, GYTable, BYTable,
-        RCbTable, GCbTable, BCbTable, RCrTable, GCrTable, BCrTable, NBitsTable;
+    mixin(gshared!(`public static int[] CrRTable, CbBTable, CrGTable, CbGTable;`));
+    mixin(gshared!(`public static int[] RYTable, GYTable, BYTable,
+        RCbTable, GCbTable, BCbTable, RCrTable, GCrTable, BCrTable, NBitsTable;`));
     //public static void static_this() {
-    static this() {
+    mixin(sharedStaticThis!(`{
 
         RGB16 = [
             new RGB(0,0,0),
@@ -229,7 +229,7 @@ final class JPEGFileFormat : FileFormat {
             nBitsTable[i] = nBits;
         }
         NBitsTable = nBitsTable;
-    }
+    }`));
 void compress(ImageData image, byte[] dataYComp, byte[] dataCbComp, byte[] dataCrComp) {
     int srcWidth = image.width;
     int srcHeight = image.height;

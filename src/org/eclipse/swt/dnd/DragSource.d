@@ -146,11 +146,11 @@ public class DragSource : Widget {
     int dataEffect = DND.DROP_NONE;
 
     static const String DEFAULT_DRAG_SOURCE_EFFECT = "DEFAULT_DRAG_SOURCE_EFFECT"; //$NON-NLS-1$
-    static const int CFSTR_PERFORMEDDROPEFFECT;
+    mixin(gshared!(`static const int CFSTR_PERFORMEDDROPEFFECT;`));
     static const TCHAR[] WindowClass = "#32770\0";
-    static this(){
+    mixin(sharedStaticThis!(`{
         CFSTR_PERFORMEDDROPEFFECT  = Transfer.registerType("Performed DropEffect");     //$NON-NLS-1$
-    }
+    }`));
 /**
  * Creates a new <code>DragSource</code> to handle dragging from the specified <code>Control</code>.
  * Creating an instance of a DragSource may cause system resources to be allocated depending on the platform.
