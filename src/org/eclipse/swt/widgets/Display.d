@@ -148,7 +148,7 @@ public class Display : Device {
     //int windowProc_;
     int threadId;
     StringT windowClass_, windowShadowClass;
-    static int WindowClassCount;
+    mixin(gshared!(`static int WindowClassCount;`));
     static const String WindowName = "SWT_Window"; //$NON-NLS-1$
     static const String WindowShadowName = "SWT_WindowShadow"; //$NON-NLS-1$
     EventTable eventTable, filterTable;
@@ -161,11 +161,11 @@ public class Display : Device {
     HWND lastGetHwnd;
     Control [] controlTable;
     static const int GROW_SIZE = 1024;
-    private static /+const+/ int SWT_OBJECT_INDEX;
-    static const bool USE_PROPERTY = !OS.IsWinCE;
+    mixin(gshared!(`private static /+const+/ int SWT_OBJECT_INDEX;`));
+    mixin(gshared!(`static const bool USE_PROPERTY = !OS.IsWinCE;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -182,10 +182,10 @@ public class Display : Device {
             static_this_DeviceFinder ();
             static_this_completed = true;
         }
-    }
+    }`));
 
     /* Startup info */
-    private static STARTUPINFO* lpStartupInfo;
+    mixin(gshared!(`private static STARTUPINFO* lpStartupInfo;`));
     private static void static_this_StartupInfo (){
         static if (!OS.IsWinCE) {
             lpStartupInfo = new STARTUPINFO ();
@@ -321,7 +321,7 @@ public class Display : Device {
     Object [] values;
 
     /* Key Mappings */
-    static const int [] [] KeyTable = [
+    mixin(gshared!(`static const int [] [] KeyTable = [
 
         /* Keyboard and Mouse Masks */
         [OS.VK_MENU,    SWT.ALT],
@@ -398,11 +398,11 @@ public class Display : Device {
         [OS.VK_SNAPSHOT,    SWT.PRINT_SCREEN],
 //      [OS.VK_????,        SWT.HELP],
 
-    ];
+    ];`));
 
     /* Multiple Displays */
-    static Display Default;
-    static Display [] Displays;
+    mixin(gshared!(`static Display Default;`));
+    mixin(gshared!(`static Display [] Displays;`));
 
     /* Multiple Monitors */
     org.eclipse.swt.widgets.Monitor.Monitor[] monitors = null;
@@ -414,16 +414,16 @@ public class Display : Device {
     static bool TrimEnabled = false;
 
     /* Private SWT Window Messages */
-    static const int SWT_GETACCELCOUNT  = OS.WM_APP;
-    static const int SWT_GETACCEL       = OS.WM_APP + 1;
-    static const int SWT_KEYMSG         = OS.WM_APP + 2;
-    static const int SWT_DESTROY        = OS.WM_APP + 3;
-    static const int SWT_TRAYICONMSG    = OS.WM_APP + 4;
-    static const int SWT_NULL           = OS.WM_APP + 5;
-    static const int SWT_RUNASYNC       = OS.WM_APP + 6;
-    static int SWT_TASKBARCREATED;
-    static int SWT_RESTORECARET;
-    static int DI_GETDRAGIMAGE;
+    mixin(gshared!(`static const int SWT_GETACCELCOUNT  = OS.WM_APP;`));
+    mixin(gshared!(`static const int SWT_GETACCEL       = OS.WM_APP + 1;`));
+    mixin(gshared!(`static const int SWT_KEYMSG         = OS.WM_APP + 2;`));
+    mixin(gshared!(`static const int SWT_DESTROY        = OS.WM_APP + 3;`));
+    mixin(gshared!(`static const int SWT_TRAYICONMSG    = OS.WM_APP + 4;`));
+    mixin(gshared!(`static const int SWT_NULL           = OS.WM_APP + 5;`));
+    mixin(gshared!(`static const int SWT_RUNASYNC       = OS.WM_APP + 6;`));
+    mixin(gshared!(`static int SWT_TASKBARCREATED;`));
+    mixin(gshared!(`static int SWT_RESTORECARET;`));
+    mixin(gshared!(`static int DI_GETDRAGIMAGE;`));
 
     /* Workaround for Adobe Reader 7.0 */
     int hitCount;

@@ -156,8 +156,8 @@ public class Shell : Decorations {
     static if( OS.IsWinCE ){
         SHACTIVATEINFO psai;
     }
-    static /+const+/ WNDPROC ToolTipProc;
-    static /+const+/ WNDPROC DialogProc;
+    mixin(gshared!(`static /+const+/ WNDPROC ToolTipProc;`));
+    mixin(gshared!(`static /+const+/ WNDPROC DialogProc;`));
     static if( OS.IsWinCE ){
         static const StringT DialogClass = "Dialog\0"w;
     }
@@ -178,8 +178,8 @@ public class Shell : Decorations {
     ];
     const static int BRUSHES_SIZE = 32;
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -192,7 +192,7 @@ public class Shell : Decorations {
             DialogProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class. This is equivalent

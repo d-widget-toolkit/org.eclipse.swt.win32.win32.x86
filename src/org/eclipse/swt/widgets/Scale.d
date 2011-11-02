@@ -55,11 +55,11 @@ public class Scale : Control {
     alias Control.windowProc windowProc;
 
     bool ignoreResize, ignoreSelection;
-    private static /+const+/ WNDPROC TrackBarProc;
-    static const TCHAR[] TrackBarClass = OS.TRACKBAR_CLASS;
+    mixin(gshared!(`private static /+const+/ WNDPROC TrackBarProc;`));
+    mixin(gshared!(`static const TCHAR[] TrackBarClass = OS.TRACKBAR_CLASS;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -100,7 +100,7 @@ public class Scale : Control {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

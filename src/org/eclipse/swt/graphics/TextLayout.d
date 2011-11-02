@@ -125,7 +125,7 @@ mixin(gshared!("
     static byte[16] IID_IMLangFontLink2;
     static bool static_this_completed = false;
 "));
-    static void static_this() {
+    mixin(sharedStatic_This!(`{
         // in case of allready initialized, we can check and leave without lock
         if( static_this_completed ){
             return;
@@ -137,7 +137,7 @@ mixin(gshared!("
                 static_this_completed = true;
             }
         }
-    }
+    }`));
 
     /* IME has a copy of these constants */
     static const int UNDERLINE_IME_DOT = 1 << 16;

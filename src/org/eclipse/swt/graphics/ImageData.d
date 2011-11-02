@@ -222,11 +222,11 @@ public final class ImageData : CloneableCompatibility {
     /**
      * Arbitrary channel width data to 8-bit conversion table.
      */
-    private static byte[][] ANY_TO_EIGHT;
-    private static byte[] ONE_TO_ONE_MAPPING;
+    mixin(gshared!(`private static byte[][] ANY_TO_EIGHT;`));
+    mixin(gshared!(`private static byte[] ONE_TO_ONE_MAPPING;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ) return;
         synchronized {
             if( static_this_completed ) return;
@@ -241,7 +241,7 @@ public final class ImageData : CloneableCompatibility {
             ONE_TO_ONE_MAPPING = ANY_TO_EIGHT[8];
             static_this_completed = true;
         }
-    }
+    }`));
 
     /**
      * Scaled 8x8 Bayer dither matrix.

@@ -85,11 +85,11 @@ public class Slider : Control {
 
     int increment, pageIncrement;
     bool ignoreFocus;
-    static /+const+/ WNDPROC ScrollBarProc;
+    mixin(gshared!(`static /+const+/ WNDPROC ScrollBarProc;`));
     static const TCHAR[] ScrollBarClass = "SCROLLBAR";
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -102,7 +102,7 @@ public class Slider : Control {
             ScrollBarProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

@@ -135,13 +135,13 @@ public class Tree : Composite {
     static const int EXPLORER_EXTRA = 2;
     static const int DRAG_IMAGE_SIZE = 301;
     static const bool EXPLORER_THEME = true;
-    private static /+const+/ WNDPROC TreeProc;
-    static const TCHAR[] TreeClass = OS.WC_TREEVIEW;
-    private static /+const+/ WNDPROC HeaderProc;
-    static const TCHAR[] HeaderClass = OS.WC_HEADER;
+    mixin(gshared!(`private static /+const+/ WNDPROC TreeProc;`));
+    mixin(gshared!(`static const TCHAR[] TreeClass = OS.WC_TREEVIEW;`));
+    mixin(gshared!(`private static /+const+/ WNDPROC HeaderProc;`));
+    mixin(gshared!(`static const TCHAR[] HeaderClass = OS.WC_HEADER;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -156,9 +156,9 @@ public class Tree : Composite {
             HeaderProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
-    private static Tree sThis;
+    mixin(gshared!(`private static Tree sThis;`));
 /**
  * Constructs a new instance of this class given its parent
  * and a style value describing its behavior and appearance.

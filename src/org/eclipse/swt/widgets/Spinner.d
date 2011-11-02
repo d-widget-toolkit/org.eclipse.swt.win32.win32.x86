@@ -64,13 +64,13 @@ public class Spinner : Composite {
     HWND hwndText, hwndUpDown;
     bool ignoreModify;
     int pageIncrement, digits;
-    static /+const+/ WNDPROC EditProc;
+    mixin(gshared!(`static /+const+/ WNDPROC EditProc;`));
     static const TCHAR[] EditClass = "EDIT";
-    static /+const+/ WNDPROC UpDownProc;
-    static const TCHAR[] UpDownClass = OS.UPDOWN_CLASS;
+    mixin(gshared!(`static /+const+/ WNDPROC UpDownProc;`));
+    mixin(gshared!(`static const TCHAR[] UpDownClass = OS.UPDOWN_CLASS;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -85,7 +85,7 @@ public class Spinner : Composite {
             UpDownProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
     /**
      * the operating system limit for the number of characters
      * that the text field in an instance of this class can hold

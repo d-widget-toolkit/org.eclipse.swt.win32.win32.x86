@@ -68,8 +68,8 @@ public class TabFolder : Composite {
 
     TabItem [] items;
     ImageList imageList;
-    private static /+const+/ WNDPROC TabFolderProc;
-    static const TCHAR[] TabFolderClass = OS.WC_TABCONTROL;
+    mixin(gshared!(`private static /+const+/ WNDPROC TabFolderProc;`));
+    mixin(gshared!(`static const TCHAR[] TabFolderClass = OS.WC_TABCONTROL;`));
 
     /*
     * These are the undocumented control id's for the children of
@@ -78,8 +78,8 @@ public class TabFolder : Composite {
     */
     static const int ID_UPDOWN = 1;
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -121,7 +121,7 @@ public class TabFolder : Composite {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

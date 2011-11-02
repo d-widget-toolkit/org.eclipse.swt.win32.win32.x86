@@ -112,8 +112,8 @@ public abstract class Widget {
     /* Check and initialize the Common Controls DLL */
     static const int MAJOR = 5, MINOR = 80;
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -130,7 +130,7 @@ public abstract class Widget {
             OS.InitCommonControls ();
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Prevents uninitialized instances from being created outside the package.

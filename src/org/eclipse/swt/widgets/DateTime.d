@@ -63,13 +63,13 @@ public class DateTime : Composite {
     bool ignoreSelection;
     SYSTEMTIME* lastSystemTime;
     SYSTEMTIME time; // only used in calendar mode
-    static /+const+/ WNDPROC DateTimeProc;
-    static const TCHAR[] DateTimeClass = OS.DATETIMEPICK_CLASS;
-    static /+const+/ WNDPROC CalendarProc;
-    static const TCHAR[] CalendarClass = OS.MONTHCAL_CLASS;
+    mixin(gshared!(`static /+const+/ WNDPROC DateTimeProc;`));
+    mixin(gshared!(`static const TCHAR[] DateTimeClass = OS.DATETIMEPICK_CLASS;`));
+    mixin(gshared!(`static /+const+/ WNDPROC CalendarProc;`));
+    mixin(gshared!(`static const TCHAR[] CalendarClass = OS.MONTHCAL_CLASS;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -144,7 +144,7 @@ public class DateTime : Composite {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }
+    }`));
 
     static const int MARGIN = 4;
     static const int MAX_DIGIT = 9;

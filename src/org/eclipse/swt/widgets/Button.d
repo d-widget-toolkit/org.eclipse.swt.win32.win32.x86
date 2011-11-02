@@ -69,14 +69,14 @@ public class Button : Control {
     ImageList imageList;
     bool ignoreMouse, grayed;
     static const int MARGIN = 4;
-    private static /+const+/ int CHECK_WIDTH, CHECK_HEIGHT;
+    mixin(gshared!(`private static /+const+/ int CHECK_WIDTH, CHECK_HEIGHT;`));
     static const int ICON_WIDTH = 128, ICON_HEIGHT = 128;
     static const bool COMMAND_LINK = false;
-    private static /+const+/ TWindowProc ButtonProc;
+    mixin(gshared!(`private static /+const+/ TWindowProc ButtonProc;`));
     static const TCHAR[] ButtonClass = "BUTTON\0";
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -100,7 +100,7 @@ public class Button : Control {
             ButtonProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

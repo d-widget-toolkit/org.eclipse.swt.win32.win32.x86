@@ -67,11 +67,11 @@ public class ToolBar : Composite {
     ToolItem [] items;
     bool ignoreResize, ignoreMouse;
     ImageList imageList, disabledImageList, hotImageList;
-    private static /+const+/ WNDPROC ToolBarProc;
-    static const TCHAR[] ToolBarClass = OS.TOOLBARCLASSNAME;
+    mixin(gshared!(`private static /+const+/ WNDPROC ToolBarProc;`));
+    mixin(gshared!(`static const TCHAR[] ToolBarClass = OS.TOOLBARCLASSNAME;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -84,7 +84,7 @@ public class ToolBar : Composite {
             ToolBarProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 
 

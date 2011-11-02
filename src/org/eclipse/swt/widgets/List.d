@@ -55,11 +55,11 @@ public class List : Scrollable {
     alias Scrollable.windowProc windowProc;
 
     static const int INSET = 3;
-    private static /+const+/ WNDPROC ListProc;
+    mixin(gshared!(`private static /+const+/ WNDPROC ListProc;`));
     static const TCHAR[] ListClass = "LISTBOX";
 
     private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -72,7 +72,7 @@ public class List : Scrollable {
             ListProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

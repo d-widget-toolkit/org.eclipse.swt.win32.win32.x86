@@ -52,11 +52,11 @@ public class ProgressBar : Control {
     static const int DELAY = 100;
     static const int TIMER_ID = 100;
     static const int MINIMUM_WIDTH = 100;
-    private static /+const+/ WNDPROC ProgressBarProc;
+    mixin(gshared!(`private static /+const+/ WNDPROC ProgressBarProc;`));
     static const TCHAR[] ProgressBarClass = OS.PROGRESS_CLASS;
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -97,7 +97,7 @@ public class ProgressBar : Control {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

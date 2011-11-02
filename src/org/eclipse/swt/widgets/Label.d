@@ -70,11 +70,11 @@ public class Label : Control {
     Image image;
     static const int MARGIN = 4;
     static const bool IMAGE_AND_TEXT = false;
-    private static /+const+/ WNDPROC LabelProc;
+    mixin(gshared!(`private static /+const+/ WNDPROC LabelProc;`));
     static const TCHAR[] LabelClass = "STATIC\0";
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -87,7 +87,7 @@ public class Label : Control {
             LabelProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 
 /**

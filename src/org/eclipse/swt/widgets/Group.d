@@ -56,7 +56,7 @@ public class Group : Composite {
 
     String text = "";
     static const int CLIENT_INSET = 3;
-    private static /+const+/ WNDPROC GroupProc;
+    mixin(gshared!(`private static /+const+/ WNDPROC GroupProc;`));
     static if( OS.IsWinCE ){
         static const TCHAR[] GroupClass = "BUTTON\0";
     }
@@ -64,8 +64,8 @@ public class Group : Composite {
         static const TCHAR[] GroupClass = "SWT_GROUP\0";
     }
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -109,7 +109,7 @@ public class Group : Composite {
             }
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

@@ -103,8 +103,8 @@ public abstract class Device : Drawable {
     *
     * This code will be removed in the future.
     */
-    protected static Device CurrentDevice;
-    protected static Runnable DeviceFinder;
+    mixin(gshared!(`protected static Device CurrentDevice;`));
+    mixin(gshared!(`protected static Runnable DeviceFinder;`));
 
 
 /*

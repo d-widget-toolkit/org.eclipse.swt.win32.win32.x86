@@ -65,7 +65,7 @@ public class MenuItem : Item {
     * accelerator text.  The fix is to use smaller margins
     * everywhere but on Windows 98.
     */
-    private static int MARGIN_WIDTH_;
+    mixin(gshared!(`private static int MARGIN_WIDTH_;`));
     public static int MARGIN_WIDTH(){
         assert( static_this_completed );
         return MARGIN_WIDTH_;
@@ -76,8 +76,8 @@ public class MenuItem : Item {
         return MARGIN_HEIGHT_;
     }
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -89,7 +89,7 @@ public class MenuItem : Item {
             MARGIN_HEIGHT_ = OS.IsWin95 ? 2 : 1;
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

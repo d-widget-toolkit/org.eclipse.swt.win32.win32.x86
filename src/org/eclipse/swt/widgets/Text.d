@@ -80,7 +80,7 @@ public class Text : Scrollable {
     * the native widget implementation.
     * </p>
     */
-    private static int LIMIT_;
+    mixin(gshared!(`private static int LIMIT_;`));
     public static int LIMIT(){
         assert( static_this_completed );
         return LIMIT_;
@@ -104,11 +104,11 @@ public class Text : Scrollable {
     * to stop the compiler from inlining.
     */
 
-    private static /+const+/ WNDPROC EditProc;
+    mixin(gshared!(`private static /+const+/ WNDPROC EditProc;`));
     static const TCHAR[] EditClass = "EDIT\0";
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -137,7 +137,7 @@ public class Text : Scrollable {
     //      PASSWORD = echo !is 0 ? echo : '*';
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

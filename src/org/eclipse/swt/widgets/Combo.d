@@ -114,11 +114,11 @@ public class Combo : Composite {
     static const int CBID_EDIT = 1001;
     static /*final*/ WNDPROC EditProc, ListProc;
 
-    static /+const+/ WNDPROC ComboProc;
+    mixin(gshared!(`static /+const+/ WNDPROC ComboProc;`));
     static const TCHAR* ComboClass = "COMBOBOX\0";
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -131,7 +131,7 @@ public class Combo : Composite {
             ComboProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 
 /**

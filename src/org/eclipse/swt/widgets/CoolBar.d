@@ -66,10 +66,10 @@ public class CoolBar : Composite {
     bool locked;
     bool ignoreResize;
     private static /+const+/ WNDPROC ReBarProc;
-    static const TCHAR* ReBarClass = OS.REBARCLASSNAME.ptr;
+    mixin(gshared!(`static const TCHAR* ReBarClass = OS.REBARCLASSNAME.ptr;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -86,7 +86,7 @@ public class CoolBar : Composite {
             ReBarProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
     static const int SEPARATOR_WIDTH = 2;
     static const int MAX_WIDTH = 0x7FFF;

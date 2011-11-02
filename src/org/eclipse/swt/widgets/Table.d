@@ -108,7 +108,7 @@ public class Table : Composite {
     bool customDraw, dragStarted, explorerTheme, firstColumnImage, fixScrollWidth, tipRequested, wasSelected, wasResized;
     bool ignoreActivate, ignoreSelect, ignoreShrink, ignoreResize, ignoreColumnMove, ignoreColumnResize, fullRowSelect;
     int itemHeight, lastIndexOf, lastWidth, sortDirection, resizeCount, selectionForeground, hotIndex;
-    static /*final*/ WNDPROC HeaderProc;
+    mixin(gshared!(`static /*final*/ WNDPROC HeaderProc;`));
     static const int INSET = 4;
     static const int GRID_WIDTH = 1;
     static const int SORT_WIDTH = 10;
@@ -120,11 +120,11 @@ public class Table : Composite {
     static const int V_SCROLL_LIMIT = 16;
     static const int DRAG_IMAGE_SIZE = 301;
     static const bool EXPLORER_THEME = true;
-    private static /+const+/ WNDPROC TableProc;
-    static const TCHAR[] TableClass = OS.WC_LISTVIEW;
+    mixin(gshared!(`private static /+const+/ WNDPROC TableProc;`));
+    mixin(gshared!(`static const TCHAR[] TableClass = OS.WC_LISTVIEW;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -137,7 +137,7 @@ public class Table : Composite {
             TableProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent

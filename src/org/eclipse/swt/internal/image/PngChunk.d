@@ -50,13 +50,13 @@ class PngChunk {
     static const byte[] TYPE_IEND = cast(byte[])"IEND";//{(byte) 'I', (byte) 'E', (byte) 'N', (byte) 'D'};
     static const byte[] TYPE_tRNS = cast(byte[])"tRNS";//{(byte) 't', (byte) 'R', (byte) 'N', (byte) 'S'};
 
-    private static int[] _CRC_TABLE = null;
+    mixin(gshared!(`private static int[] _CRC_TABLE = null;`));
     static int[] CRC_TABLE() {
         if (!_CRC_TABLE) static_this();
         return _CRC_TABLE;
     }
     //public static void static_this() {
-    private static void static_this() {
+    mixin(sharedStatic_This!(`{
         _CRC_TABLE = new int[256];
         for (int i = 0; i < 256; i++) {
             _CRC_TABLE[i] = i;
@@ -68,7 +68,7 @@ class PngChunk {
                 }
             }
         }
-    }
+    }`));
 
     int length;
 

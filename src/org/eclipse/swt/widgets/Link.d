@@ -75,12 +75,12 @@ public class Link : Control {
     int [] mnemonics;
     int focusIndex, mouseDownIndex;
     HFONT font;
-    static /+const+/ RGB LINK_FOREGROUND;
-    static /+const+/ WNDPROC LinkProc;
-    static const TCHAR[] LinkClass = OS.WC_LINK;
+    mixin(gshared!(`static /+const+/ RGB LINK_FOREGROUND;`));
+    mixin(gshared!(`static /+const+/ WNDPROC LinkProc;`));
+    mixin(gshared!(`static const TCHAR[] LinkClass = OS.WC_LINK;`));
 
-    private static bool static_this_completed = false;
-    private static void static_this() {
+    mixin(gshared!(`private static bool static_this_completed = false;`));
+    mixin(sharedStatic_This!(`{
         if( static_this_completed ){
             return;
         }
@@ -126,7 +126,7 @@ public class Link : Control {
             }
             static_this_completed = true;
         }
-    }
+    }`));
 
 /**
  * Constructs a new instance of this class given its parent
