@@ -6380,7 +6380,8 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
                     string.getChars (0, length_, buffer, 0);
                     buffer [length_++] = 0;
                     static if (OS.IsUnicode) {
-                        OS.MoveMemory (plvfi.item.pszText, StrToTCHARz( buffer[0..length_] ), length_ * 2);
+                        auto tcharz = StrToTCHARz( buffer[0..length_] );
+                        OS.MoveMemory (plvfi.item.pszText, tcharz, (TCHARzLen(tcharz) + 1) * 2);
                     } else {
                         OS.WideCharToMultiByte (getCodePage (), 0, buffer.ptr, length_, plvfi.item.pszText, plvfi.item.cchTextMax, null, null);
                         byte dummy;

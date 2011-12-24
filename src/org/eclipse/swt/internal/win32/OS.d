@@ -3749,7 +3749,7 @@ public static String16 _mbcszToWs(in PCHAR pMBCS, int len, uint codepage = 0)
 }
 
 // static methods
-public int _tcslen(TCHAR* pString){
+public int _tcslen(in TCHAR* pString){
     int _length = 0;
     while(*(pString + _length))
         ++_length;
