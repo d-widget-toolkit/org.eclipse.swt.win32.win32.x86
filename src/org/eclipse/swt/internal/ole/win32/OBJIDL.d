@@ -459,7 +459,7 @@ struct DVTARGETDEVICE {
 BYTE[1] tdData;
 }
 
-typedef CLIPFORMAT LPCLIPFORMAT;
+alias CLIPFORMAT LPCLIPFORMAT;
 
 struct FORMATETC {
         CLIPFORMAT cfFormat;

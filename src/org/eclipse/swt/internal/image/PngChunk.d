@@ -194,7 +194,7 @@ void setType(in byte[] value) {
     if (value.length !is TYPE_FIELD_LENGTH) {
         SWT.error (SWT.ERROR_INVALID_ARGUMENT);
     }
-    System.arraycopy(value, 0, reference, TYPE_OFFSET, TYPE_FIELD_LENGTH);
+    System.arraycopy!(byte)(value, 0, reference, TYPE_OFFSET, TYPE_FIELD_LENGTH);
 }
 
 /**
@@ -220,7 +220,7 @@ byte[] getData() {
  */
 void setData(in byte[] data) {
     setLength(data.length);
-    System.arraycopy(data, 0, reference, DATA_OFFSET, data.length);
+    System.arraycopy!(byte)(data, 0, reference, DATA_OFFSET, data.length);
     setCRC(computeCRC());
 }
 

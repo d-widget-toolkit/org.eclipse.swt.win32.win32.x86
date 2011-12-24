@@ -136,26 +136,26 @@ enum Status {
 	Opaque types managed by Gdi+
 
 **************************************************************************/
-typedef GpImage  GpBitmap;
+alias GpImage  GpBitmap;
 
 // alias   uint   ARGB;
-typedef Handle GpFontFamily;
-typedef Handle GpImage;
-typedef Handle GpBrush;
-typedef Handle GpFont;
-typedef Handle GpFontCollection;
-typedef Handle GpGraphics;
-typedef Handle GpGraphicsPath;
-typedef Handle GpImageAttributes;
-typedef Handle GpHatchBrush;
-typedef Handle GpLinearGradientBrush;
-typedef Handle GpMatrix;
-typedef Handle GpPen;
-typedef Handle GpRegion;
-typedef Handle GpSolidBrush;
-typedef Handle GpStringFormat;
-typedef Handle GpTextureBrush;
-typedef Handle GpPath;
+alias Handle GpFontFamily;
+alias Handle GpImage;
+alias Handle GpBrush;
+alias Handle GpFont;
+alias Handle GpFontCollection;
+alias Handle GpGraphics;
+alias Handle GpGraphicsPath;
+alias Handle GpImageAttributes;
+alias Handle GpHatchBrush;
+alias Handle GpLinearGradientBrush;
+alias Handle GpMatrix;
+alias Handle GpPen;
+alias Handle GpRegion;
+alias Handle GpSolidBrush;
+alias Handle GpStringFormat;
+alias Handle GpTextureBrush;
+alias Handle GpPath;
 
 alias void* Handle;
 

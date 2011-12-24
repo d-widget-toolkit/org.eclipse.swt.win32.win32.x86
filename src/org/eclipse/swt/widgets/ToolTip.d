@@ -531,17 +531,17 @@ public void setVisible (bool visible) {
             static if (OS.IsUnicode) {
                 TCHAR [] szInfoTitle = iconData.szInfoTitle;
                 int length1 = Math.min (szInfoTitle.length - 1, buffer1.length);
-                System.arraycopy (buffer1, 0, szInfoTitle, 0, length1);
+                System.arraycopy!(TCHAR) (buffer1, 0, szInfoTitle, 0, length1);
                 TCHAR [] szInfo = iconData.szInfo;
                 int length2 = Math.min (szInfo.length - 1, buffer2.length );
-                System.arraycopy (buffer2, 0, szInfo, 0, length2);
+                System.arraycopy!(TCHAR) (buffer2, 0, szInfo, 0, length2);
             } else {
                 byte [] szInfoTitle = iconData.szInfoTitle;
                 int length = Math.min (szInfoTitle.length - 1, buffer1.length );
                 System.arraycopy (buffer1, 0, szInfoTitle, 0, length);
                 byte [] szInfo = iconData.szInfo;
                 int length2 = Math.min (szInfo.length - 1, buffer2.length );
-                System.arraycopy (buffer2, 0, szInfo, 0, length2);
+                System.arraycopy!(TCHAR) (buffer2, 0, szInfo, 0, length2);
             }
             Display display = item.getDisplay ();
             iconData.cbSize = NOTIFYICONDATA.sizeof;

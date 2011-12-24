@@ -480,11 +480,11 @@ public void setToolTipText (String value) {
     static if (OS.IsUnicode) {
         TCHAR [] szTip = iconData.szTip[];
         length_ = Math.min (length_ - 1, buffer.length );
-        System.arraycopy (buffer, 0, szTip, 0, length_);
+        System.arraycopy!(TCHAR) (buffer, 0, szTip, 0, length_);
     } else {
         TCHAR [] szTip = iconData.szTip[];
         length_ = Math.min (length_ - 1, buffer.length );
-        System.arraycopy (buffer, 0, szTip, 0, length_);
+        System.arraycopy!(TCHAR) (buffer, 0, szTip, 0, length_);
     }
     iconData.cbSize = NOTIFYICONDATA.sizeof;
     iconData.uID = id;
