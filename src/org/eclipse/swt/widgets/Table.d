@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import java.lang.all;
+import java.nonstandard.UnsafeUtf;
 
 
 /**
@@ -6377,6 +6378,8 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
                     if (buffer is null || plvfi.item.cchTextMax > buffer.length) {
                         buffer = display.tableBuffer = new char [plvfi.item.cchTextMax];
                     }
+                    /* Prevents becoming an invalid multibyte string. */
+                    adjustUTF8index ( string, length_ );
                     string.getChars (0, length_, buffer, 0);
                     buffer [length_++] = 0;
                     static if (OS.IsUnicode) {
