@@ -16,7 +16,7 @@ import java.io.File;
 //import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-//import java.util.zip.DeflaterOutputStream;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 
@@ -183,10 +183,7 @@ public static int pow2(int n) {
  * @since 3.4
  */
 public static OutputStream newDeflaterOutputStream(OutputStream stream) {
-    //DWT_TODO
-    implMissing(__FILE__,__LINE__);
-    return null;
-    //return new DeflaterOutputStream(stream);
+    return new DeflaterOutputStream(stream);
 }
 
 /**
