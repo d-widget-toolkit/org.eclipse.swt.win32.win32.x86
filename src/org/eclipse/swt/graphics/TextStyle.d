@@ -256,9 +256,9 @@ public override hash_t toHash() {
     if (underline) hash ^= hash;
     if (strikeout) hash ^= hash;
     hash ^= rise;
-    if (underlineColor !is null) hash ^= underlineColor.hashCode();
-    if (strikeoutColor !is null) hash ^= strikeoutColor.hashCode();
-    if (borderColor !is null) hash ^= borderColor.hashCode();
+    if (underlineColor !is null) hash ^= underlineColor.toHash();
+    if (strikeoutColor !is null) hash ^= strikeoutColor.toHash();
+    if (borderColor !is null) hash ^= borderColor.toHash();
     hash ^= underlineStyle;
     return hash;
 }
