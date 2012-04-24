@@ -87,7 +87,8 @@ package HRESULT Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) {
     } else {
         if (pceltFetched !is null)
             *pceltFetched = 0;
-        COM.MoveMemory(rgelt, & FORMATETC.init, FORMATETC.sizeof);
+        FORMATETC fInit;
+        COM.MoveMemory(rgelt, & fInit, FORMATETC.sizeof);
 
     }
     return COM.S_FALSE;

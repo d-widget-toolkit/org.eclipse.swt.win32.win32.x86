@@ -443,12 +443,19 @@ public int getStyle() {
  * @see #equals
  */
 override public hash_t toHash () {
-    String name = getName();
-    return data.lfCharSet ^ getHeight() ^ data.lfWidth ^ data.lfEscapement ^
+    hash_t nameHash = 0;
+    for( size_t i = 0;
+         '\0' != data.lfFaceName[i] && i < data.lfFaceName.length;
+         i++ ){
+
+        nameHash = nameHash * 31 + data.lfFaceName[i];
+    }
+    int height = cast(int)(0.5f + height);
+    return data.lfCharSet ^ height ^ data.lfWidth ^ data.lfEscapement ^
         data.lfOrientation ^ data.lfWeight ^ data.lfItalic ^data.lfUnderline ^
         data.lfStrikeOut ^ data.lfCharSet ^ data.lfOutPrecision ^
         data.lfClipPrecision ^ data.lfQuality ^ data.lfPitchAndFamily ^
-        typeid(String).getHash(&name);
+        nameHash;
 }
 
 /**
