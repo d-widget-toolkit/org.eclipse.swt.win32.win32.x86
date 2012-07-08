@@ -595,7 +595,8 @@ LRESULT GetData(FORMATETC *pFormatetc, STGMEDIUM *pmedium) {
         stgmedium.tymed = COM.TYMED_HGLOBAL;
         stgmedium.unionField = OS.GlobalAlloc(COM.GMEM_FIXED | COM.GMEM_ZEROINIT, 4);
         //TODO - should call GlobalLock
-        stgmedium.unionField = cast(void*)COM.DROPEFFECT_COPY;
+        int[] intArr = [COM.DROPEFFECT_COPY];
+        OS.MoveMemory(stgmedium.unionField, intArr.ptr, 4);
         stgmedium.pUnkForRelease = null;
         COM.MoveMemory(pmedium, stgmedium, STGMEDIUM.sizeof);
         return COM.S_OK;
