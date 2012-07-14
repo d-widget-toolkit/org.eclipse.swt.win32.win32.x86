@@ -205,11 +205,35 @@ void decompressData(byte[] src, byte[] dest, int stride, int cmp) {
     }
     SWT.error(SWT.ERROR_INVALID_IMAGE);
 }
+bool putRLE4Byte(byte[] dest, bool odd, int len, int i, int dp, bool dph, byte theByte) {
+    if (odd && i + 1 >= len) {
+        // An end of pixels column of odd number.
+        // Puts half a byte (upper 4 bits in theByte).
+        if (dph) {
+            dest[dp] |= cast(byte)(theByte >>> 4);
+            dp++;
+        } else {
+            dest[dp] = theByte & 0xF0;
+        }
+        return !dph;
+    } else {
+        // Puts full a byte.
+        if (dph) {
+            dest[dp] |= cast(byte)(theByte >>> 4);
+            dest[dp + 1] = cast(byte)((theByte << 4) & 0xF0);
+        } else {
+            dest[dp] = theByte;
+        }
+        dp++;
+        return dph;
+    }
+}
 int decompressRLE4Data(byte[] src, int numBytes, int stride, byte[] dest, int destSize) {
     int sp = 0;
     int se = numBytes;
     int dp = 0;
     int de = destSize;
+    bool dph = false; /* dp moved forward half a byte */
     int x = 0, y = 0;
     while (sp < se) {
         int len = src[sp] & 0xFF;
@@ -237,17 +261,25 @@ int decompressRLE4Data(byte[] src, int numBytes, int stride, byte[] dest, int de
                         return -1;
                     break;
                 default: /* absolute mode run */
-                    if ((len & 1) !is 0) /* odd run lengths not currently supported */
-                        return -1;
+                    bool odd = (len & 1) !is 0;
                     x += len;
                     len = len / 2;
+                    if (odd)
+                        len++;
                     if (len > (se - sp))
                         return -1;
                     if (len > (de - dp))
                         return -1;
                     for (int i = 0; i < len; i++) {
-                        dest[dp] = src[sp];
-                        dp++;
+                        byte theByte = src[sp];
+                        if (dph is putRLE4Byte(dest, odd, len, i, dp, dph, theByte)) {
+                            dp++;
+                        } else {
+                            if (dph) {
+                                dp++;
+                            }
+                            dph = !dph;
+                        }
                         sp++;
                     }
                     if ((sp & 1) !is 0)
@@ -255,17 +287,24 @@ int decompressRLE4Data(byte[] src, int numBytes, int stride, byte[] dest, int de
                     break;
             }
         } else {
-            if ((len & 1) !is 0)
-                return -1;
+            bool odd = (len & 1) !is 0;
             x += len;
             len = len / 2;
+            if (odd)
+                len++;
             byte theByte = src[sp];
             sp++;
             if (len > (de - dp))
                 return -1;
             for (int i = 0; i < len; i++) {
-                dest[dp] = theByte;
-                dp++;
+                if (dph is putRLE4Byte(dest, odd, len, i, dp, dph, theByte)) {
+                    dp++;
+                } else {
+                    if (dph) {
+                        dp++;
+                    }
+                    dph = !dph;
+                }
             }
         }
     }
