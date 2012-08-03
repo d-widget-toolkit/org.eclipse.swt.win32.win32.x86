@@ -6454,8 +6454,9 @@ version(Tango){
     alias BITMAPV4HEADER TBITMAPV4HEADER;
     alias BITMAPV4HEADER* PBITMAPV4HEADER;
 
-    align(1) struct BITMAPFILEHEADER
+    struct BITMAPFILEHEADER
     {
+    align(1):
         ushort bfType;
         DWORD bfSize;
         ushort bfReserved1;
@@ -6474,8 +6475,9 @@ version(Tango){
     alias BLOB TBLOB;
     alias BLOB* PBLOB;
 
-    align(1) struct SHITEMID
+    struct SHITEMID
     {
+    align(1):
         USHORT cb;
         ubyte[1 + 0] abID;
     }
@@ -7194,8 +7196,9 @@ version(Tango){
     alias SMALL_RECT TSMALL_RECT;
     alias SMALL_RECT* PSMALL_RECT;
 
-    align(1) struct CONSOLE_SCREEN_BUFFER_INFO
+    struct CONSOLE_SCREEN_BUFFER_INFO
     {
+    align(1):
         COORD dwSize;
         COORD dwCursorPosition;
         ushort wAttributes;
@@ -7285,8 +7288,9 @@ version(Tango){
     alias LIST_ENTRY TLISTENTRY;
     alias LIST_ENTRY* PLISTENTRY;
 
-    align(1) struct CRITICAL_SECTION_DEBUG
+    struct CRITICAL_SECTION_DEBUG
     {
+    align(1):
         WORD _Type;
         WORD CreatorBackTraceIndex;
         _CRITICAL_SECTION* CriticalSection;
@@ -7304,8 +7308,9 @@ version(Tango){
     alias CRITICAL_SECTION_DEBUG TCRITICALSECTIONDEBUG;
     alias CRITICAL_SECTION_DEBUG* PCRITICALSECTIONDEBUG;
 
-    align(1) struct CRITICAL_SECTION
+    struct CRITICAL_SECTION
     {
+    align(1):
         PCRITICAL_SECTION_DEBUG DebugInfo;
         LONG LockCount;
         LONG RecursionCount;
@@ -7982,8 +7987,9 @@ version(Tango){
     alias DISK_PERFORMANCE TDISKPERFORMANCE;
     alias DISK_PERFORMANCE* PDISKPERFORMANCE;
 
-    align(1) struct DLGITEMTEMPLATE
+    struct DLGITEMTEMPLATE
     {
+    align(1):
         DWORD style;
         DWORD dwExtendedStyle;
         short x;
@@ -7997,8 +8003,9 @@ version(Tango){
     alias DLGITEMTEMPLATE TDLGITEMTEMPLATE;
     alias DLGITEMTEMPLATE* PDLGITEMTEMPLATE;
 
-    align(1) struct DLGTEMPLATE
+    struct DLGTEMPLATE
     {
+    align(1):
         DWORD style;
         DWORD dwExtendedStyle;
         WORD cdit;
@@ -9313,7 +9320,7 @@ version(Tango){
     alias ENOLEOPFAILED TENOLEOPFAILED;
     alias ENOLEOPFAILED* PENOLEOPFAILED;
 
-    align(2) struct ENHMETAHEADER
+    struct ENHMETAHEADER
     {
         DWORD iType;
         DWORD nSize;
@@ -9924,8 +9931,9 @@ version(Tango){
     alias IMAGEINFO TIMAGEINFO;
     alias IMAGEINFO* PIMAGEINFO;
 
-    align(1) struct KEY_EVENT_RECORD
+    struct KEY_EVENT_RECORD
     {
+    align(1):
         WINBOOL bKeyDown;
         ushort wRepeatCount;
         ushort wVirtualKeyCode;
@@ -10393,7 +10401,7 @@ version(Tango){
     alias LV_HITTESTINFO TLVHITTESTINFO;
     alias LV_HITTESTINFO* PLVHITTESTINFO;
 
-    align(2) struct LV_KEYDOWN
+    struct LV_KEYDOWN
     {
         NMHDR hdr;
         ushort wVKey;
@@ -10598,8 +10606,9 @@ version(Tango){
     alias METAFILEPICT TMETAFILEPICT;
     alias METAFILEPICT* PMETAFILEPICT;
 
-    align(1) struct METAHEADER
+    struct METAHEADER
     {
+    align(1):
         ushort mtType;
         ushort mtHeaderSize;
         ushort mtVersion;
@@ -11303,8 +11312,9 @@ version(Tango){
     alias SERVICE_ADDRESSES TSERVICEADDRESSES;
     alias SERVICE_ADDRESSES* PSERVICEADDRESSES;
 
-    align(1) struct __GUID
+    struct __GUID
     {
+    align(1):
 
         union
         {
@@ -11824,7 +11834,7 @@ version(Tango){
     alias PREVENT_MEDIA_REMOVAL TPREVENTMEDIAREMOVAL;
     alias PREVENT_MEDIA_REMOVAL* PPREVENTMEDIAREMOVAL;
 
-    align(2) struct PRINTDLGA {  // pd
+    struct PRINTDLGA {  // pd
         DWORD     lStructSize;
         HWND      hwndOwner;
         HANDLE    hDevMode;
@@ -11847,7 +11857,7 @@ version(Tango){
     }
     alias PRINTDLGA* PPRINTDLGA;
     alias PRINTDLGA* LPPRINTDLGA;
-    align(2) struct PRINTDLGW {  // pd
+    struct PRINTDLGW {  // pd
         DWORD     lStructSize;
         HWND      hwndOwner;
         HANDLE    hDevMode;
@@ -12675,7 +12685,7 @@ version(Tango){
         FO_RENAME
     }
 
-    align(2) struct SHFILEOPSTRUCTA {
+    struct SHFILEOPSTRUCTA {
         HWND         hwnd;
         UINT         wFunc;
         LPCSTR       pFrom;
@@ -12687,7 +12697,7 @@ version(Tango){
     }
     alias SHFILEOPSTRUCTA* LPSHFILEOPSTRUCTA;
 
-    align(2) struct SHFILEOPSTRUCTW {
+    struct SHFILEOPSTRUCTW {
         HWND         hwnd;
         UINT         wFunc;
         LPCWSTR      pFrom;
@@ -13032,7 +13042,6 @@ version(Tango){
     alias TBADDBITMAP* PTBADDBITMAP;
 
     struct TBBUTTON {
-        align(2):
         int     iBitmap;
         int     idCommand;
         BYTE    fsState;
@@ -13053,7 +13062,6 @@ version(Tango){
     alias TBBUTTON* PTBBUTTON;
 
     struct NMTOOLBARA {
-        align(2):
         NMHDR    hdr;
         int      iItem;
         TBBUTTON tbButton;
@@ -13062,7 +13070,6 @@ version(Tango){
         RECT     rcButton;
     }
     struct NMTOOLBARW {
-        align(2):
         NMHDR    hdr;
         int      iItem;
         TBBUTTON tbButton;
@@ -13133,8 +13140,9 @@ version(Tango){
     alias TC_ITEMHEADER TTCITEMHEADER;
     alias TC_ITEMHEADER* PTCITEMHEADER;
 
-    align(1) struct NMTCKEYDOWN
+    struct NMTCKEYDOWN
     {
+    align(1):
         NMHDR hdr;
         WORD wVKey;
         UINT flags;
@@ -13478,7 +13486,7 @@ version(Tango){
     alias TVINSERTSTRUCT TTVINSERTSTRUCT;
     alias TVINSERTSTRUCT* PTVINSERTSTRUCT;
 
-    align(2) struct TV_KEYDOWN
+    struct TV_KEYDOWN
     {
         NMHDR hdr;
         ushort wVKey;
@@ -14109,8 +14117,9 @@ version(Tango){
     alias TWAVEFORMATEX* PWAVEFORMATEX;
     alias TWAVEFORMATEX WAVEFORMATEX;
 
-    align(1) struct TWAVEFORMATEX
+    struct TWAVEFORMATEX
     {
+    align(1):
         ushort wFormatTag;
         ushort nChannels;
         DWORD nSamplesPerSec;
@@ -14145,8 +14154,9 @@ version(Tango){
     alias _OBJECT_TYPE_LIST OBJECT_TYPE_LIST;
     alias DWORD AUDIT_EVENT_TYPE;
 
-    align(1) struct _BLENDFUNCTION
+    struct _BLENDFUNCTION
     {
+    align(1):
         ubyte BlendOp;
         ubyte BlendFlags;
         ubyte SourceConstantAlpha;
@@ -15422,7 +15432,7 @@ struct SCRIPT_ANALYSIS {
 alias void *SCRIPT_CACHE;
 
 struct SCRIPT_CONTROL {
-    align(1):
+align(1):
     WORD uDefaultLanguage;
     BYTE BITS;
     BYTE fReserved;
@@ -15462,7 +15472,7 @@ struct SCRIPT_ITEM {
 }
 
 struct SCRIPT_LOGATTR {
-    align(1):
+align(1):
     BYTE BITS;
 
     // gettter
@@ -15550,7 +15560,7 @@ struct SCRIPT_STATE {
 
 
 struct SCRIPT_VISATTR {
-    align(1):
+align(1):
     BYTE BITS;
     BYTE fShapeReserved;
 
@@ -15677,7 +15687,6 @@ alias SHELLEXECUTEINFO* LPSHELLEXECUTEINFO;
 
 
 struct TBBUTTONINFOA{
-    align(2):
     UINT cbSize;
     DWORD dwMask;
     int idCommand;
@@ -15690,7 +15699,6 @@ struct TBBUTTONINFOA{
     int cchText;
 }
 struct TBBUTTONINFOW{
-    align(2):
     UINT cbSize;
     DWORD dwMask;
     int idCommand;
