@@ -42,10 +42,10 @@ public final class GCData {
     public Pattern foregroundPattern;
     public Pattern backgroundPattern;
     public int lineStyle = SWT.LINE_SOLID;
-    public float lineWidth;
+    public float lineWidth = 0;
     public int lineCap = SWT.CAP_FLAT;
     public int lineJoin = SWT.JOIN_MITER;
-    public float lineDashesOffset;
+    public float lineDashesOffset = 0;
     public float[] lineDashes;
     public float lineMiterLimit = 10;
     public int alpha = 0xFF;
@@ -63,7 +63,7 @@ public final class GCData {
     public Gdip.SolidBrush gdipFgBrush;
     public Gdip.SolidBrush gdipBgBrush;
     public Gdip.Font gdipFont;
-    public float gdipXOffset, gdipYOffset;
+    public float gdipXOffset = 0, gdipYOffset = 0;
     public int uiState = 0;
     public bool focusDrawn;
 }

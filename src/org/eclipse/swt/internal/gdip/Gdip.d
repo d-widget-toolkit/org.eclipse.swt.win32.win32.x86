@@ -1138,7 +1138,7 @@ public:
 
     static float Font_GetSize( Font font )
     {
-        float  size;
+        float  size = 0;
         SetStatus( GdipGetFontSize( font, size ) );
         return size;
     }
