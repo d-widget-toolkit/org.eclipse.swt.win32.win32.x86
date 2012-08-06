@@ -2075,7 +2075,7 @@ public class JPEGDecoder {
 
         int scale_num, scale_denom; /* fraction by which to scale image */
 
-        double output_gamma;        /* image gamma wanted in output */
+        double output_gamma = 0;    /* image gamma wanted in output */
 
         bool buffered_image; /* true=multiple output passes */
         bool raw_data_out;       /* true=downsampled data wanted */

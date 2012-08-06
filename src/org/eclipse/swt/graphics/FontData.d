@@ -68,7 +68,7 @@ public final class FontData {
      * platforms and should never be accessed from application code.
      * </p>
      */
-    public float height;
+    public float height = 0;
 
     /**
      * The locales of the font

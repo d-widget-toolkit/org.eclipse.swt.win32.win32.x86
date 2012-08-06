@@ -54,8 +54,8 @@ public final class Variant {
     private wchar   charData;
     private int     intData;
     private long    longData;
-    private float   floatData;
-    private double  doubleData;
+    private float   floatData = 0;
+    private double  doubleData = 0;
     private String  stringData;
     private void*   byRefPtr;
     private IDispatch dispatchData;

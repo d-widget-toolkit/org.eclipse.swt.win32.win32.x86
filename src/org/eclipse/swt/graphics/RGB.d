@@ -103,7 +103,7 @@ public this (float hue, float saturation, float brightness) {
         brightness < 0 || brightness > 1) {
         SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     }
-    float r, g, b;
+    float r = 0, g = 0, b = 0;
     if (saturation is 0) {
         r = g = b = brightness;
     } else {

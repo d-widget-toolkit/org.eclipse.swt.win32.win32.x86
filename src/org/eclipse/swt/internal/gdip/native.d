@@ -78,10 +78,10 @@ struct GpColorPalette {
 }
 
 public struct GpRectF {
-    public float X;
-    public float Y;
-    public float Width;
-    public float Height;
+    public float X = 0;
+    public float Y = 0;
+    public float Width = 0;
+    public float Height = 0;
 }
 
 public struct GpRect {
@@ -95,8 +95,8 @@ public struct GpPoint {
     public int Y;
 }
 public struct GpPointF {
-    public float X;
-    public float Y;
+    public float X = 0;
+    public float Y = 0;
 }
 
 alias int function(void*) GpDrawImageAbort;

@@ -34,7 +34,7 @@ public class LineAttributes {
     /**
      * The line width.
      */
-    public float width;
+    public float width = 0;
 
     /**
      * The line style.
@@ -74,12 +74,12 @@ public class LineAttributes {
     /**
      * The line dash style offset for SWT.LINE_CUSTOM.
      */
-    public float dashOffset;
+    public float dashOffset = 0;
 
     /**
      * The line miter limit.
      */
-    public float miterLimit;
+    public float miterLimit = 0;
 
 /**
  * Create a new line attributes with the specified line width.
