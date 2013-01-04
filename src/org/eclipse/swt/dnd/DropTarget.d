@@ -247,6 +247,7 @@ ULONG AddRef() {
     return refCount;
 }
 
+override
 protected void checkSubclass () {
     String name = this.classinfo.name;
     String validName = DropTarget.classinfo.name;

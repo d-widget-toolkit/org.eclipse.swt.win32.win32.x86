@@ -2549,7 +2549,6 @@ version(ANSI) {
     alias DWTWINAPI.RegQueryValueExW RegQueryValueEx;
     alias DWTWINAPI.RegisterClassW RegisterClass;
     alias DWTWINAPI.RegisterClipboardFormatW RegisterClipboardFormat;
-    alias DWTWINAPI.RegOpenKeyExW RegOpenKeyEx;
     alias DWTWINAPI.RegisterWindowMessageW RegisterWindowMessage;
     alias DWTWINAPI.RemovePropW RemoveProp;
     alias DWTWINAPI.SHBrowseForFolderW SHBrowseForFolder;

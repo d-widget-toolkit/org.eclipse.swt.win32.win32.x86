@@ -169,6 +169,7 @@ public final class PrinterData : DeviceData {
      *
      * @return a string representation of the receiver
      */
+    override
     public String toString() {
         return Format("PrinterData {{driver = {}, name = {}}", driver, name );  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }

@@ -215,6 +215,7 @@ public this(PrinterData data) {
  * mechanism of the <code>Device</code> class.
  * @param deviceData the device data
  */
+override
 protected void create(DeviceData deviceData) {
     data = cast(PrinterData)deviceData;
     /* Use the character encoding for the default locale */
@@ -246,6 +247,7 @@ protected void create(DeviceData deviceData) {
  * @param data the platform specific GC data
  * @return the platform specific GC handle
  */
+override
 public HDC internal_new_GC(GCData data) {
     if (handle is null) SWT.error(SWT.ERROR_NO_HANDLES);
     if (data !is null) {
@@ -276,6 +278,7 @@ public HDC internal_new_GC(GCData data) {
  * @param hDC the platform specific GC handle
  * @param data the platform specific GC data
  */
+override
 public void internal_dispose_GC(HDC hDC, GCData data) {
     if (data !is null) isGCCreated = false;
 }
@@ -410,6 +413,7 @@ public void endPage() {
  *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
+override
 public Point getDPI() {
     checkDevice();
     int dpiX = OS.GetDeviceCaps(handle, OS.LOGPIXELSX);
@@ -432,6 +436,7 @@ public Point getDPI() {
  * @see #getClientArea
  * @see #computeTrim
  */
+override
 public Rectangle getBounds() {
     checkDevice();
     int width = OS.GetDeviceCaps(handle, OS.PHYSICALWIDTH);
@@ -456,6 +461,7 @@ public Rectangle getBounds() {
  * @see #getBounds
  * @see #computeTrim
  */
+override
 public Rectangle getClientArea() {
     checkDevice();
     int width = OS.GetDeviceCaps(handle, OS.HORZRES);
@@ -528,6 +534,7 @@ public PrinterData getPrinterData() {
  *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
  * </ul>
  */
+override
 protected void checkDevice() {
     if (handle is null) SWT.error(SWT.ERROR_DEVICE_DISPOSED);
 }
@@ -537,6 +544,7 @@ protected void checkDevice() {
  * This method is called internally by the dispose
  * mechanism of the <code>Device</code> class.
  */
+override
 protected void release() {
     super.release();
     data = null;
@@ -547,6 +555,7 @@ protected void release() {
  * This method is called internally by the dispose
  * mechanism of the <code>Device</code> class.
  */
+override
 protected void destroy() {
     if (handle !is null) OS.DeleteDC(handle);
     handle = null;

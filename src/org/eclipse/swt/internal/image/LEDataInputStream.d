@@ -50,6 +50,7 @@ final class LEDataInputStream : InputStream{
         else throw new IllegalArgumentException("bufferSize must be greater zero" );
     }
 
+    override
     public void close() {
         buf = null;
         if (host !is null) {

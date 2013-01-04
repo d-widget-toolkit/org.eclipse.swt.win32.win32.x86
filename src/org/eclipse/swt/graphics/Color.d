@@ -122,6 +122,7 @@ public this (Device device, constRGB rgb) {
     init_();
 }
 
+override
 void destroy() {
     /*
      * If this is a palette-based device,

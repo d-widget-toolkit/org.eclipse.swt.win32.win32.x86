@@ -397,6 +397,7 @@ public void cubicTo(float cx1, float cy1, float cx2, float cy2, float x, float y
     Gdip.GraphicsPath_GetLastPoint(handle, currentPoint);
 }
 
+override
 void destroy() {
     Gdip.GraphicsPath_delete(handle);
     handle = null;

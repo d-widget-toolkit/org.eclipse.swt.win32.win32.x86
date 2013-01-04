@@ -101,6 +101,7 @@ public class TreeDropTargetEffect : DropTargetEffect {
      * @see DropTargetAdapter
      * @see DropTargetEvent
      */
+    override
     public void dragEnter(DropTargetEvent event) {
         dropIndex = -1;
         insertItem = null;
@@ -124,6 +125,7 @@ public class TreeDropTargetEffect : DropTargetEffect {
      * @see DropTargetAdapter
      * @see DropTargetEvent
      */
+    override
     public void dragLeave(DropTargetEvent event) {
         Tree tree = cast(Tree) control;
         auto handle = tree.handle;
@@ -164,6 +166,7 @@ public class TreeDropTargetEffect : DropTargetEffect {
      * @see DND#FEEDBACK_INSERT_AFTER
      * @see DND#FEEDBACK_SCROLL
      */
+    override
     public void dragOver(DropTargetEvent event) {
         Tree tree = cast(Tree) getControl();
         int effect = checkEffect(event.feedback);

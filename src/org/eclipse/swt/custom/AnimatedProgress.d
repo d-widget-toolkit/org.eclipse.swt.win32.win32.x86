@@ -91,6 +91,7 @@ public this(Composite parent, int style) {
     showBorder = (style & SWT.BORDER) !is 0;
 
     addControlListener(new class() ControlAdapter {
+        override
         public void controlResized(ControlEvent e) {
             redraw();
         }

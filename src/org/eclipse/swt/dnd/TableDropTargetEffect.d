@@ -91,6 +91,7 @@ public class TableDropTargetEffect : DropTargetEffect {
      * @see DropTargetAdapter
      * @see DropTargetEvent
      */
+    override
     public void dragEnter(DropTargetEvent event) {
         scrollBeginTime = 0;
         scrollIndex = -1;
@@ -111,6 +112,7 @@ public class TableDropTargetEffect : DropTargetEffect {
      * @see DropTargetAdapter
      * @see DropTargetEvent
      */
+    override
     public void dragLeave(DropTargetEvent event) {
         Table table = cast(Table) control;
         auto handle = table.handle;
@@ -141,6 +143,7 @@ public class TableDropTargetEffect : DropTargetEffect {
      * @see DND#FEEDBACK_SELECT
      * @see DND#FEEDBACK_SCROLL
      */
+    override
     public void dragOver(DropTargetEvent event) {
         Table table = cast(Table) getControl();
         int effect = checkEffect(event.feedback);

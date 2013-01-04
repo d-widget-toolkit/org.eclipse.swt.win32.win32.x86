@@ -75,6 +75,7 @@ public static RTFTransfer getInstance () {
  * 
  * @see Transfer#nativeToJava
  */
+override
 public void javaToNative (Object object, TransferData transferData){
     if (!checkRTF(object) || !isSupportedType(transferData)) {
         DND.error(DND.ERROR_INVALID_DATA);
@@ -109,6 +110,7 @@ public void javaToNative (Object object, TransferData transferData){
  * 
  * @see Transfer#javaToNative
  */
+override
 public Object nativeToJava(TransferData transferData){
     if (!isSupportedType(transferData) || transferData.pIDataObject is null) return null;
     IDataObject data = transferData.pIDataObject;
@@ -138,10 +140,12 @@ public Object nativeToJava(TransferData transferData){
     }
 }
 
+override
 protected int[] getTypeIds(){
     return [CF_RTFID];
 }
 
+override
 protected String[] getTypeNames(){
     return [CF_RTF];
 }
@@ -153,6 +157,7 @@ bool checkRTF(Object object) {
     return false;
 }
 
+override
 protected bool validate(Object object) {
     return checkRTF(object);
 }

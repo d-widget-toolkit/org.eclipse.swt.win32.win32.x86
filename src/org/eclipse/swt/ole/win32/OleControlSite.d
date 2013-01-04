@@ -318,6 +318,7 @@ void addEventListener(IUnknown iunknown, GUID* guid, int eventID, OleListener li
 
     }
 }
+override
 protected void addObjectReferences() {
 
     super.addObjectReferences();
@@ -355,6 +356,7 @@ private void connectPropertyChangeSink() {
     olePropertyChangeSink.AddRef();
     olePropertyChangeSink.connect(objIUnknown);
 }
+override
 protected void createCOMInterfaces () {
     super.createCOMInterfaces();
     iOleControlSite = new _IOleControlSiteImpl(this);
@@ -379,11 +381,13 @@ private void disconnectPropertyChangeSink() {
     }
     olePropertyChangeSink = null;
 }
+override
 protected void disposeCOMInterfaces() {
     super.disposeCOMInterfaces();
     iOleControlSite = null;
     iDispatch = null;
 }
+override
 public Color getBackground () {
 
     if (objIUnknown !is null) {
@@ -401,6 +405,7 @@ public Color getBackground () {
 
     return super.getBackground();
 }
+override
 public Font getFont () {
 
     if (objIUnknown !is null) {
@@ -431,6 +436,7 @@ public Font getFont () {
 
     return super.getFont();
 }
+override
 public Color getForeground () {
 
     if (objIUnknown !is null) {
@@ -487,6 +493,7 @@ public Variant getSiteProperty(int dispId){
     }
     return null;
 }
+override
 protected HRESULT GetWindow(HWND* phwnd) {
 
     if (phwnd is null)
@@ -554,6 +561,7 @@ private int OnControlInfoChanged() {
     }
     return COM.S_OK;
 }
+override
 void onFocusIn(Event e) {
     if (objIOleInPlaceObject is null) return;
     doVerb(OLE.OLEIVERB_UIACTIVATE);
@@ -563,6 +571,7 @@ void onFocusIn(Event e) {
     if (phwnd is null) return;
     OS.SetFocus(phwnd);
 }
+override
 void onFocusOut(Event e) {
     if (objIOleInPlaceObject !is null) {
         /*
@@ -634,6 +643,7 @@ override protected HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
     *ppvObject = null;
     return COM.E_NOINTERFACE;
 }
+override
 protected int Release() {
     int result = super.Release();
     if (result is 0) {
@@ -645,6 +655,7 @@ protected int Release() {
     }
     return result;
 }
+override
 protected void releaseObjectInterfaces() {
 
     disconnectEventSinks();
@@ -769,6 +780,7 @@ public void removePropertyListener(int propertyID, OleListener listener) {
     if (listener is null) SWT.error (__FILE__, __LINE__, SWT.ERROR_NULL_ARGUMENT);
     olePropertyChangeSink.removeListener(propertyID, listener);
 }
+override
 public void setBackground (Color color) {
 
     super.setBackground(color);
@@ -780,6 +792,7 @@ public void setBackground (Color color) {
         oleObject.dispose();
     }
 }
+override
 public void setFont (Font font) {
 
     super.setFont(font);
@@ -805,6 +818,7 @@ public void setFont (Font font) {
 
     return;
 }
+override
 public void setForeground (Color color) {
 
     super.setForeground(color);

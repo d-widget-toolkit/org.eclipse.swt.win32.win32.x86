@@ -222,7 +222,7 @@ public final class ImageData : CloneableCompatibility {
     /**
      * Arbitrary channel width data to 8-bit conversion table.
      */
-    mixin(gshared!(`private static byte[][] ANY_TO_EIGHT;`));
+    mixin(gshared!(`static byte[][] ANY_TO_EIGHT;`));
     mixin(gshared!(`private static byte[] ONE_TO_ONE_MAPPING;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));

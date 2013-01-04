@@ -152,6 +152,7 @@ static float[] checkTransform(float[] elements) {
     return elements;
 }
 
+override
 void destroy() {
     Gdip.Matrix_delete(handle);
     handle = null;

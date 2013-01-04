@@ -179,6 +179,7 @@ public IME getIME () {
     return ime;
 }
 
+override
 void releaseChildren (bool destroy) {
     if (caret !is null) {
         caret.release (false);

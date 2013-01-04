@@ -3815,6 +3815,7 @@ Event sendPaintItemEvent (TableItem item, NMTTCUSTOMDRAW* nmcd, int column, RECT
     return event;
 }
 
+override
 void setBackgroundImage (HBITMAP hBitmap) {
     super.setBackgroundImage (hBitmap);
     if (hBitmap !is null) {

@@ -650,6 +650,7 @@ public int getColumn() {
  *
  * @return the receiver's background color
  */
+override
 public Color getBackground() {
     checkWidget();
     if (background is null) {
@@ -662,6 +663,7 @@ public Color getBackground() {
  *
  * @return the receiver's foreground color
  */
+override
 public Color getForeground() {
     checkWidget();
     if (foreground is null) {

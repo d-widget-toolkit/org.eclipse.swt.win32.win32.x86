@@ -775,6 +775,7 @@ public bool isDirty() {
     if (result is COM.S_FALSE) return false;
     return true;
 }
+override
 public bool isFocusControl () {
     checkWidget ();
     auto focusHwnd = OS.GetFocus();

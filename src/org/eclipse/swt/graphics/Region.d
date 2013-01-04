@@ -234,6 +234,7 @@ public bool contains (Point pt) {
     return contains(pt.x, pt.y);
 }
 
+override
 void destroy () {
     OS.DeleteObject(handle);
     handle = null;

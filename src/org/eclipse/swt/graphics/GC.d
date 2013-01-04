@@ -634,6 +634,7 @@ static void destroyGdipBrush(Gdip.Brush brush) {
  *    <li>ERROR_THREAD_INVALID_ACCESS if not called from the thread that created the drawable</li>
  * </ul>
  */
+override
 void destroy() {
     bool gdip = data.gdipGraphics !is null;
     disposeGdip();
