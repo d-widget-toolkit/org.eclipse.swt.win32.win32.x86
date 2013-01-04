@@ -347,7 +347,7 @@ public this(Device device, ImageData source, int hotspotX, int hotspotY) {
         SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     }
     ImageData mask = source.getTransparencyMask();
-    int[] result = Image.init_(this.device, null, source, mask);
+    int[] result = Image.init__(this.device, null, source, mask);
     auto hBitmap = cast(HBITMAP)result[0];
     auto hMask = cast(HBITMAP)result[1];
     /* Create the icon */
@@ -365,6 +365,7 @@ public this(Device device, ImageData source, int hotspotX, int hotspotY) {
     init_();
 }
 
+override
 void destroy () {
     /*
     * It is an error in Windows to destroy the current

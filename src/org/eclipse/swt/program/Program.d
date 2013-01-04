@@ -427,6 +427,7 @@ public override hash_t toHash() {
  *
  * @return a string representation of the program
  */
+override
 public String toString () {
     return "Program {" ~ name ~ "}"; //$NON-NLS-1$ //$NON-NLS-2$
 }

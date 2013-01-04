@@ -185,7 +185,7 @@ public class Display : Device {
     }`));
 
     /* Startup info */
-    mixin(gshared!(`private static STARTUPINFO* lpStartupInfo;`));
+    mixin(gshared!(`static STARTUPINFO* lpStartupInfo;`));
     private static void static_this_StartupInfo (){
         static if (!OS.IsWinCE) {
             lpStartupInfo = new STARTUPINFO ();

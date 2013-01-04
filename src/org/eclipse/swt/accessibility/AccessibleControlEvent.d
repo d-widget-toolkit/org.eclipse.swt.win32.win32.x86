@@ -60,6 +60,7 @@ public this(Object source) {
  *
  * @return a string representation of the event
  */
+override
 public String toString () {
     return Format( "AccessibleControlEvent {{childID={} accessible={} x={} y={} width={} heigth={} detail={} result={}}",
         childID, accessible, x, y, width, height, detail, result);

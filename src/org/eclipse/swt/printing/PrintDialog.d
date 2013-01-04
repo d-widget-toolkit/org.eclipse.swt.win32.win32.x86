@@ -239,6 +239,7 @@ public void setPrintToFile(bool printToFile) {
     this.printToFile = printToFile;
 }
 
+override
 protected void checkSubclass() {
     String name = this.classinfo.name;
     String validName = PrintDialog.classinfo.name;

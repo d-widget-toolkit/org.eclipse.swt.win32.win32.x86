@@ -682,6 +682,7 @@ public int getYear () {
     return systime.wYear;
 }
 
+override
 void releaseWidget () {
     super.releaseWidget ();
     lastSystemTime = null;
@@ -964,6 +965,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
     return super.wmNotifyChild (hdr, wParam, lParam);
 }
 
+override
 LRESULT WM_TIMER (int /*long*/ wParam, int /*long*/ lParam) {
     LRESULT result = super.WM_TIMER (wParam, lParam);
     if (result !is null) return result;

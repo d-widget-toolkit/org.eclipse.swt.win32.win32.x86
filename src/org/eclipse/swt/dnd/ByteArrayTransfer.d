@@ -129,6 +129,7 @@ import java.lang.all;
  */
 public abstract class ByteArrayTransfer : Transfer {
 
+override
 public TransferData[] getSupportedTypes() {
     int[] types = getTypeIds();
     TransferData[] data = new TransferData[types.length];
@@ -144,6 +145,7 @@ public TransferData[] getSupportedTypes() {
     return data;
 }
 
+override
 public bool isSupportedType(TransferData transferData){
     if (transferData is null) return false;
     int[] types = getTypeIds();
@@ -167,6 +169,7 @@ public bool isSupportedType(TransferData transferData){
  * 
  * @see Transfer#nativeToJava
  */
+override
 protected void javaToNative (Object object, TransferData transferData) {
     if (!checkByteArray(object) || !isSupportedType(transferData)) {
         DND.error(DND.ERROR_INVALID_DATA);
@@ -194,6 +197,7 @@ protected void javaToNative (Object object, TransferData transferData) {
  *
  * @see Transfer#javaToNative
  */
+override
 protected Object nativeToJava(TransferData transferData) {
     if (!isSupportedType(transferData) || transferData.pIDataObject is null)  return null;
 

@@ -104,18 +104,23 @@ static ShellDelegator createShellClosed( DFunc del ){
     return new ShellDelegator( null, del, null, null, null );
 }
 
+override
 public void shellActivated(ShellEvent e) {
     if( delShellActivated !is null ) delShellActivated(e);
 }
+override
 public void shellClosed(ShellEvent e) {
     if( delShellClosed !is null ) delShellClosed(e);
 }
+override
 public void shellDeactivated(ShellEvent e) {
     if( delShellDeactivated !is null ) delShellDeactivated(e);
 }
+override
 public void shellDeiconified(ShellEvent e) {
     if( delShellDeiconified !is null ) delShellDeiconified(e);
 }
+override
 public void shellIconified(ShellEvent e) {
     if( delShellIconified !is null ) delShellIconified(e);
 }

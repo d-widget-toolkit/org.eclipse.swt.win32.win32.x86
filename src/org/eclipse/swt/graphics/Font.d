@@ -155,6 +155,7 @@ public this(Device device, String name, int height, int style) {
     init_(new FontData (name, height, style));
     init_();
 }
+override
 void destroy() {
     OS.DeleteObject(handle);
     handle = null;
@@ -170,6 +171,7 @@ void destroy() {
  *
  * @see #hashCode
  */
+override
 public equals_t opEquals(Object object) {
     if (object is this) return true;
     if ( auto font = cast(Font)object ){

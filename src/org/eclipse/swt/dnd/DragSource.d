@@ -278,6 +278,7 @@ private void createCOMInterfaces() {
     iDataObject = new _IDataObjectImpl(this);
 }
 
+override
 protected void checkSubclass() {
     String name = this.classinfo.name;
     String validName = DragSource.classinfo.name;

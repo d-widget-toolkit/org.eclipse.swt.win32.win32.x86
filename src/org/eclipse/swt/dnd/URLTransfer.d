@@ -74,6 +74,7 @@ public static URLTransfer getInstance () {
  * 
  * @see Transfer#nativeToJava
  */
+override
 public void javaToNative (Object object, TransferData transferData){
     if (!checkURL(object) || !isSupportedType(transferData)) {
         DND.error(DND.ERROR_INVALID_DATA);
@@ -109,6 +110,7 @@ public void javaToNative (Object object, TransferData transferData){
  * 
  * @see Transfer#javaToNative
  */
+override
 public Object nativeToJava(TransferData transferData){
     if (!isSupportedType(transferData) || transferData.pIDataObject is null) return null;
     IDataObject data = transferData.pIDataObject;
@@ -138,10 +140,12 @@ public Object nativeToJava(TransferData transferData){
     }
 }
 
+override
 protected int[] getTypeIds(){
     return [CFSTR_INETURLID];
 }
 
+override
 protected String[] getTypeNames(){
     return [CFSTR_INETURL];
 }
@@ -151,6 +155,7 @@ bool checkURL(Object object) {
 
 }
 
+override
 protected bool validate(Object object) {
     return checkURL(object);
 }

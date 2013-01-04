@@ -503,7 +503,7 @@ public this(Device device, ImageData source, ImageData mask) {
         SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     }
     mask = ImageData.convertMask(mask);
-    init_(this.device, this, source, mask);
+    init__(this.device, this, source, mask);
     init_();
 }
 
@@ -1057,6 +1057,7 @@ int /*long*/ [] createGdipImage() {
     return null;
 }
 
+override
 void destroy () {
     if (memGC !is null) memGC.dispose();
     if (type is SWT.ICON) {
@@ -1899,7 +1900,7 @@ static int[] init_(Device device, Image image, ImageData i) {
     return result;
 }
 
-static int[] init_(Device device, Image image, ImageData source, ImageData mask) {
+static int[] init__(Device device, Image image, ImageData source, ImageData mask) {
     /* Create a temporary image and locate the black pixel */
     ImageData imageData;
     int blackIndex = 0;

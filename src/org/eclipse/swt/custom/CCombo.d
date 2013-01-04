@@ -899,6 +899,7 @@ public int indexOf (String string, int start) {
 
 void initAccessible() {
     AccessibleAdapter accessibleAdapter = new class() AccessibleAdapter {
+        override
         public void getName (AccessibleEvent e) {
             String name = null;
             Label label = getAssociatedLabel ();
@@ -907,6 +908,7 @@ void initAccessible() {
             }
             e.result = name;
         }
+        override
         public void getKeyboardShortcut(AccessibleEvent e) {
             String shortcut = null;
             Label label = getAssociatedLabel ();
@@ -921,6 +923,7 @@ void initAccessible() {
             }
             e.result = shortcut;
         }
+        override
         public void getHelp (AccessibleEvent e) {
             e.result = getToolTipText ();
         }
@@ -930,21 +933,26 @@ void initAccessible() {
     list.getAccessible ().addAccessibleListener (accessibleAdapter);
 
     arrow.getAccessible ().addAccessibleListener (new class() AccessibleAdapter {
+        override
         public void getName (AccessibleEvent e) {
             e.result = isDropped () ? SWT.getMessage ("SWT_Close") : SWT.getMessage ("SWT_Open"); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        override
         public void getKeyboardShortcut (AccessibleEvent e) {
             e.result = "Alt+Down Arrow"; //$NON-NLS-1$
         }
+        override
         public void getHelp (AccessibleEvent e) {
             e.result = getToolTipText ();
         }
     });
 
     getAccessible().addAccessibleTextListener (new class() AccessibleTextAdapter {
+        override
         public void getCaretOffset (AccessibleTextEvent e) {
             e.offset = text.getCaretPosition ();
         }
+        override
         public void getSelectionRange(AccessibleTextEvent e) {
             Point sel = text.getSelection();
             e.offset = sel.x;
@@ -953,6 +961,7 @@ void initAccessible() {
     });
 
     getAccessible().addAccessibleControlListener (new class() AccessibleControlAdapter {
+        override
         public void getChildAtPoint (AccessibleControlEvent e) {
             Point testPoint = toControl (e.x, e.y);
             if (getBounds ().contains (testPoint)) {
@@ -960,6 +969,7 @@ void initAccessible() {
             }
         }
 
+        override
         public void getLocation (AccessibleControlEvent e) {
             Rectangle location = getBounds ();
             Point pt = getParent().toDisplay (location.x, location.y);
@@ -969,30 +979,36 @@ void initAccessible() {
             e.height = location.height;
         }
 
+        override
         public void getChildCount (AccessibleControlEvent e) {
             e.detail = 0;
         }
 
+        override
         public void getRole (AccessibleControlEvent e) {
             e.detail = ACC.ROLE_COMBOBOX;
         }
 
+        override
         public void getState (AccessibleControlEvent e) {
             e.detail = ACC.STATE_NORMAL;
         }
 
+        override
         public void getValue (AccessibleControlEvent e) {
             e.result = getText ();
         }
     });
 
     text.getAccessible ().addAccessibleControlListener (new class() AccessibleControlAdapter {
+        override
         public void getRole (AccessibleControlEvent e) {
             e.detail = text.getEditable () ? ACC.ROLE_TEXT : ACC.ROLE_LABEL;
         }
     });
 
     arrow.getAccessible ().addAccessibleControlListener (new class() AccessibleControlAdapter {
+        override
         public void getDefaultAction (AccessibleControlEvent e) {
             e.result = isDropped () ? SWT.getMessage ("SWT_Close") : SWT.getMessage ("SWT_Open"); //$NON-NLS-1$ //$NON-NLS-2$
         }

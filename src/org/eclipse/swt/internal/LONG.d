@@ -19,6 +19,7 @@ public class LONG {
         this.value = value;
     }
 
+    override
     public equals_t opEquals (Object object) {
         if (object is this) return true;
         if( auto obj = cast(LONG)object ){

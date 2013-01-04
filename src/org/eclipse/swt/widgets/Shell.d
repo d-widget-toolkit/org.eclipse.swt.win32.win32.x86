@@ -1016,6 +1016,7 @@ override public Point getLocation () {
     return new Point (rect.left, rect.top);
 }
 
+override
 public bool getMaximized () {
     checkWidget ();
     return !fullScreen && super.getMaximized ();
@@ -1072,6 +1073,7 @@ public Point getMinimumSize () {
  * @since 3.0
  *
  */
+override
 public Region getRegion () {
     /* This method is needed for the @since 3.0 Javadoc */
     checkWidget ();
@@ -1222,6 +1224,7 @@ public void open () {
     if (!restoreFocus () && !traverseGroup (true)) setFocus ();
 }
 
+override
 public bool print (GC gc) {
     checkWidget ();
     if (gc is null) error (SWT.ERROR_NULL_ARGUMENT);
@@ -1338,6 +1341,7 @@ LRESULT selectPalette (HPALETTE hPalette) {
     return (result > 0) ? LRESULT.ONE : LRESULT.ZERO;
 }
 
+override
 bool sendKeyEvent (int type, int msg, int /*long*/ wParam, int /*long*/ lParam, Event event) {
     if (!isEnabled () || !isActive ()) return false;
     return super.sendKeyEvent (type, msg, wParam, lParam, event);
@@ -1665,6 +1669,7 @@ override void setParent () {
  * @since 3.0
  *
  */
+override
 public void setRegion (Region region) {
     checkWidget ();
     if ((style & SWT.NO_TRIM) is 0) return;

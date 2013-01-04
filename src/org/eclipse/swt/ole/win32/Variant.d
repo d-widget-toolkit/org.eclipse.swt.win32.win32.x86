@@ -1013,6 +1013,7 @@ void setData(VARIANT* pData){
  *
  * @return a string representation of the Variant
  */
+override
 public String toString () {
     switch (type) {
         case COM.VT_BOOL :

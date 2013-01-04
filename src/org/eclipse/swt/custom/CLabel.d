@@ -295,14 +295,17 @@ public override String getToolTipText () {
 private void initAccessible() {
     Accessible accessible = getAccessible();
     accessible.addAccessibleListener(new class() AccessibleAdapter {
+        override
         public void getName(AccessibleEvent e) {
             e.result = getText();
         }
 
+        override
         public void getHelp(AccessibleEvent e) {
             e.result = getToolTipText();
         }
 
+        override
         public void getKeyboardShortcut(AccessibleEvent e) {
             dchar mnemonic = _findMnemonic(this.outer.text);
             if (mnemonic !is '\0') {
@@ -312,10 +315,12 @@ private void initAccessible() {
     });
 
     accessible.addAccessibleControlListener(new class() AccessibleControlAdapter {
+        override
         public void getChildAtPoint(AccessibleControlEvent e) {
             e.childID = ACC.CHILDID_SELF;
         }
 
+        override
         public void getLocation(AccessibleControlEvent e) {
             Rectangle rect = getDisplay().map(getParent(), null, getBounds());
             e.x = rect.x;
@@ -324,14 +329,17 @@ private void initAccessible() {
             e.height = rect.height;
         }
 
+        override
         public void getChildCount(AccessibleControlEvent e) {
             e.detail = 0;
         }
 
+        override
         public void getRole(AccessibleControlEvent e) {
             e.detail = ACC.ROLE_LABEL;
         }
 
+        override
         public void getState(AccessibleControlEvent e) {
             e.detail = ACC.STATE_READONLY;
         }

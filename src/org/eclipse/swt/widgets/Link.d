@@ -359,16 +359,19 @@ override void enableWidget (bool enabled) {
 void initAccessible () {
     Accessible accessible = getAccessible ();
     accessible.addAccessibleListener (new class() AccessibleAdapter {
+        override
         public void getName (AccessibleEvent e) {
             e.result = parse (text);
         }
     });
 
     accessible.addAccessibleControlListener (new class() AccessibleControlAdapter {
+        override
         public void getChildAtPoint (AccessibleControlEvent e) {
             e.childID = ACC.CHILDID_SELF;
         }
 
+        override
         public void getLocation (AccessibleControlEvent e) {
             Rectangle rect = display.map (getParent (), null, getBounds ());
             e.x = rect.x;
@@ -377,27 +380,33 @@ void initAccessible () {
             e.height = rect.height;
         }
 
+        override
         public void getChildCount (AccessibleControlEvent e) {
             e.detail = 0;
         }
 
+        override
         public void getRole (AccessibleControlEvent e) {
             e.detail = ACC.ROLE_LINK;
         }
 
+        override
         public void getState (AccessibleControlEvent e) {
             e.detail = ACC.STATE_FOCUSABLE;
             if (hasFocus ()) e.detail |= ACC.STATE_FOCUSED;
         }
 
+        override
         public void getDefaultAction (AccessibleControlEvent e) {
             e.result = SWT.getMessage ("SWT_Press"); //$NON-NLS-1$
         }
 
+        override
         public void getSelection (AccessibleControlEvent e) {
             if (hasFocus ()) e.childID = ACC.CHILDID_SELF;
         }
 
+        override
         public void getFocus (AccessibleControlEvent e) {
             if (hasFocus ()) e.childID = ACC.CHILDID_SELF;
         }

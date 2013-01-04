@@ -5651,6 +5651,7 @@ void handleVerticalScroll(Event event) {
 void initializeAccessible() {
     Accessible accessible = getAccessible();
     accessible.addAccessibleListener(new class() AccessibleAdapter {
+        override
         public void getName (AccessibleEvent e) {
             String name = null;
             Label label = getAssociatedLabel ();
@@ -5659,9 +5660,11 @@ void initializeAccessible() {
             }
             e.result = name;
         }
+        override
         public void getHelp(AccessibleEvent e) {
             e.result = getToolTipText();
         }
+        override
         public void getKeyboardShortcut(AccessibleEvent e) {
             String shortcut = null;
             Label label = getAssociatedLabel ();
@@ -5678,9 +5681,11 @@ void initializeAccessible() {
         }
     });
     accessible.addAccessibleTextListener(new class() AccessibleTextAdapter {
+        override
         public void getCaretOffset(AccessibleTextEvent e) {
             e.offset = this.outer.getCaretOffset();
         }
+        override
         public void getSelectionRange(AccessibleTextEvent e) {
             Point selection = this.outer.getSelectionRange();
             e.offset = selection.x;
@@ -5688,9 +5693,11 @@ void initializeAccessible() {
         }
     });
     accessible.addAccessibleControlListener(new class() AccessibleControlAdapter {
+        override
         public void getRole(AccessibleControlEvent e) {
             e.detail = ACC.ROLE_TEXT;
         }
+        override
         public void getState(AccessibleControlEvent e) {
             int state = 0;
             if (isEnabled()) state |= ACC.STATE_FOCUSABLE;
@@ -5699,6 +5706,7 @@ void initializeAccessible() {
             if (!getEditable()) state |= ACC.STATE_READONLY;
             e.detail = state;
         }
+        override
         public void getValue(AccessibleControlEvent e) {
             e.result = this.outer.getText();
         }

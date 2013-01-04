@@ -1648,6 +1648,7 @@ public int indexOf(CTabItem item) {
 void initAccessible() {
     Accessible accessible = getAccessible();
     accessible.addAccessibleListener(new class() AccessibleAdapter {
+        override
         public void getName(AccessibleEvent e) {
             String name = null;
             int childID = e.childID;
@@ -1663,6 +1664,7 @@ void initAccessible() {
             e.result = name;
         }
 
+        override
         public void getHelp(AccessibleEvent e) {
             String help = null;
             int childID = e.childID;
@@ -1674,6 +1676,7 @@ void initAccessible() {
             e.result = help;
         }
 
+        override
         public void getKeyboardShortcut(AccessibleEvent e) {
             String shortcut = null;
             int childID = e.childID;
@@ -1691,6 +1694,7 @@ void initAccessible() {
     });
 
     accessible.addAccessibleControlListener(new class() AccessibleControlAdapter {
+        override
         public void getChildAtPoint(AccessibleControlEvent e) {
             Point testPoint = toControl(e.x, e.y);
             int childID = ACC.CHILDID_NONE;
@@ -1718,6 +1722,7 @@ void initAccessible() {
             e.childID = childID;
         }
 
+        override
         public void getLocation(AccessibleControlEvent e) {
             Rectangle location = null;
             Point pt = null;
@@ -1747,10 +1752,12 @@ void initAccessible() {
             }
         }
 
+        override
         public void getChildCount(AccessibleControlEvent e) {
             e.detail = items.length + EXTRA_CHILD_ID_COUNT;
         }
 
+        override
         public void getDefaultAction(AccessibleControlEvent e) {
             String action = null;
             int childID = e.childID;
@@ -1763,6 +1770,7 @@ void initAccessible() {
             e.result = action;
         }
 
+        override
         public void getFocus(AccessibleControlEvent e) {
             int childID = ACC.CHILDID_NONE;
             if (isFocusControl()) {
@@ -1775,6 +1783,7 @@ void initAccessible() {
             e.childID = childID;
         }
 
+        override
         public void getRole(AccessibleControlEvent e) {
             int role = 0;
             int childID = e.childID;
@@ -1788,10 +1797,12 @@ void initAccessible() {
             e.detail = role;
         }
 
+        override
         public void getSelection(AccessibleControlEvent e) {
             e.childID = (selectedIndex is -1) ? ACC.CHILDID_NONE : selectedIndex;
         }
 
+        override
         public void getState(AccessibleControlEvent e) {
             int state = 0;
             int childID = e.childID;
@@ -1818,6 +1829,7 @@ void initAccessible() {
             e.detail = state;
         }
 
+        override
         public void getChildren(AccessibleControlEvent e) {
             int childIdCount = items.length + EXTRA_CHILD_ID_COUNT;
             Object[] children = new Object[childIdCount];
@@ -3897,6 +3909,7 @@ void showList (Rectangle rect) {
         item.setImage(tab.getImage());
         item.setData(id, tab);
         item.addSelectionListener(new class() SelectionAdapter {
+            override
             public void widgetSelected(SelectionEvent e) {
                 MenuItem menuItem = cast(MenuItem)e.widget;
                 int index = indexOf(cast(CTabItem)menuItem.getData(id));

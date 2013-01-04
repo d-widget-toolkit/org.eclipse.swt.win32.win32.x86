@@ -796,6 +796,7 @@ override bool mnemonicMatch (wchar key) {
     return CharacterToUpper (key) is CharacterToUpper (mnemonic);
 }
 
+override
 void printWidget (HWND hwnd, GC gc) {
     /*
     * Bug in Windows.  For some reason, PrintWindow() fails

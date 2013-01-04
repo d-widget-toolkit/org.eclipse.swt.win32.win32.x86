@@ -338,6 +338,7 @@ override void setBackgroundPixel (int pixel) {
     ignoreResize = false;
 }
 
+override
 void setBounds (int x, int y, int width, int height, int flags, bool defer) {
     /*
     * Bug in Windows.  If SetWindowPos() is called on a

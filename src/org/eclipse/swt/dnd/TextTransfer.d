@@ -72,6 +72,7 @@ public static TextTransfer getInstance () {
  *
  * @see Transfer#nativeToJava
  */
+override
 public void javaToNative (Object object, TransferData transferData){
     if (!checkText(object) || !isSupportedType(transferData)) {
         DND.error(DND.ERROR_INVALID_DATA);
@@ -125,6 +126,7 @@ public void javaToNative (Object object, TransferData transferData){
  *
  * @see Transfer#javaToNative
  */
+override
 public Object nativeToJava(TransferData transferData){
     if (!isSupportedType(transferData) || transferData.pIDataObject is null) return null;
 
@@ -182,10 +184,12 @@ public Object nativeToJava(TransferData transferData){
     return null;
 }
 
+override
 protected int[] getTypeIds(){
     return [CF_UNICODETEXTID, CF_TEXTID];
 }
 
+override
 protected String[] getTypeNames(){
     return [CF_UNICODETEXT, CF_TEXT];
 }
@@ -197,6 +201,7 @@ bool checkText(Object object) {
     return false;
 }
 
+override
 protected bool validate(Object object) {
     return checkText(object);
 }
