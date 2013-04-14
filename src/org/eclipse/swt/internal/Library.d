@@ -16,7 +16,7 @@ import java.lang.all;
 
 // do it here, so it can be evaluated at compile time
 // this saves a static ctor.
-private int buildSWT_VERSION (int major, int minor) {
+private int buildSWT_VERSION () (int major, int minor) {
     return major * 1000 + minor;
 }
 
@@ -188,7 +188,7 @@ public static void loadLibrary (String name, boolean mapName) {
         if ("64".equals (prop)) { //$NON-NLS-1$
             if (0x1FFFFFFFFL !is (int /*long*/)0x1FFFFFFFFL) {
                 throw new UnsatisfiedLinkError ("Cannot load 32-bit SWT libraries on 64-bit JVM"); //$NON-NLS-1$
-            }       
+            }
         }
     }
 
