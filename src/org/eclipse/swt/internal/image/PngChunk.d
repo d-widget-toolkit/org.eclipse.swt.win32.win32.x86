@@ -55,8 +55,7 @@ class PngChunk {
         if (!_CRC_TABLE) static_this();
         return _CRC_TABLE;
     }
-    //public static void static_this() {
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         _CRC_TABLE = new int[256];
         for (int i = 0; i < 256; i++) {
             _CRC_TABLE[i] = i;
@@ -68,7 +67,7 @@ class PngChunk {
                 }
             }
         }
-    }`));
+    }
 
     int length;
 

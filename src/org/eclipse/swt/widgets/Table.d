@@ -125,7 +125,7 @@ public class Table : Composite {
     mixin(gshared!(`static const TCHAR[] TableClass = OS.WC_LISTVIEW;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -138,7 +138,7 @@ public class Table : Composite {
             TableProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent

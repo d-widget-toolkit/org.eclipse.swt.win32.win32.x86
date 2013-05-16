@@ -74,7 +74,7 @@ public class Label : Control {
     static const TCHAR[] LabelClass = "STATIC\0";
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -87,7 +87,7 @@ public class Label : Control {
             LabelProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
 
 /**

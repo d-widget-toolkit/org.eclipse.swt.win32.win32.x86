@@ -71,7 +71,7 @@ public class ToolBar : Composite {
     mixin(gshared!(`static const TCHAR[] ToolBarClass = OS.TOOLBARCLASSNAME;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -84,7 +84,7 @@ public class ToolBar : Composite {
             ToolBarProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
 
 

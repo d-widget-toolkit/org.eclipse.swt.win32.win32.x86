@@ -113,7 +113,7 @@ public abstract class Widget {
     static const int MAJOR = 5, MINOR = 80;
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -130,7 +130,7 @@ public abstract class Widget {
             OS.InitCommonControls ();
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Prevents uninitialized instances from being created outside the package.

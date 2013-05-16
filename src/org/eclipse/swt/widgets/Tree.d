@@ -141,7 +141,7 @@ public class Tree : Composite {
     mixin(gshared!(`static const TCHAR[] HeaderClass = OS.WC_HEADER;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -156,7 +156,7 @@ public class Tree : Composite {
             HeaderProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
     mixin(gshared!(`private static Tree sThis;`));
 /**

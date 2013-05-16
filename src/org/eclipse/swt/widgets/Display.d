@@ -165,7 +165,7 @@ public class Display : Device {
     mixin(gshared!(`static const bool USE_PROPERTY = !OS.IsWinCE;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -182,7 +182,7 @@ public class Display : Device {
             static_this_DeviceFinder ();
             static_this_completed = true;
         }
-    }`));
+    }
 
     /* Startup info */
     mixin(gshared!(`static STARTUPINFO* lpStartupInfo;`));

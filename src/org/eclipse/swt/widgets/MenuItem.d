@@ -77,7 +77,7 @@ public class MenuItem : Item {
     }
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -89,7 +89,7 @@ public class MenuItem : Item {
             MARGIN_HEIGHT_ = OS.IsWin95 ? 2 : 1;
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent

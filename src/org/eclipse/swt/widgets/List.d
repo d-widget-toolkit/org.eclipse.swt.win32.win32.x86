@@ -59,7 +59,7 @@ public class List : Scrollable {
     static const TCHAR[] ListClass = "LISTBOX";
 
     private static bool static_this_completed = false;
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -72,7 +72,7 @@ public class List : Scrollable {
             ListProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent

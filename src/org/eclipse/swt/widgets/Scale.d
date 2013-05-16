@@ -59,7 +59,7 @@ public class Scale : Control {
     mixin(gshared!(`static const TCHAR[] TrackBarClass = OS.TRACKBAR_CLASS;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -100,7 +100,7 @@ public class Scale : Control {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent
