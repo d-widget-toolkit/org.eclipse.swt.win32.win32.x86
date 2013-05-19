@@ -65,7 +65,7 @@ public class Group : Composite {
     }
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -109,7 +109,7 @@ public class Group : Composite {
             }
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent

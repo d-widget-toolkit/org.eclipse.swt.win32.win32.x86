@@ -69,7 +69,7 @@ public class DateTime : Composite {
     mixin(gshared!(`static const TCHAR[] CalendarClass = OS.MONTHCAL_CLASS;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -144,7 +144,7 @@ public class DateTime : Composite {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }`));
+    }
 
     static const int MARGIN = 4;
     static const int MAX_DIGIT = 9;

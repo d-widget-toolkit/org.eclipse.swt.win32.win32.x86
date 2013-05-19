@@ -171,9 +171,9 @@ BOOL function(
     mixin(gshared!(`public static const BOOL IsDBLocale;`));
 
     version(ANSI) {
-        public const BOOL IsUnicode = false;
+        public static const BOOL IsUnicode = false;
     }else{
-        public const BOOL IsUnicode = true;
+        public static const BOOL IsUnicode = true;
     }
 
     mixin(gshared!(`public static const int WIN32_MAJOR, WIN32_MINOR, WIN32_VERSION;`));

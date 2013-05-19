@@ -76,7 +76,7 @@ public class Button : Control {
     static const TCHAR[] ButtonClass = "BUTTON\0";
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -100,7 +100,7 @@ public class Button : Control {
             ButtonProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent

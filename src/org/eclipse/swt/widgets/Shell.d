@@ -179,7 +179,7 @@ public class Shell : Decorations {
     const static int BRUSHES_SIZE = 32;
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -192,7 +192,7 @@ public class Shell : Decorations {
             DialogProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class. This is equivalent

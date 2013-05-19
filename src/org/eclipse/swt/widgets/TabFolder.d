@@ -79,7 +79,7 @@ public class TabFolder : Composite {
     static const int ID_UPDOWN = 1;
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -121,7 +121,7 @@ public class TabFolder : Composite {
             OS.HeapFree (hHeap, 0, lpszClassName);
             static_this_completed = true;
         }
-    }`));
+    }
 
 /**
  * Constructs a new instance of this class given its parent

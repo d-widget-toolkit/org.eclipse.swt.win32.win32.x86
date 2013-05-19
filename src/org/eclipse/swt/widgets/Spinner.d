@@ -70,7 +70,7 @@ public class Spinner : Composite {
     mixin(gshared!(`static const TCHAR[] UpDownClass = OS.UPDOWN_CLASS;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
-    mixin(sharedStatic_This!(`{
+    private static void static_this() {
         if( static_this_completed ){
             return;
         }
@@ -85,7 +85,7 @@ public class Spinner : Composite {
             UpDownProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
-    }`));
+    }
     /**
      * the operating system limit for the number of characters
      * that the text field in an instance of this class can hold

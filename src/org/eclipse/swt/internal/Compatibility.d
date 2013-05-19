@@ -303,7 +303,7 @@ public static void exec(String[] progArray) {
     }
 }
 
-const ImportData[] SWTMessagesBundleData = [
+static const ImportData[] SWTMessagesBundleData = [
     getImportData!( "org.eclipse.swt.internal.SWTMessages.properties" ),
     getImportData!( "org.eclipse.swt.internal.SWTMessages_ar.properties" ),
     getImportData!( "org.eclipse.swt.internal.SWTMessages_cs.properties" ),
