@@ -66,7 +66,7 @@ public class CoolBar : Composite {
     bool locked;
     bool ignoreResize;
     private static /+const+/ WNDPROC ReBarProc;
-    mixin(gshared!(`static const TCHAR* ReBarClass = OS.REBARCLASSNAME.ptr;`));
+    mixin(gshared!(`static const TCHAR[] ReBarClass = OS.REBARCLASSNAME;`));
 
     mixin(gshared!(`private static bool static_this_completed = false;`));
     private static void static_this() {
@@ -82,7 +82,7 @@ public class CoolBar : Composite {
             icex.dwICC = OS.ICC_COOL_CLASSES;
             OS.InitCommonControlsEx (&icex);
             WNDCLASS lpWndClass;
-            OS.GetClassInfo (null, ReBarClass, &lpWndClass);
+            OS.GetClassInfo (null, ReBarClass.ptr, &lpWndClass);
             ReBarProc = lpWndClass.lpfnWndProc;
             static_this_completed = true;
         }
@@ -1005,7 +1005,7 @@ override int widgetStyle () {
 }
 
 override String windowClass () {
-    return TCHARzToStr( ReBarClass );
+    return TCHARzToStr( ReBarClass.ptr );
 }
 
 override int windowProc () {
