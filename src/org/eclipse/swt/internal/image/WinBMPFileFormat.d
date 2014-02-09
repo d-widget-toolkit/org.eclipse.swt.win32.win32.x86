@@ -213,7 +213,7 @@ bool putRLE4Byte(byte[] dest, bool odd, int len, int i, int dp, bool dph, byte t
             dest[dp] |= cast(byte)(theByte >>> 4);
             dp++;
         } else {
-            dest[dp] = theByte & 0xF0;
+            dest[dp] = cast(byte) (theByte & 0xF0);
         }
         return !dph;
     } else {
