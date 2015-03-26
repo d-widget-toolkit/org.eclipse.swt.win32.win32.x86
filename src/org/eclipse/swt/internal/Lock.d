@@ -20,6 +20,8 @@ version(Tango){
 } else {
     import core.sync.mutex;
     import core.sync.condition;
+    import core.sync.exception: SyncError;
+    alias SyncError SyncException;
 }
 
 /**
