@@ -18,7 +18,7 @@ version(Tango){
     import tango.core.sync.Condition;
     import tango.core.sync.Mutex;
 } else { // Phobos
-    import core.sync.condition;
+    import java.nonstandard.sync.condition;
     import core.sync.mutex;
 }
 

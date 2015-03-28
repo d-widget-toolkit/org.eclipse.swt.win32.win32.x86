@@ -19,9 +19,7 @@ version(Tango){
     import tango.core.sync.Condition;
 } else {
     import core.sync.mutex;
-    import core.sync.condition;
-    import core.sync.exception: SyncError;
-    alias SyncError SyncException;
+    import java.nonstandard.sync.condition;
 }
 
 /**
