@@ -25,7 +25,7 @@ import java.lang.Thread;
 version(Tango){
     import tango.core.Exception: SyncException;
 } else { // Phobos
-    import core.sync.exception: SyncException;
+    import java.nonstandard.sync.exception;
 }
 
 /**
