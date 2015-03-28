@@ -19,7 +19,7 @@ version(Tango){
     import tango.core.sync.Mutex;
 } else { // Phobos
     import java.nonstandard.sync.condition;
-    import core.sync.mutex;
+    import java.nonstandard.sync.mutex;
 }
 
 /**
