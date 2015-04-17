@@ -440,11 +440,20 @@ override ImageData[] loadFromByteStream() {
     } catch (Exception e) {
         SWT.error(SWT.ERROR_IO, e);
     }
+    int headerSize = (infoHeader[0] & 0xFF) | ((infoHeader[1] & 0xFF) << 8) | ((infoHeader[2] & 0xFF) << 16) | ((infoHeader[3] & 0xFF) << 24);
     int width = (infoHeader[4] & 0xFF) | ((infoHeader[5] & 0xFF) << 8) | ((infoHeader[6] & 0xFF) << 16) | ((infoHeader[7] & 0xFF) << 24);
     int height = (infoHeader[8] & 0xFF) | ((infoHeader[9] & 0xFF) << 8) | ((infoHeader[10] & 0xFF) << 16) | ((infoHeader[11] & 0xFF) << 24);
     if (height < 0) height = -height;
     int bitCount = (infoHeader[14] & 0xFF) | ((infoHeader[15] & 0xFF) << 8);
     this.compression = (infoHeader[16] & 0xFF) | ((infoHeader[17] & 0xFF) << 8) | ((infoHeader[18] & 0xFF) << 16) | ((infoHeader[19] & 0xFF) << 24);
+    if (inputStream.getPosition() < (BMPFileHeaderSize + headerSize)) {
+        // Seek to the specified offset
+        try {
+            inputStream.skip((BMPFileHeaderSize + headerSize) - inputStream.getPosition());
+        } catch (IOException e) {
+            SWT.error(SWT.ERROR_IO, e);
+        }
+    }
     PaletteData palette = loadPalette(infoHeader);
     if (inputStream.getPosition() < fileHeader[4]) {
         // Seek to the specified offset

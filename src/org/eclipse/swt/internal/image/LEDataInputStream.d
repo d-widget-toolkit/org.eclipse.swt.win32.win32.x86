@@ -103,6 +103,16 @@ final class LEDataInputStream : InputStream{
         return read;
     }
 
+    public override long skip(long n) {
+        if (buf.length < position + n) {
+            n = buf.length - position;
+        }
+        pos += n;
+        position += n;
+        host.skip(n);
+        return n;
+    }
+
     /**
      * Reads at most <code>length</code> bytes from this LEDataInputStream and
      * stores them in byte array <code>buffer</code> starting at <code>offset</code>.
