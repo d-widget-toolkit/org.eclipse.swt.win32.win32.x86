@@ -1,0 +1,30 @@
+function install_dvm {
+    Invoke-WebRequest https://github.com/jacob-carlborg/dvm/releases/download/v0.4.3/dvm-0.4.3-win.exe -OutFile dvm.exe
+    dvm install dvm
+}
+
+function install_compilers {
+    dvm install 2.067.0
+}
+
+function setup_super_project {
+    $cwd = pwd
+    cd ..
+    git clone https://github.com/d-widget-toolkit/dwt
+    cd dwt
+    Move-Item $cwd .
+}
+
+function fetch_submodules {
+    git submodule update --init base
+}
+
+function build {
+    rdmd build base swt swtsnippets
+}
+
+install_dvm
+install_compilers
+setup_super_project
+fetch_submodules
+build
