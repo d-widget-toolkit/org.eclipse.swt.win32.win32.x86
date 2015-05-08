@@ -132,7 +132,7 @@ public this (Composite parent, int style) {
     super (parent, checkStyle (style));
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.CallWindowProc (LabelProc, hwnd, msg, wParam, lParam);
 }
@@ -464,11 +464,11 @@ override String windowClass () {
     return TCHARsToStr( LabelClass );
 }
 
-override int windowProc () {
-    return cast(int) LabelProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) LabelProc;
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ERASEBKGND (wParam, lParam);
     if (result !is null) return result;
     int bits = OS.GetWindowLong (handle, OS.GWL_STYLE);
@@ -492,7 +492,7 @@ override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SIZE (wParam, lParam);
     if (isDisposed ()) return result;
     if ((style & SWT.SEPARATOR) !is 0) {
@@ -518,7 +518,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
+override LRESULT WM_UPDATEUISTATE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_UPDATEUISTATE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -539,13 +539,13 @@ override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
     }
     if (redraw) {
         OS.InvalidateRect (handle, null, false);
-        int /*long*/ code = OS.DefWindowProc (handle, OS.WM_UPDATEUISTATE, wParam, lParam);
+        auto code = OS.DefWindowProc (handle, OS.WM_UPDATEUISTATE, wParam, lParam);
         return new LRESULT (code);
     }
     return result;
 }
 
-override LRESULT wmColorChild (int wParam, int lParam) {
+override LRESULT wmColorChild (WPARAM wParam, LPARAM lParam) {
     /*
     * Bug in Windows.  For some reason, the HBRUSH that
     * is returned from WM_CTRLCOLOR is misaligned when
@@ -560,14 +560,14 @@ override LRESULT wmColorChild (int wParam, int lParam) {
         if ((bits & OS.SS_OWNERDRAW) !is OS.SS_OWNERDRAW) {
             if (findImageControl () !is null) {
                 OS.SetBkMode ( cast(HANDLE) wParam, OS.TRANSPARENT);
-                return new LRESULT ( cast(int)OS.GetStockObject (OS.NULL_BRUSH));
+                return new LRESULT (OS.GetStockObject (OS.NULL_BRUSH));
             }
         }
     }
     return result;
 }
 
-override LRESULT WM_PAINT (int wParam, int lParam) {
+override LRESULT WM_PAINT (WPARAM wParam, LPARAM lParam) {
     static if (OS.IsWinCE) {
         bool drawImage = image !is null;
         bool drawSeparator = (style & SWT.SEPARATOR) !is 0 && (style & SWT.SHADOW_NONE) is 0;
@@ -631,7 +631,7 @@ override LRESULT WM_PAINT (int wParam, int lParam) {
     return super.WM_PAINT(wParam, lParam);
 }
 
-override LRESULT wmDrawChild (int wParam, int lParam) {
+override LRESULT wmDrawChild (WPARAM wParam, LPARAM lParam) {
     DRAWITEMSTRUCT* struct_ = cast(DRAWITEMSTRUCT*)lParam;
     drawBackground (struct_.hDC);
     if ((style & SWT.SEPARATOR) !is 0) {

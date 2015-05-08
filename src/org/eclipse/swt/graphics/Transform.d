@@ -344,7 +344,7 @@ public void shear(float shearX, float shearY) {
 public void transform(float[] pointArray) {
     if (isDisposed()) SWT.error(SWT.ERROR_GRAPHIC_DISPOSED);
     if (pointArray is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
-    Gdip.Matrix_TransformPoints(handle, cast(Gdip.PointF*)pointArray.ptr, pointArray.length / 2);
+    Gdip.Matrix_TransformPoints(handle, cast(Gdip.PointF*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2);
 }
 
 /**

@@ -207,7 +207,7 @@ private static void initMsgHook(Display display) {
         }
     });
 }
-static extern(Windows) int getMsgProc(int code, uint wParam, int lParam) {
+static extern(Windows) .LRESULT getMsgProc(int code, WPARAM wParam, LPARAM lParam) {
     Display display = Display.getCurrent();
     if (display is null) return 0;
     auto hHook = cast(ValueWrapperT!(void*))display.getData(HHOOK);
@@ -263,7 +263,7 @@ static extern(Windows) int getMsgProc(int code, uint wParam, int lParam) {
                                         * Windows NT is bit 32 while the high bit on Windows 95 is bit 16.
                                         * They should both be bit 32.  The fix is to test the right bit.
                                         */
-                                        int mapKey = OS.MapVirtualKey (msg.wParam, 2);
+                                        int mapKey = OS.MapVirtualKey (cast(int)/*64bit*/msg.wParam, 2);
                                         if (mapKey !is 0) {
                                             accentKey = (mapKey & (OS.IsWinNT ? 0x80000000 : 0x8000)) !is 0;
                                             if (!accentKey) {
@@ -399,14 +399,14 @@ public MenuItem[] getFileMenus(){
 IOleInPlaceFrame getIOleInPlaceFrame() {
     return iOleInPlaceFrame;
 }
-private int getMenuItemID(HMENU hMenu, int index) {
-    int id = 0;
+private ptrdiff_t getMenuItemID(HMENU hMenu, int index) {
+    ptrdiff_t id = 0;
     MENUITEMINFO lpmii;
     lpmii.cbSize = OS.MENUITEMINFO_sizeof;
     lpmii.fMask = OS.MIIM_STATE | OS.MIIM_SUBMENU | OS.MIIM_ID;
     OS.GetMenuItemInfo(hMenu, index, true, &lpmii);
     if ((lpmii.fState & OS.MF_POPUP) is OS.MF_POPUP) {
-        id = cast(int)lpmii.hSubMenu;
+        id = cast(ptrdiff_t)lpmii.hSubMenu;
     } else {
         id = lpmii.wID;
     }
@@ -451,7 +451,7 @@ private HRESULT InsertMenus( HMENU hmenuShared, LPOLEMENUGROUPWIDTHS lpMenuWidth
     MENUITEMINFO lpmii;
     auto hHeap = OS.GetProcessHeap();
     int cch = 128;
-    int byteCount = cch * TCHAR.sizeof;
+    auto byteCount = cch * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     lpmii.cbSize = OS.MENUITEMINFO_sizeof;
     lpmii.fMask = OS.MIIM_STATE | OS.MIIM_ID | OS.MIIM_TYPE | OS.MIIM_SUBMENU | OS.MIIM_DATA;
@@ -621,8 +621,8 @@ private int RemoveMenus(HMENU hmenuShared) {
             if (item !is null && !item.isDisposed()) {
                 int index = item.getParent().indexOf(item);
                 // get Id from original menubar
-                int id = getMenuItemID(hMenu, index);
-                ids.addElement(new org.eclipse.swt.internal.LONG.LONG(id));
+                auto id = getMenuItemID(hMenu, index);
+                ids.addElement(new org.eclipse.swt.internal.LONG.LONG_PTR(id));
             }
         }
     }
@@ -631,8 +631,8 @@ private int RemoveMenus(HMENU hmenuShared) {
             MenuItem item = this.containerMenuItems[i];
             if (item !is null && !item.isDisposed()) {
                 int index = item.getParent().indexOf(item);
-                int id = getMenuItemID(hMenu, index);
-                ids.addElement(new org.eclipse.swt.internal.LONG.LONG(id));
+                auto id = getMenuItemID(hMenu, index);
+                ids.addElement(new org.eclipse.swt.internal.LONG.LONG_PTR(id));
             }
         }
     }
@@ -641,15 +641,15 @@ private int RemoveMenus(HMENU hmenuShared) {
             MenuItem item = this.windowMenuItems[i];
             if (item !is null && !item.isDisposed()) {
                 int index = item.getParent().indexOf(item);
-                int id = getMenuItemID(hMenu, index);
-                ids.addElement(new org.eclipse.swt.internal.LONG.LONG(id));
+                auto id = getMenuItemID(hMenu, index);
+                ids.addElement(new org.eclipse.swt.internal.LONG.LONG_PTR(id));
             }
         }
     }
     int index = OS.GetMenuItemCount(hmenuShared) - 1;
     for (int i = index; i >= 0; i--) {
-        int id = getMenuItemID(hmenuShared, i);
-        if (ids.contains(new org.eclipse.swt.internal.LONG.LONG(id))){
+        auto id = getMenuItemID(hmenuShared, i);
+        if (ids.contains(new org.eclipse.swt.internal.LONG.LONG_PTR(id))){
             OS.RemoveMenu(hmenuShared, i, OS.MF_BYPOSITION);
         }
     }

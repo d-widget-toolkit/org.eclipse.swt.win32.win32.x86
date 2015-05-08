@@ -79,7 +79,7 @@ public class Accessible {
         accessibleControlListeners = new Vector();
         textListeners = new Vector ();
         this.control = control;
-        int /*long*/[] ppvObject = new int /*long*/[1];
+        ptrdiff_t [] ppvObject = new ptrdiff_t [1];
         /* CreateStdAccessibleObject([in] hwnd, [in] idObject, [in] riidInterface, [out] ppvObject).
          * AddRef has already been called on ppvObject by the callee and must be released by the caller.
          */
@@ -94,10 +94,10 @@ public class Accessible {
 
 //PORTING_FIXME: i don't understand this...
 /+
-        int /*long*/ ppVtable = objIAccessible.ppVtable;
-        int /*long*/[] pVtable = new int /*long*/[1];
+        ptrdiff_t ppVtable = objIAccessible.ppVtable;
+        ptrdiff_t [] pVtable = new ptrdiff_t [1];
         COM.MoveMemory(pVtable, ppVtable, OS.PTR_SIZEOF);
-        int /*long*/[] funcs = new int /*long*/[28];
+        ptrdiff_t [] funcs = new ptrdiff_t [28];
         COM.MoveMemory(funcs, pVtable[0], OS.PTR_SIZEOF * funcs.length);
         funcs[9] = COM.get_accChild_CALLBACK(funcs[9]);
         funcs[10] = COM.get_accName_CALLBACK(funcs[10]);
@@ -260,7 +260,7 @@ public class Accessible {
      * application code.
      * </p>
      */
-    public int /*long*/ internal_WM_GETOBJECT (int /*long*/ wParam, int /*long*/ lParam) {
+    public ptrdiff_t internal_WM_GETOBJECT (WPARAM wParam, LPARAM lParam) {
         if (objIAccessible is null) return 0;
         if (lParam is COM.OBJID_CLIENT) {
             /* LresultFromObject([in] riid, [in] wParam, [in] pAcc)
@@ -691,7 +691,7 @@ public class Accessible {
                 int columnCount = tree.getColumnCount ();
                 if (columnCount > 1) {
                     HWND hwnd = control.handle;
-                    int hItem;
+                    ptrdiff_t hItem;
                     if (OS.COMCTL32_MAJOR >= 6) {
                         hItem = OS.SendMessage (hwnd, OS.TVM_MAPACCIDTOHTREEITEM, v.lVal, 0);
                     } else {
@@ -1136,7 +1136,7 @@ public class Accessible {
         Object[] nextItems = null;
         if (variants !is null && celt >= 1) {
             int endIndex = enumIndex + celt - 1;
-            if (endIndex > (variants.length - 1)) endIndex = variants.length - 1;
+            if (endIndex > (variants.length - 1)) endIndex = cast(int)/*64bit*/variants.length - 1;
             if (enumIndex <= endIndex) {
                 nextItems = new Object[endIndex - enumIndex + 1];
                 for (int i = 0; i < nextItems.length; i++) {
@@ -1166,7 +1166,7 @@ public class Accessible {
                 }
             }
             if (pceltFetched !is null)
-                *pceltFetched = nextItems.length;
+                *pceltFetched = cast(int)/*64bit*/nextItems.length;
             if (nextItems.length is celt) return COM.S_OK;
         } else {
             if (pceltFetched !is null){
@@ -1194,7 +1194,7 @@ public class Accessible {
         if (celt < 1 ) return COM.E_INVALIDARG;
         enumIndex += celt;
         if (enumIndex > (variants.length - 1)) {
-            enumIndex = variants.length - 1;
+            enumIndex = cast(int)/*64bit*/variants.length - 1;
             return COM.S_FALSE;
         }
         return COM.S_OK;
@@ -1254,7 +1254,7 @@ public class Accessible {
         */
         if (!(cast(Tree)control )) return childID + 1;
         if (OS.COMCTL32_MAJOR < 6) return childID;
-        return OS.SendMessage (control.handle, OS.TVM_MAPHTREEITEMTOACCID, childID, 0);
+        return cast(int)/*64bit*/OS.SendMessage (control.handle, OS.TVM_MAPHTREEITEMTOACCID, childID, 0);
     }
 
     int osToChildID(int osChildID) {
@@ -1268,7 +1268,7 @@ public class Accessible {
         */
         if (!(cast(Tree)control )) return osChildID - 1;
         if (OS.COMCTL32_MAJOR < 6) return osChildID;
-        return OS.SendMessage (control.handle, OS.TVM_MAPACCIDTOHTREEITEM, osChildID, 0);
+        return cast(int)/*64bit*/OS.SendMessage (control.handle, OS.TVM_MAPACCIDTOHTREEITEM, osChildID, 0);
     }
 
     int stateToOs(int state) {

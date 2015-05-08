@@ -7,8 +7,10 @@ import java.nonstandard.SafeUtf;
 
 version(Tango){
     public import tango.sys.win32.Types;
+    import tango.stdc.stdint;
 } else { // Phobos
 //    public import std.c.windows.windows;
+    import std.stdint;
 }
 import java.lang.all;
 
@@ -54,11 +56,12 @@ version(Tango){
     alias int LONG;
     alias ushort WORD;
     alias uint DWORD;
-    alias int INT_PTR;
-    alias uint UINT_PTR;
-    alias int LONG_PTR;
-    alias uint ULONG_PTR;
-    alias DWORD DWORD_PTR;
+    alias intptr_t INT_PTR;
+    alias size_t UINT_PTR;
+    alias intptr_t LONG_PTR;
+    alias size_t ULONG_PTR;
+    alias ULONG_PTR DWORD_PTR;
+    alias DWORD_PTR* PDWORD_PTR;
     alias uint PROPID;
     const BOOL FALSE = 0;
     const BOOL TRUE = -1;
@@ -115,7 +118,7 @@ version(Tango){
     alias ushort LANGID;
     alias DWORD LCID;
     alias DWORD LCTYPE;
-    alias int LPARAM;
+    alias intptr_t LPARAM;
     alias ushort* LP;
     alias WINBOOL* LPBOOL;
     alias ubyte* LPBYTE;
@@ -133,7 +136,7 @@ version(Tango){
     alias PCHAR LPSTR;
     alias PCHAR LPTCH;
     alias TCHAR* LPTSTR;
-    alias int LRESULT;
+    alias LONG_PTR LRESULT;
     alias POINTER LPVOID;
     alias TryConst!(void)* LPCVOID;
     alias wchar* LPWCH;
@@ -195,7 +198,7 @@ version(Tango){
     alias uint UINT;
     alias uint ULONG;
     alias ushort USHORT;
-    alias uint WPARAM;
+    alias uintptr_t WPARAM;
     alias int ACL_INFORMATION_CLASS;
 
     alias GUID IID;
@@ -235,41 +238,41 @@ version(Tango){
 
     extern(Windows){
     alias int function(HWND, UINT, LPARAM, LPARAM) BFFCALLBACK;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPCCHOOKPROC;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPCFHOOKPROC;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPCCHOOKPROC;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPCFHOOKPROC;
     alias POINTER PTHREAD_START_ROUTINE;
     alias PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
-    alias DWORD function(DWORD, LPBYTE, LONG, LONG) EDITSTREAMCALLBACK;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPFRHOOKPROC;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPOFNHOOKPROC;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPPRINTHOOKPROC;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPSETUPHOOKPROC;
-    alias LRESULT function(HWND, UINT, WPARAM, LPARAM) DLGPROC;
+    alias DWORD function(DWORD_PTR, LPBYTE, LONG, LONG) EDITSTREAMCALLBACK;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPFRHOOKPROC;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPOFNHOOKPROC;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPPRINTHOOKPROC;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPSETUPHOOKPROC;
+    alias INT_PTR function(HWND, UINT, WPARAM, LPARAM) DLGPROC;
     alias int function(HWND, UINT, LPARAM) PFNPROPSHEETCALLBACK;
     alias void function(DWORD, LPTSTR) LPSERVICE_MAIN_FUNCTION;
     alias int function(LPARAM, LPARAM, LPARAM) PFNTVCOMPARE;
     alias LRESULT function(HWND, UINT, WPARAM, LPARAM) WNDPROC;
     alias POINTER FARPROC;
     alias FARPROC PROC;
-    alias WINBOOL function(HANDLE, LPTSTR, LONG) ENUMRESTYPEPROC;
-    alias WINBOOL function(HANDLE, LPCTSTR, LPTSTR, LONG) ENUMRESNAMEPROC;
-    alias WINBOOL function(HANDLE, LPCTSTR, LPCTSTR, ushort, LONG) ENUMRESLANGPROC;
+    alias WINBOOL function(HANDLE, LPTSTR, LONG_PTR) ENUMRESTYPEPROC;
+    alias WINBOOL function(HANDLE, LPCTSTR, LPTSTR, LONG_PTR) ENUMRESNAMEPROC;
+    alias WINBOOL function(HANDLE, LPCTSTR, LPCTSTR, ushort, LONG_PTR) ENUMRESLANGPROC;
     alias FARPROC DESKTOPENUMPROC;
     alias WINBOOL function(HWND, LPARAM) ENUMWINDOWSPROC;
     alias WINBOOL function(LPTSTR, LPARAM) ENUMWINDOWSTATIONPROC;
-    alias void function(HWND, UINT, DWORD) SENDASYNCPROC;
-    alias void function(HWND, UINT, UINT, DWORD) TIMERPROC;
+    alias void function(HWND, UINT, ULONG_PTR, LRESULT) SENDASYNCPROC;
+    alias void function(HWND, UINT, UINT_PTR, DWORD) TIMERPROC;
     alias BOOL function(HMONITOR, HDC, RECT*, LPARAM) MONITORENUMPROC;
     alias FARPROC GRAYSTRINGPROC;
     alias WINBOOL function(HDC, LPARAM, WPARAM, int, int) DRAWSTATEPROC;
-    alias WINBOOL function(HWND, LPCTSTR, HANDLE, DWORD) PROPENUMPROCEX;
+    alias WINBOOL function(HWND, LPCTSTR, HANDLE, ULONG_PTR) PROPENUMPROCEX;
     alias WINBOOL function(HWND, LPCTSTR, HANDLE) PROPENUMPROC;
     alias LRESULT function(int, WPARAM, LPARAM) HOOKPROC;
     alias void function(LPVOID) ENUMOBJECTSPROC;
     alias void function(int, int) LINEDDAPROC;
     alias WINBOOL function(HDC, int) TABORTPROC;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPPAGEPAINTHOOK;
-    alias UINT function(HWND, UINT, WPARAM, LPARAM) LPPAGESETUPHOOK;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPPAGEPAINTHOOK;
+    alias UINT_PTR function(HWND, UINT, WPARAM, LPARAM) LPPAGESETUPHOOK;
     alias int function(LPTSTR, LPARAM) ICMENUMPROC;
     alias LONG function(PCHAR, LONG, ubyte, INT) EDITWORDBREAKPROCEX;
     alias int function(LPARAM, LPARAM, LPARAM) PFNLVCOMPARE;
@@ -331,7 +334,7 @@ version(Tango){
     }
 
     extern(Windows){
-    alias HDDEDATA function(UINT, UINT, HCONV, HSZ, HSZ, HDDEDATA, DWORD, DWORD) PFNCALLBACK;
+    alias HDDEDATA function(UINT, UINT, HCONV, HSZ, HSZ, HDDEDATA, ULONG_PTR, ULONG_PTR) PFNCALLBACK;
     }
     alias PFNCALLBACK CALLB;
     alias WINBOOL SECURITY___FILE___TRACKING_MODE;
@@ -7357,7 +7360,7 @@ version(Tango){
     struct CONVINFO
     {
         DWORD cb;
-        DWORD hUser;
+        DWORD_PTR hUser;
         HCONV hConvPartner;
         HSZ hszSvcPartner;
         HSZ hszServiceReq;
@@ -7380,7 +7383,7 @@ version(Tango){
 
     struct COPYDATASTRUCT
     {
-        DWORD dwData;
+        ULONG_PTR dwData;
         DWORD cbData;
         PVOID lpData;
     }
@@ -7406,7 +7409,7 @@ version(Tango){
         int idIcon;
         int idName;
         int idInfo;
-        LONG lData;
+        LONG_PTR lData;
     }
 
     alias CPLINFO TAGCPLINFO;
@@ -7585,8 +7588,8 @@ version(Tango){
 
     struct DDEML_MSG_HOOK_DATA
     {
-        UINT uiLo;
-        UINT uiHi;
+        UINT_PTR uiLo;
+        UINT_PTR uiHi;
         DWORD cbData;
         DWORD[1 + 7] Data;
     }
@@ -7642,7 +7645,7 @@ version(Tango){
         _EXCEPTION_RECORD* ExceptionRecord;
         PVOID ExceptionAddress;
         DWORD NumberParameters;
-        DWORD[1 + EXCEPTION_MAXIMUM_PARAMETERS-1] ExceptionInformation;
+        ULONG_PTR[1 + EXCEPTION_MAXIMUM_PARAMETERS-1] ExceptionInformation;
     }
 
     alias EXCEPTION_RECORD* PEXCEPTION_RECORD;
@@ -7794,7 +7797,7 @@ version(Tango){
         UINT CtlID;
         UINT itemID;
         HWND hwndItem;
-        UINT itemData;
+        ULONG_PTR itemData;
     }
 
     alias DELETEITEMSTRUCT TAGDELETEITEMSTRUCT;
@@ -8098,7 +8101,7 @@ version(Tango){
         HWND hwndItem;
         HDC hDC;
         RECT rcItem;
-        DWORD itemData;
+        ULONG_PTR itemData;
     }
 
     alias DRAWITEMSTRUCT* LPDRAWITEMSTRUCT;
@@ -8188,7 +8191,7 @@ version(Tango){
 
     struct EDITSTREAM
     {
-        DWORD dwCookie;
+        DWORD_PTR dwCookie;
         DWORD dwError;
         EDITSTREAMCALLBACK pfnCallback;
     }
@@ -8284,7 +8287,7 @@ version(Tango){
     {
         UINT lbStyle;
         COLORREF lbColor;
-        LONG lbHatch;
+        ULONG_PTR lbHatch;
     }
 
     alias LOGBRUSH TAGLOGBRUSH;
@@ -8532,7 +8535,7 @@ version(Tango){
         UINT elpWidth;
         UINT elpBrushStyle;
         COLORREF elpColor;
-        LONG elpHatch;
+        ULONG_PTR elpHatch;
         DWORD elpNumEntries;
         DWORD[1 + 0] elpStyleEntry;
     }
@@ -9268,7 +9271,7 @@ version(Tango){
     struct NMHDR
     {
         HWND hwndFrom;
-        UINT idFrom;
+        UINT_PTR idFrom;
         UINT code;
     }
 
@@ -9833,7 +9836,7 @@ version(Tango){
         int iContextType;
         int iCtrlId;
         HANDLE hItemHandle;
-        DWORD dwContextId;
+        DWORD_PTR dwContextId;
         POINT MousePos;
     }
 
@@ -10449,7 +10452,7 @@ version(Tango){
         UINT itemID;
         UINT itemWidth;
         UINT itemHeight;
-        DWORD itemData;
+        ULONG_PTR itemData;
     }
 
     alias MEASUREITEMSTRUCT* LPMEASUREITEMSTRUCT;
@@ -10462,7 +10465,7 @@ version(Tango){
         PVOID BaseAddress;
         PVOID AllocationBase;
         DWORD AllocationProtect;
-        DWORD RegionSize;
+        SIZE_T RegionSize;
         DWORD State;
         DWORD Protect;
         DWORD _Type;
@@ -10477,12 +10480,12 @@ version(Tango){
     {
         DWORD dwLength;
         DWORD dwMemoryLoad;
-        DWORD dwTotalPhys;
-        DWORD dwAvailPhys;
-        DWORD dwTotalPageFile;
-        DWORD dwAvailPageFile;
-        DWORD dwTotalVirtual;
-        DWORD dwAvailVirtual;
+        SIZE_T dwTotalPhys;
+        SIZE_T dwAvailPhys;
+        SIZE_T dwTotalPageFile;
+        SIZE_T dwAvailPageFile;
+        SIZE_T dwTotalVirtual;
+        SIZE_T dwAvailVirtual;
     }
 
     alias MEMORYSTATUS* LPMEMORYSTATUS;
@@ -10530,7 +10533,7 @@ version(Tango){
         HMENU   hSubMenu;       // used if MIIM_SUBMENU
         HBITMAP hbmpChecked;    // used if MIIM_CHECKMARKS
         HBITMAP hbmpUnchecked;  // used if MIIM_CHECKMARKS
-        DWORD   dwItemData;     // used if MIIM_DATA
+        ULONG_PTR   dwItemData; // used if MIIM_DATA
         LPSTR   dwTypeData;     // used if MIIM_TYPE
         UINT    cch;            // used if MIIM_TYPE
         HBITMAP hbmpItem;
@@ -10546,7 +10549,7 @@ version(Tango){
         HMENU   hSubMenu;       // used if MIIM_SUBMENU
         HBITMAP hbmpChecked;    // used if MIIM_CHECKMARKS
         HBITMAP hbmpUnchecked;  // used if MIIM_CHECKMARKS
-        DWORD   dwItemData;     // used if MIIM_DATA
+        ULONG_PTR   dwItemData; // used if MIIM_DATA
         LPWSTR  dwTypeData;     // used if MIIM_TYPE
         UINT    cch;            // used if MIIM_TYPE
         HBITMAP hbmpItem;
@@ -10723,8 +10726,8 @@ version(Tango){
         HSZ hsz1;
         HSZ hsz2;
         HDDEDATA hData;
-        DWORD dwData1;
-        DWORD dwData2;
+        ULONG_PTR dwData1;
+        ULONG_PTR dwData2;
         CONVCONTEXT cc;
         DWORD cbData;
         DWORD[1 + 7] Data;
@@ -10837,7 +10840,7 @@ version(Tango){
         POINT pt;
         HWND hwnd;
         UINT wHitTestCode;
-        DWORD dwExtraInfo;
+        ULONG_PTR dwExtraInfo;
     }
 
     alias MOUSEHOOKSTRUCT* LPMOUSEHOOKSTRUCT;
@@ -10887,7 +10890,7 @@ version(Tango){
         LPCSTR lpszCaption;
         DWORD dwStyle;
         LPCSTR lpszIcon;
-        DWORD dwContextHelpId;
+        DWORD_PTR dwContextHelpId;
         MSGBOXCALLBACK lpfnMsgBoxCallback;
         DWORD dwLanguageId;
     }
@@ -11421,7 +11424,7 @@ version(Tango){
         ushort nFileOffset;
         ushort nFileExtension;
         LPCTSTR lpstrDefExt;
-        DWORD lCustData;
+        LPARAM lCustData;
         LPOFNHOOKPROC lpfnHook;
         LPCTSTR lpTemplateName;
     //if (_WIN32_WINNT >= 0x0500)
@@ -11633,8 +11636,8 @@ version(Tango){
 
     struct OVERLAPPED
     {
-        DWORD Internal;
-        DWORD InternalHigh;
+        ULONG_PTR Internal;
+        ULONG_PTR InternalHigh;
         DWORD Offset;
         DWORD OffsetHigh;
         HANDLE hEvent;
@@ -12350,7 +12353,7 @@ version(Tango){
         DWORD dwSize;
         DWORD dwfOptions;
         HWND hwndParent;
-        DWORD reserved;
+        ULONG_PTR reserved;
     }
 
     alias RASDIALEXTENSIONS _RASDIALEXTENSIONS;
@@ -12455,7 +12458,7 @@ version(Tango){
     struct REPASTESPECIAL
     {
         DWORD dwAspect;
-        DWORD dwParam;
+        DWORD_PTR dwParam;
     }
 
     alias REPASTESPECIAL _REPASTESPECIAL;
@@ -13034,7 +13037,7 @@ version(Tango){
     struct TBADDBITMAP
     {
         HINST hInst;
-        UINT nID;
+        UINT_PTR nID;
     }
 
     alias TBADDBITMAP* LPTBADDBITMAP;
@@ -13294,7 +13297,7 @@ version(Tango){
         UINT cbSize;
         UINT uFlags;
         HWND hwnd;
-        UINT uId;
+        UINT_PTR uId;
         RECT rect;
         HINST hinst;
         LPSTR lpszText;
@@ -13310,7 +13313,7 @@ version(Tango){
         UINT cbSize;
         UINT uFlags;
         HWND hwnd;
-        UINT uId;
+        UINT_PTR uId;
         RECT rect;
         HINST hinst;
         LPWSTR lpszText;
@@ -13561,7 +13564,7 @@ version(Tango){
     {
         LPTSTR ve_valuename;
         DWORD ve_valuelen;
-        DWORD ve_valueptr;
+        DWORD_PTR ve_valueptr;
         DWORD ve_type;
     }
 
@@ -13783,8 +13786,8 @@ version(Tango){
         DWORD dwProviderVersion;
         DWORD dwStatus;
         DWORD dwCharacteristics;
-        DWORD dwHandle;
-        ushort wNetType;
+        ULONG_PTR dwHandle;
+        WORD wNetType;
         DWORD dwPrinters;
         DWORD dwDrives;
     }
@@ -14423,6 +14426,7 @@ alias USHORT COLOR16;
 //alias LONGLONG  *PLONGLONG;
 //alias DWORDLONG *PDWORDLONG;
 alias size_t    SIZE_T;
+alias SIZE_T*   PSIZE_T;
 //alias int       WPARAM_I;
 
 extern(Windows){
@@ -14950,7 +14954,7 @@ alias MENUINFO* PCMENUINFO, LPCMENUINFO, LPCCMENUINFO;
 //     HMENU   hSubMenu;       // used if MIIM_SUBMENU
 //     HBITMAP hbmpChecked;    // used if MIIM_CHECKMARKS
 //     HBITMAP hbmpUnchecked;  // used if MIIM_CHECKMARKS
-//     DWORD   dwItemData;     // used if MIIM_DATA
+//     ULONG_PTR   dwItemData; // used if MIIM_DATA
 //     LPSTR   dwTypeData;     // used if MIIM_TYPE
 //     UINT    cch;            // used if MIIM_TYPE
 //     HBITMAP hbmpItem;
@@ -14966,7 +14970,7 @@ alias MENUINFO* PCMENUINFO, LPCMENUINFO, LPCCMENUINFO;
 //     HMENU   hSubMenu;       // used if MIIM_SUBMENU
 //     HBITMAP hbmpChecked;    // used if MIIM_CHECKMARKS
 //     HBITMAP hbmpUnchecked;  // used if MIIM_CHECKMARKS
-//     DWORD   dwItemData;     // used if MIIM_DATA
+//     ULONG_PTR   dwItemData; // used if MIIM_DATA
 //     LPWSTR  dwTypeData;     // used if MIIM_TYPE
 //     UINT    cch;            // used if MIIM_TYPE
 //     HBITMAP hbmpItem;
@@ -15467,7 +15471,7 @@ struct SCRIPT_FONTPROPERTIES {
 }
 
 struct SCRIPT_ITEM {
-    UTF16index iCharPos;
+    int iCharPos;
     SCRIPT_ANALYSIS a;
 }
 
@@ -15747,7 +15751,7 @@ version(Win32SansUnicode){
 //     UINT cbSize;
 //     UINT uFlags;
 //     HWND hwnd;
-//     UINT uId;
+//     UINT_PTR uId;
 //     RECT rect;
 //     HINSTANCE hinst;
 //     LPSTR lpszText;
@@ -15757,7 +15761,7 @@ version(Win32SansUnicode){
 //     UINT cbSize;
 //     UINT uFlags;
 //     HWND hwnd;
-//     UINT uId;
+//     UINT_PTR uId;
 //     RECT rect;
 //     HINSTANCE hinst;
 //     LPWSTR lpszText;

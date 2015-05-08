@@ -488,7 +488,7 @@ public void setVisible (bool visible) {
                     nY = pt.y;
                 }
             }
-            int /*long*/ lParam = OS.MAKELPARAM (nX, nY);
+            auto lParam = OS.MAKELPARAM (nX, nY);
             OS.SendMessage (hwndToolTip_, OS.TTM_TRACKPOSITION, 0, lParam);
 
             /*
@@ -514,8 +514,8 @@ public void setVisible (bool visible) {
                 OS.SendMessage (hwndToolTip_, OS.TTM_TRACKACTIVATE, 1, &lpti);
             }
 
-            int time = OS.SendMessage (hwndToolTip_, OS.TTM_GETDELAYTIME, OS.TTDT_AUTOPOP, 0);
-            OS.SetTimer (hwndToolTip_, TIMER_ID, time, null);
+            auto time = OS.SendMessage (hwndToolTip_, OS.TTM_GETDELAYTIME, OS.TTDT_AUTOPOP, 0);
+            OS.SetTimer (hwndToolTip_, TIMER_ID, cast(int)/*64bit*/time, null);
         } else {
             OS.SendMessage (hwndToolTip_, OS.TTM_TRACKACTIVATE, 0, &lpti);
             OS.SendMessage (hwndToolTip_, OS.TTM_POP, 0, 0);
@@ -530,10 +530,10 @@ public void setVisible (bool visible) {
             StringT buffer2 = StrToTCHARs (0, message, true);
             static if (OS.IsUnicode) {
                 TCHAR [] szInfoTitle = iconData.szInfoTitle;
-                int length1 = Math.min (szInfoTitle.length - 1, buffer1.length);
+                auto length1 = Math.min (szInfoTitle.length - 1, buffer1.length);
                 System.arraycopy!(TCHAR) (buffer1, 0, szInfoTitle, 0, length1);
                 TCHAR [] szInfo = iconData.szInfo;
-                int length2 = Math.min (szInfo.length - 1, buffer2.length );
+                auto length2 = Math.min (szInfo.length - 1, buffer2.length );
                 System.arraycopy!(TCHAR) (buffer2, 0, szInfo, 0, length2);
             } else {
                 byte [] szInfoTitle = iconData.szInfoTitle;

@@ -46,6 +46,7 @@ extern (Windows)
 alias int function() Function0;
 alias int function(void*) Function1;
 alias int function(void*, int) Function2;
+alias int function(void*, void*) Function2P;
 alias int function(void*, int, int) Function3;
 alias int function(void*, int, int, int) Function4;
 alias int function(void*, int, int, int, int) Function5;
@@ -74,11 +75,12 @@ Compile time versions
 */
 
 public class LDWTRESULT {
-    public int value;
+    public .LRESULT value;
     // initalize ONE and ZERO in static OS.this();
     mixin(gshared!(`public static LDWTRESULT ONE;`));
     mixin(gshared!(`public static LDWTRESULT ZERO;`));
-    public this (int value) { this.value = value; }
+    public this (.LRESULT value) { this.value = value; }
+    public this (void* value) { this.value = cast(.LRESULT)value; }
 }
 
 
@@ -125,7 +127,7 @@ public class OS : C {
 // kernel32 winxp/vista
 public static extern(Windows) {
 HANDLE function( ACTCTX* pActCtx ) CreateActCtx;
-BOOL function( HACTCTX hActCtx, uint* lpCookie ) ActivateActCtx;
+BOOL function( HACTCTX hActCtx, ULONG_PTR* lpCookie ) ActivateActCtx;
 LANGID function() GetSystemDefaultUILanguage;
 BOOL function(
     LANGUAGEGROUP_ENUMPROC pLangGroupEnumProc, // callback function
@@ -352,7 +354,7 @@ BOOL function(
         dvi.dwMinorVersion = 0;
         //PORTING_CHANGE: comctl is loaded automatically
         //TCHAR lpLibFileName = new TCHAR (0, "comctl32.dll", true); //$NON-NLS-1$
-        //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
+        //auto hModule = OS.LoadLibrary (lpLibFileName);
         SharedLib.tryUseSymbol( "DllGetVersion", "comctl32.dll", (void* ptr){
             alias extern(Windows) void function(DLLVERSIONINFO*) TDllGetVersion;
             auto func = cast( TDllGetVersion ) ptr;
@@ -367,7 +369,7 @@ BOOL function(
         dvi.cbSize = DLLVERSIONINFO.sizeof;
         dvi.dwMajorVersion = 4;
         //TCHAR lpLibFileName = new TCHAR (0, "Shell32.dll", true); //$NON-NLS-1$
-        //int /*long*/ hModule = OS.LoadLibrary (lpLibFileName);
+        //auto hModule = OS.LoadLibrary (lpLibFileName);
         SharedLib.tryUseSymbol( "DllGetVersion", "Shell32.dll", (void* ptr){
             alias extern(Windows) void function(DLLVERSIONINFO*) TDllGetVersion;
             auto func = cast( TDllGetVersion ) ptr;
@@ -396,12 +398,12 @@ BOOL function(
         TCHAR[] buffer = new TCHAR[ MAX_PATH ];
         buffer[] = 0;
         HANDLE hModule = OS.GetLibraryHandle ();
-        while (OS.GetModuleFileName (hModule, buffer.ptr, buffer.length ) is buffer.length ) {
+        while (OS.GetModuleFileName (hModule, buffer.ptr, cast(DWORD)buffer.length ) is buffer.length ) {
             buffer.length = buffer.length + MAX_PATH;
             buffer[] = 0;
         }
         auto hHeap = OS.GetProcessHeap ();
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         TCHAR* pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);
 
@@ -751,7 +753,7 @@ BOOL function(
     public static const int CS_HREDRAW = 0x2;
     public static const int CS_VREDRAW = 0x1;
     public static const int CW_USEDEFAULT = 0x80000000;
-    public static const TCHAR[] DATETIMEPICK_CLASS = "SysDateTimePick32"; //$NON-NLS-1$
+    public static const TCHAR* DATETIMEPICK_CLASS = ("SysDateTimePick32"); //$NON-NLS-1$
     public static const int DATE_LONGDATE = 0x00000002;
     public static const int DATE_SHORTDATE = 0x00000001;
     public static const int DATE_YEARMONTH = 0x00000008; //#if(WINVER >= 0x0500)
@@ -956,7 +958,7 @@ BOOL function(
     public static const int GW_HWNDNEXT = 0x2;
     public static const int GW_HWNDPREV = 0x3;
     public static const int GW_OWNER = 0x4;
-    public static const HBITMAP HBMMENU_CALLBACK = cast(HBITMAP) 0xffffffff;
+    public static const HBITMAP HBMMENU_CALLBACK = cast(HBITMAP)-1;
     public static const int HCBT_CREATEWND = 3;
     public static const int HCF_HIGHCONTRASTON = 0x1;
     public static const int HDF_BITMAP = 0x2000;
@@ -1023,9 +1025,9 @@ BOOL function(
     public static const int HHT_ONDIVOPEN = 0x8;
     public static const int HICF_ARROWKEYS = 0x2;
     public static const int HINST_COMMCTRL = 0xffffffff;
-    public static const int HKEY_CLASSES_ROOT = 0x80000000;
-    public static const int HKEY_CURRENT_USER = 0x80000001;
-    public static const int HKEY_LOCAL_MACHINE = 0x80000002;
+    public static const HKEY HKEY_CLASSES_ROOT = cast(HKEY)0x80000000U;
+    public static const HKEY HKEY_CURRENT_USER = cast(HKEY)0x80000001U;
+    public static const HKEY HKEY_LOCAL_MACHINE = cast(HKEY)0x80000002U;
     public static const int HORZRES = 0x8;
     public static const int HTBORDER = 0x12;
     public static const int HTCAPTION = 0x2;
@@ -1051,21 +1053,21 @@ BOOL function(
     public static const int IDABORT = 0x3;
     public static const int IDANI_CAPTION = 3;
     public static const int IDB_STD_SMALL_COLOR = 0x0;
-    public static const int IDC_APPSTARTING = 0x7f8a;
-    public static const int IDC_ARROW = 0x7f00;
-    public static const int IDC_CROSS = 0x7f03;
-    public static const TCHAR* IDC_HAND = cast(TCHAR*) 0x7f89;
-    public static const int IDC_HELP = 0x7f8b;
-    public static const int IDC_IBEAM = 0x7f01;
-    public static const int IDC_NO = 0x7f88;
-    public static const int IDC_SIZE = 0x7f80;
-    public static const int IDC_SIZEALL = 0x7f86;
-    public static const int IDC_SIZENESW = 0x7f83;
-    public static const int IDC_SIZENS = 0x7f85;
-    public static const int IDC_SIZENWSE = 0x7f82;
-    public static const int IDC_SIZEWE = 0x7f84;
-    public static const int IDC_UPARROW = 0x7f04;
-    public static const int IDC_WAIT = 0x7f02;
+    public static const ptrdiff_t IDC_APPSTARTING = 0x7f8a;
+    public static const ptrdiff_t IDC_ARROW = 0x7f00;
+    public static const ptrdiff_t IDC_CROSS = 0x7f03;
+    public static const ptrdiff_t IDC_HAND = 0x7f89;
+    public static const ptrdiff_t IDC_HELP = 0x7f8b;
+    public static const ptrdiff_t IDC_IBEAM = 0x7f01;
+    public static const ptrdiff_t IDC_NO = 0x7f88;
+    public static const ptrdiff_t IDC_SIZE = 0x7f80;
+    public static const ptrdiff_t IDC_SIZEALL = 0x7f86;
+    public static const ptrdiff_t IDC_SIZENESW = 0x7f83;
+    public static const ptrdiff_t IDC_SIZENS = 0x7f85;
+    public static const ptrdiff_t IDC_SIZENWSE = 0x7f82;
+    public static const ptrdiff_t IDC_SIZEWE = 0x7f84;
+    public static const ptrdiff_t IDC_UPARROW = 0x7f04;
+    public static const ptrdiff_t IDC_WAIT = 0x7f02;
     public static const int IDI_APPLICATION = 32512;
     public static const int IDNO = 0x7;
     public static const int IDOK = 0x1;
@@ -1189,7 +1191,7 @@ BOOL function(
     public static const int LOCALE_USER_DEFAULT = 1024;
     public static const int LOGPIXELSX = 0x58;
     public static const int LOGPIXELSY = 0x5a;
-    public static const TCHAR* LPSTR_TEXTCALLBACK = cast(TCHAR*)0xffffffff;
+    public static const TCHAR* LPSTR_TEXTCALLBACK = cast(TCHAR*)-1;
     public static const int LR_DEFAULTCOLOR = 0x0;
     public static const int LR_SHARED = 0x8000;
     public static const int LVCFMT_BITMAP_ON_RIGHT = 0x1000;
@@ -1381,7 +1383,7 @@ BOOL function(
     public static const int MNS_CHECKORBMP = 0x4000000;
     public static const int MONITOR_DEFAULTTONEAREST = 0x2;
     public static const int MONITORINFOF_PRIMARY = 0x1;
-    public static const TCHAR[] MONTHCAL_CLASS = "SysMonthCal32"; //$NON-NLS-1$
+    public static const TCHAR* MONTHCAL_CLASS = ("SysMonthCal32"); //$NON-NLS-1$
     public static const int MOUSEEVENTF_ABSOLUTE = 0x8000;
     public static const int MOUSEEVENTF_LEFTDOWN = 0x0002;
     public static const int MOUSEEVENTF_LEFTUP = 0x0004;
@@ -1526,7 +1528,7 @@ BOOL function(
     public static const int PM_QS_PAINT = QS_PAINT << 16;
     public static const int PM_QS_SENDMESSAGE = QS_SENDMESSAGE << 16;
     public static const int PM_REMOVE = 0x1;
-    public static const TCHAR[] PROGRESS_CLASS = "msctls_progress32"; //$NON-NLS-1$
+    public static const TCHAR* PROGRESS_CLASS = ("msctls_progress32"); //$NON-NLS-1$
     public static const int PP_BAR = 1;
     public static const int PP_BARVERT = 2;
     public static const int PP_CHUNK = 3;
@@ -1603,7 +1605,7 @@ BOOL function(
     public static const int RDW_INVALIDATE = 0x1;
     public static const int RDW_UPDATENOW = 0x100;
     public static const int READ_CONTROL = 0x20000;
-    public static const TCHAR[] REBARCLASSNAME = "ReBarWindow32"; //$NON-NLS-1$
+    public static const TCHAR* REBARCLASSNAME = ("ReBarWindow32"); //$NON-NLS-1$
     public static const int RGN_AND = 0x1;
     public static const int RGN_COPY = 5;
     public static const int RGN_DIFF = 0x4;
@@ -1921,8 +1923,8 @@ BOOL function(
     public static const int TME_QUERY = 0x40000000;
     public static const int TMPF_VECTOR = 0x2;
     public static const int TMT_CONTENTMARGINS = 3602;
-    public static const TCHAR[] TOOLBARCLASSNAME = "ToolbarWindow32"; //$NON-NLS-1$
-    public static const TCHAR[] TOOLTIPS_CLASS = "tooltips_class32"; //$NON-NLS-1$
+    public static const TCHAR* TOOLBARCLASSNAME = ("ToolbarWindow32"); //$NON-NLS-1$
+    public static const TCHAR* TOOLTIPS_CLASS = ("tooltips_class32"); //$NON-NLS-1$
     public static const int TP_BUTTON = 1;
     public static const int TP_DROPDOWNBUTTON = 2;
     public static const int TP_SPLITBUTTON = 3;
@@ -1933,7 +1935,7 @@ BOOL function(
     public static const int TPM_LEFTBUTTON = 0x0;
     public static const int TPM_RIGHTBUTTON = 0x2;
     public static const int TPM_RIGHTALIGN = 0x8;
-    public static const TCHAR[] TRACKBAR_CLASS = "msctls_trackbar32"; //$NON-NLS-1$
+    public static const TCHAR* TRACKBAR_CLASS = ("msctls_trackbar32"); //$NON-NLS-1$
     public static const int TRANSPARENT = 0x1;
     public static const int TREIS_DISABLED = 4;
     public static const int TREIS_HOT = 2;
@@ -2026,10 +2028,10 @@ BOOL function(
     public static const int TVIS_EXPANDED = 0x20;
     public static const int TVIS_SELECTED = 0x2;
     public static const int TVIS_STATEIMAGEMASK = 0xf000;
-    public static const int /*long*/ TVI_FIRST = -0x0FFFF;
-    public static const int /*long*/ TVI_LAST = -0x0FFFE;
-    public static const int /*long*/ TVI_ROOT = -0x10000;
-    public static const int /*long*/ TVI_SORT = -0x0FFFD;
+    public static const ULONG_PTR TVI_FIRST = cast(ULONG_PTR)-0x0FFFF;
+    public static const ULONG_PTR TVI_LAST = cast(ULONG_PTR)-0x0FFFE;
+    public static const ULONG_PTR TVI_ROOT = cast(ULONG_PTR)-0x10000;
+    public static const ULONG_PTR TVI_SORT = cast(ULONG_PTR)-0x0FFFD;
     public static const int TVM_CREATEDRAGIMAGE = TV_FIRST + 18;
     public static const int TVM_DELETEITEM = 0x1101;
     public static const int TVM_ENSUREVISIBLE = 0x1114;
@@ -2121,7 +2123,7 @@ BOOL function(
     public static const int UIS_SET = 1;
     public static const int UISF_HIDEACCEL = 0x2;
     public static const int UISF_HIDEFOCUS = 0x1;
-    public static const TCHAR[] UPDOWN_CLASS = "msctls_updown32"; //$NON-NLS-1$
+    public static const TCHAR* UPDOWN_CLASS = ("msctls_updown32"); //$NON-NLS-1$
     public static const int USP_E_SCRIPT_NOT_IN_FONT = 0x80040200;
     public static const int VERTRES = 0xa;
     public static const int VK_BACK = 0x8;
@@ -2191,11 +2193,11 @@ BOOL function(
     public static const int VK_APP4 = 0xc4;
     public static const int VK_APP5 = 0xc5;
     public static const int VK_APP6 = 0xc6;
-    public static const TCHAR[] WC_HEADER = "SysHeader32"; //$NON-NLS-1$
-    public static const TCHAR[] WC_LINK = "SysLink"; //$NON-NLS-1$
-    public static const TCHAR[] WC_LISTVIEW = "SysListView32"; //$NON-NLS-1$
-    public static const TCHAR[] WC_TABCONTROL = "SysTabControl32"; //$NON-NLS-1$
-    public static const TCHAR[] WC_TREEVIEW = "SysTreeView32"; //$NON-NLS-1$
+    public static const TCHAR* WC_HEADER = ("SysHeader32"); //$NON-NLS-1$
+    public static const TCHAR* WC_LINK = ("SysLink"); //$NON-NLS-1$
+    public static const TCHAR* WC_LISTVIEW = ("SysListView32"); //$NON-NLS-1$
+    public static const TCHAR* WC_TABCONTROL = ("SysTabControl32"); //$NON-NLS-1$
+    public static const TCHAR* WC_TREEVIEW = ("SysTreeView32"); //$NON-NLS-1$
     public static const int WINDING = 2;
     public static const int WH_CBT = 5;
     public static const int WH_GETMESSAGE = 0x3;
@@ -2392,6 +2394,7 @@ version(ANSI) {
     alias DWTWINAPI.GetCharWidthA GetCharWidth;
     alias DWTWINAPI.GetCharacterPlacementA GetCharacterPlacement;
     alias DWTWINAPI.GetClassInfoA GetClassInfo;
+    alias DWTWINAPI.GetClassInfoExA GetClassInfoEx;
     alias DWTWINAPI.GetClassNameA GetClassName;
     alias DWTWINAPI.GetClipboardFormatNameA GetClipboardFormatName;
     alias DWTWINAPI.GetDateFormatA GetDateFormat;
@@ -2414,7 +2417,7 @@ version(ANSI) {
     alias DWTWINAPI.GetTextMetricsA GetTextMetrics;
     alias DWTWINAPI.GetVersionExA GetVersionEx;
     alias DWTWINAPI.GetWindowLongA GetWindowLong;
-    alias DWTWINAPI.GetWindowLongA GetWindowLongPtr; // is a macro
+    alias DWTWINAPI.GetWindowLongPtrA GetWindowLongPtr;
     alias DWTWINAPI.GetWindowTextA _GetWindowText;
     alias DWTWINAPI.GetWindowTextLengthA GetWindowTextLength;
     alias DWTWINAPI.GlobalAddAtomA GlobalAddAtom;
@@ -2451,7 +2454,7 @@ version(ANSI) {
     alias DWTWINAPI.SetMenuItemInfoA SetMenuItemInfo;
     alias DWTWINAPI.SetPropA SetProp;
     alias DWTWINAPI.SetWindowLongA SetWindowLong;
-    alias DWTWINAPI.SetWindowLongA SetWindowLongPtr;
+    alias DWTWINAPI.SetWindowLongPtrA SetWindowLongPtr;
     alias DWTWINAPI.SetWindowTextA SetWindowText;
     alias DWTWINAPI.SetWindowsHookExA SetWindowsHookEx;
     alias DWTWINAPI.ShellExecuteExA ShellExecuteEx;
@@ -2498,6 +2501,7 @@ version(ANSI) {
     alias DWTWINAPI.GetCharWidthW GetCharWidth;
     alias DWTWINAPI.GetCharacterPlacementW GetCharacterPlacement;
     alias DWTWINAPI.GetClassInfoW GetClassInfo;
+    alias DWTWINAPI.GetClassInfoExW GetClassInfoEx;
     alias DWTWINAPI.GetClassNameW GetClassName;
     alias DWTWINAPI.GetClipboardFormatNameW GetClipboardFormatName;
     alias DWTWINAPI.GetDateFormatW GetDateFormat;
@@ -2521,7 +2525,7 @@ version(ANSI) {
     alias DWTWINAPI.GetTextMetricsW GetTextMetrics;
     alias DWTWINAPI.GetVersionExW GetVersionEx;
     alias DWTWINAPI.GetWindowLongW GetWindowLong;
-    alias DWTWINAPI.GetWindowLongW GetWindowLongPtr; // is a macro
+    alias DWTWINAPI.GetWindowLongPtrW GetWindowLongPtr;
     alias DWTWINAPI.GetWindowTextW _GetWindowText;
     alias DWTWINAPI.GetWindowTextLengthW GetWindowTextLength;
     alias DWTWINAPI.GlobalAddAtomW GlobalAddAtom;
@@ -2556,7 +2560,7 @@ version(ANSI) {
     alias DWTWINAPI.SendMessageW SendMessage;
     alias DWTWINAPI.SetMenuItemInfoW SetMenuItemInfo;
     alias DWTWINAPI.SetWindowLongW SetWindowLong;
-    alias DWTWINAPI.SetWindowLongW SetWindowLongPtr;
+    alias DWTWINAPI.SetWindowLongPtrW SetWindowLongPtr;
     alias DWTWINAPI.SetWindowTextW SetWindowText;
     alias DWTWINAPI.SetWindowsHookExW SetWindowsHookEx;
     alias DWTWINAPI.SetPropW SetProp;
@@ -3398,7 +3402,7 @@ static String GetWindowText(HWND hwnd){
     int len = GetWindowTextLength(hwnd);
     if(len > 0){
         TCHAR[] buffer = new TCHAR[len + 1];
-        len = _GetWindowText(hwnd, buffer.ptr, buffer.length);
+        len = _GetWindowText(hwnd, buffer.ptr, cast(int)/*64bit*/buffer.length);
         return .TCHARzToStr(buffer.ptr, len);
     }
     return "";
@@ -3504,6 +3508,11 @@ public static int VtblCall(int fnNumber, void* ppVtbl, int arg0){
     return fn(ppVtbl, arg0);
 }
 
+public static int VtblCall(int fnNumber, void* ppVtbl, void* arg0){
+    Function2P fn = cast(Function2P)(*cast(int **)ppVtbl)[fnNumber];
+    return fn(ppVtbl, arg0);
+}
+
 public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, int arg1){
     Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
     return fn(ppVtbl, arg0, arg1);
@@ -3538,45 +3547,73 @@ public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, int arg1, int a
     return fn(ppVtbl, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
 }
 
-public static int LOWORD (int /*long*/ l){
-    return l & 0xFFFF;
+/// IMLangFontLink2#GetStrCodePages
+public static HRESULT VtblCall(int fnNumber, void* ppVtbl, const wchar* arg0, LONG arg1, DWORD arg2, DWORD* arg3, LONG* arg4){
+    auto fn = cast(IMLangFontLink2_GetStrCodePages)(*cast(int **)ppVtbl)[fnNumber];
+    return fn(ppVtbl, arg0, arg1, arg2, arg3, arg4);
 }
-public static int HIWORD (int /*long*/ h){
-    return h >>> 16;
+alias HRESULT function(void*, const wchar* arg0, LONG arg1, DWORD arg2, DWORD* arg3, LONG* arg4) IMLangFontLink2_GetStrCodePages;
+
+/// IMLangFontLink2#MapFont
+public static HRESULT VtblCall(int fnNumber, void* ppVtbl, HDC arg0, DWORD arg1, WCHAR arg2, HFONT* arg3){
+    auto fn = cast(IMLangFontLink2_MapFont)(*cast(int **)ppVtbl)[fnNumber];
+    return fn(ppVtbl, arg0, arg1, arg2, arg3);
 }
-//public static bool LPtoDP (int /*long*/ hdc, POINT lpPoints, int nCount);
-public static int MAKEWORD(int l, int h){
-    return ( h << 16 )|( l &0xFFFF );
+alias HRESULT function(void*, HDC arg0, DWORD arg1, WCHAR arg2, HFONT* arg3) IMLangFontLink2_MapFont;
+
+/// ITfInputProcessorProfiles#GetDefaultLanguageProfile
+public static HRESULT VtblCall(int fnNumber, void* ppVtbl, LANGID arg0, byte* arg1, byte* arg2, byte* arg3){
+    auto fn = cast(ITfInputProcessorProfiles_GetDefaultLanguageProfile)(*cast(int **)ppVtbl)[fnNumber];
+    return fn(ppVtbl, arg0, arg1, arg2, arg3);
 }
-public static int MAKELONG( int low, int high){
+alias HRESULT function(void*, LANGID arg0, byte* arg1, byte* arg2, byte* arg3) ITfInputProcessorProfiles_GetDefaultLanguageProfile;
+
+/// IEnumTfDisplayAttributeInfo#Next
+public static HRESULT VtblCall(int fnNumber, void* ppVtbl, ULONG arg0, void** arg1, void* arg2){
+    auto fn = cast(IEnumTfDisplayAttributeInfo_Next)(*cast(int **)ppVtbl)[fnNumber];
+    return fn(ppVtbl, arg0, arg1, arg2);
+}
+alias HRESULT function(void*, ULONG arg0, void** arg1, void* arg2) IEnumTfDisplayAttributeInfo_Next;
+
+public static WORD LOWORD (LONG_PTR l){
+    return cast(WORD)(l & 0xFFFF);
+}
+public static WORD HIWORD (LONG_PTR h){
+    return cast(WORD)(h >>> 16);
+}
+//public static bool LPtoDP (HDC hdc, POINT lpPoints, int nCount);
+public static WORD MAKEWORD(int l, int h){
+	return cast(WORD)(( h << 16 )|( l &0xFFFF ));
+}
+public static LONG MAKELONG( int low, int high){
     return (low & 0xFFFF) | (high << 16);
 }
-public static int /*long*/ MAKEWPARAM(int l, int h){
-    return MAKELONG( l, h );
+public static WPARAM MAKEWPARAM(int l, int h){
+	return cast(WPARAM)MAKELONG( l, h );
 }
-public static int /*long*/ MAKELPARAM(int l, int h){
-    return MAKELONG( l, h );
+public static LPARAM MAKELPARAM(int l, int h){
+	return cast(LPARAM)MAKELONG( l, h );
 }
-public static int /*long*/ MAKELRESULT(int l, int h){
-    return MAKELONG( l, h );
+public static LRESULT MAKELRESULT(int l, int h){
+	return cast(LRESULT)MAKELONG( l, h );
 }
-public static int GET_WHEEL_DELTA_WPARAM(int /*long*/ wParam){
+public static int GET_WHEEL_DELTA_WPARAM(WPARAM wParam){
     return  cast(short) HIWORD(wParam);
 }
 
-public static int GET_X_LPARAM(int /*long*/ lp){
+public static int GET_X_LPARAM(LPARAM lp){
     return cast(short) (lp & 0xFFFF);
 }
 
-public static int GET_Y_LPARAM(int /*long*/ lp){
+public static int GET_Y_LPARAM(LPARAM lp){
     return cast(short) (lp >> 16);
 }
 
 static bool TreeView_GetItemRect( HWND hwnd, HTREEITEM hitem, RECT* prc, bool code) {
     *cast(HTREEITEM *)prc = hitem;
-    return cast(bool) SendMessage( hwnd, TVM_GETITEMRECT, code, cast(int)prc );
+    return cast(bool) SendMessage( hwnd, TVM_GETITEMRECT, code, prc );
 }
-static int strlen( PCHAR ptr ){
+static size_t strlen( PCHAR ptr ){
     version(Tango){
         return tango.stdc.string.strlen( cast(char*)ptr );
     } else { // Phobos
@@ -3584,7 +3621,7 @@ static int strlen( PCHAR ptr ){
     }
 }
 
-static void POINTSTOPOINT( ref POINT pt, int pts) {
+static void POINTSTOPOINT( ref POINT pt, INT_PTR pts) {
     pt.x = cast(SHORT) LOWORD(pts);
     pt.y = cast(SHORT) HIWORD(pts);
 }
@@ -3603,8 +3640,8 @@ public CHAR[] StrToMBCS(in char[] sc, uint codepage = 0) {
                 CHAR[] result;
                 int i;
                 auto ws = toWCharArray(sc);
-                result.length = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, null, 0, null, null);
-                i = OS.WideCharToMultiByte(codepage, 0, ws.ptr, ws.length, result.ptr, result.length, null, null);
+                result.length = OS.WideCharToMultiByte(codepage, 0, ws.ptr, cast(int)/*64bit*/ws.length, null, 0, null, null);
+                i = OS.WideCharToMultiByte(codepage, 0, ws.ptr, cast(int)/*64bit*/ws.length, result.ptr, cast(int)/*64bit*/result.length, null, null);
                 assert(i == result.length);
                 return result;
             }
@@ -3662,7 +3699,7 @@ public LPCWSTR StrToWCHARz(in char[] sc, uint* length = null ) {
 }
 
 public String MBCSsToStr(in CHAR[] string, uint codepage = 0){
-    return MBCSzToStr( string.ptr, string.length, codepage);
+    return MBCSzToStr( string.ptr, cast(int)/*64bit*/string.length, codepage);
 }
 
 public String MBCSzToStr(in PCHAR pString, int _length = -1, uint codepage = 0) {
@@ -3686,7 +3723,7 @@ public String MBCSzToStr(in PCHAR pString, int _length = -1, uint codepage = 0) 
 }
 
 public String WCHARsToStr(in WCHAR[] string){
-    return WCHARzToStr(string.ptr, string.length);
+    return WCHARzToStr(string.ptr, cast(int)/*64bit*/string.length);
 }
 
 public String WCHARzToStr(in LPCWSTR pString, int _length = -1)
@@ -3742,7 +3779,7 @@ public static String16 _mbcszToWs(in PCHAR pMBCS, int len, uint codepage = 0)
     wchar[] wbuf;
     // Convert MBCS to unicode
     wbuf.length = OS.MultiByteToWideChar(codepage, 0, pMBCS, len, null, 0);
-    int n = OS.MultiByteToWideChar(codepage, 0, pMBCS, len, wbuf.ptr, wbuf.length);
+    int n = OS.MultiByteToWideChar(codepage, 0, pMBCS, len, wbuf.ptr, cast(int)/*64bit*/wbuf.length);
     assert(n == wbuf.length);
     return cast(String16)wbuf;
 }
@@ -3777,7 +3814,7 @@ version(ANSI){
 //alias Converter.TCHARsToStr     TCHARsToStr;
 
 
-TCHAR[] NewTCHARs( uint codepage, uint len ){
+TCHAR[] NewTCHARs( uint codepage, size_t len ){
     auto res = new TCHAR[ len ];
     res[] = '\0';
     return res;

@@ -130,7 +130,7 @@ public Object nativeToJava(TransferData transferData){
             int cchWideChar  = OS.MultiByteToWideChar (codePage, OS.MB_PRECOMPOSED, lpMultiByteStr, -1, null, 0);
             if (cchWideChar is 0) return null;
             wchar[] lpWideCharStr = new wchar [cchWideChar - 1];
-            OS.MultiByteToWideChar (codePage, OS.MB_PRECOMPOSED, lpMultiByteStr, -1, lpWideCharStr.ptr, lpWideCharStr.length);
+            OS.MultiByteToWideChar (codePage, OS.MB_PRECOMPOSED, lpMultiByteStr, -1, lpWideCharStr.ptr, cast(int)/*64bit*/lpWideCharStr.length);
             return new ArrayWrapperString( WCHARzToStr( lpWideCharStr.ptr) );
         } finally {
             OS.GlobalUnlock(hMem);

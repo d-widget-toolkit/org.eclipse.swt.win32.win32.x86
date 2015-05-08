@@ -641,7 +641,7 @@ package:
             } else {
                 segment = text.substring(lastSegmentIndex, segmentIndex);
                 printDecorationSegment(segment, i, page, header, layout);
-                lastSegmentIndex = segmentIndex + StyledTextPrintOptions.SEPARATOR.length;
+                lastSegmentIndex = segmentIndex + cast(int)/*64bit*/StyledTextPrintOptions.SEPARATOR.length;
             }
         }
     }
@@ -803,12 +803,12 @@ package:
         int index = -1;
         foreach( i, col; colorTable ){
             if( col == color ){
-                index = i;
+                index = cast(int)/*64bit*/i;
                 break;
             }
         }
         if (index is -1) {
-            index = colorTable.length;
+            index = cast(int)/*64bit*/colorTable.length;
             colorTable ~= color;
         }
         return index;
@@ -825,12 +825,12 @@ package:
         int index = -1;
         foreach( i, f; colorTable ){
             if( f == font ){
-                index = i;
+                index = cast(int)/*64bit*/i;
                 break;
             }
         }
         if (index is -1) {
-            index = fontTable.length;
+            index = cast(int)/*64bit*/fontTable.length;
             fontTable ~= font;
         }
         return index;
@@ -876,8 +876,8 @@ package:
      * @param end end offset of segment
      */
     void write(String string, int start, int end) {
-        int incr;
-        for (int index = start; index < end; index += incr) {
+        ptrdiff_t incr;
+        for (auto index = start; index < end; index += incr) {
             dchar ch = string.dcharAt(index, incr);
             if (ch > 0xFF && WriteUnicode) {
                 // write the sub string from the last escaped character
@@ -888,7 +888,7 @@ package:
                 write("\\u");
                 write( String_valueOf( cast(short)ch ));
                 write(' ');                     // control word delimiter
-                start = index + incr;
+                start = cast(int)/*64bit*/(index + incr);
             } else if (ch is '}' || ch is '{' || ch is '\\') {
                 // write the sub string from the last escaped character
                 // to the current one. Fixes bug 21698.
@@ -989,8 +989,8 @@ package:
             lineAlignment = renderer.getLineAlignment(lineIndex, alignment);
             lineIndent =  renderer.getLineIndent(lineIndex, indent);
             lineJustify = renderer.getLineJustify(lineIndex, justify);
-            ranges = renderer.getRanges(lineOffset, line.length);
-            styles = renderer.getStyleRanges(lineOffset, line.length, false);
+            ranges = renderer.getRanges(lineOffset, cast(int)/*64bit*/line.length);
+            styles = renderer.getStyleRanges(lineOffset, cast(int)/*64bit*/line.length, false);
         }
         if (styles is null) styles = new StyleRange[0];
         Color lineBackground = renderer.getLineBackground(lineIndex, null);
@@ -1010,7 +1010,7 @@ package:
         if (isClosed()) {
             SWT.error(SWT.ERROR_IO);
         }
-        write(lineDelimiter, 0, lineDelimiter.length);
+        write(lineDelimiter, 0, cast(int)/*64bit*/lineDelimiter.length);
         write("\\par ");
     }
     /**
@@ -1032,7 +1032,7 @@ package:
      *  May be null.
      */
     void writeStyledLine(String line, int lineOffset, int ranges[], StyleRange[] styles, Color lineBackground, int indent, int alignment, bool justify) {
-        int lineLength = line.length;
+        int lineLength = cast(int)/*64bit*/line.length;
         int startOffset = getStart();
         int writeOffset = startOffset - lineOffset;
         if (writeOffset >= lineLength) return;
@@ -1262,7 +1262,7 @@ package:
             SWT.error(SWT.ERROR_IO);
         }
         int writeOffset = startOffset - lineOffset;
-        int lineLength = line.length;
+        int lineLength = cast(int)/*64bit*/line.length;
         int lineIndex;
         if (writeOffset >= lineLength) {
             return;                         // whole line is outside write range
@@ -1928,7 +1928,7 @@ int getAvailableHeightBellow(int height) {
  *  has the SWT.SINGLE style.
  */
 String getModelDelimitedText(String text) {
-    int length = text.length;
+    int length = cast(int)/*64bit*/text.length;
     if (length is 0) {
         return text;
     }
@@ -2248,7 +2248,7 @@ void doBackspace() {
         if (caretOffset is lineOffset) {
             // DWT: on line start, delete line break
             lineOffset = content.getOffsetAtLine(lineIndex - 1);
-            event.start = lineOffset + content.getLine(lineIndex - 1).length;
+            event.start = lineOffset + cast(int)/*64bit*/content.getLine(lineIndex - 1).length;
             event.end = caretOffset;
         } else {
             TextLayout layout = renderer.getTextLayout(lineIndex);
@@ -2373,7 +2373,7 @@ void doDelete() {
     } else if (caretOffset < content.getCharCount()) {
         int line = content.getLineAtOffset(caretOffset);
         int lineOffset = content.getOffsetAtLine(line);
-        int lineLength = content.getLine(line).length;
+        int lineLength = cast(int)/*64bit*/content.getLine(line).length;
         if (caretOffset is lineOffset + lineLength) {
             event.start = caretOffset;
             event.end = content.getOffsetAtLine(line + 1);
@@ -2475,7 +2475,7 @@ void doLineEnd() {
         lineEndOffset = lineOffset + offsets[lineIndex + 1];
         renderer.disposeTextLayout(layout);
     } else {
-        int lineLength = content.getLine(caretLine).length;
+        int lineLength = cast(int)/*64bit*/content.getLine(caretLine).length;
         lineEndOffset = lineOffset + lineLength;
     }
     if (caretOffset < lineEndOffset) {
@@ -2773,14 +2773,14 @@ void doPageEnd() {
                 index--;
             }
             if (index is -1 && lineIndex > 0) {
-                bottomOffset = content.getOffsetAtLine(lineIndex - 1) + content.getLine(lineIndex - 1).length;
+                bottomOffset = content.getOffsetAtLine(lineIndex - 1) + cast(int)/*64bit*/content.getLine(lineIndex - 1).length;
             } else {
                 bottomOffset = content.getOffsetAtLine(lineIndex) + Math.max(0, getPreviousCharOffset(lineIndex, layout.getLineOffsets()[index + 1]));
             }
             renderer.disposeTextLayout(layout);
         } else {
             int lineIndex = getBottomIndex();
-            bottomOffset = content.getOffsetAtLine(lineIndex) + content.getLine(lineIndex).length;
+            bottomOffset = content.getOffsetAtLine(lineIndex) + cast(int)/*64bit*/content.getLine(lineIndex).length;
         }
         if (caretOffset < bottomOffset) {
             caretOffset = bottomOffset;
@@ -3017,7 +3017,7 @@ void doSelectionCursorPrevious() {
     } else if (caretLine > 0) {
         caretLine--;
         lineOffset = content.getOffsetAtLine(caretLine);
-        caretOffset = lineOffset + content.getLine(caretLine).length;
+        caretOffset = lineOffset + cast(int)/*64bit*/content.getLine(caretLine).length;
         showCaret();
     }
 }
@@ -3225,7 +3225,7 @@ public int getBaseline(int offset) {
     int lineIndex = content.getLineAtOffset(offset);
     int lineOffset = content.getOffsetAtLine(lineIndex);
     TextLayout layout = renderer.getTextLayout(lineIndex);
-    int lineInParagraph = layout.getLineIndex(Math.min(offset - lineOffset, layout.getText().length));
+    int lineInParagraph = layout.getLineIndex(Math.min(offset - lineOffset, cast(int)/*64bit*/layout.getText().length));
     FontMetrics metrics = layout.getLineMetrics(lineInParagraph);
     renderer.disposeTextLayout(layout);
     return metrics.getAscent() + metrics.getLeading();
@@ -3292,7 +3292,7 @@ Rectangle getBoundsAtOffset(int offset) {
         bounds = new Rectangle (0, 0, 0, renderer.getLineHeight());
     }
     if (offset is caretOffset) {
-        int lineEnd = lineOffset + line.length;
+        int lineEnd = lineOffset + cast(int)/*64bit*/line.length;
         if (offset is lineEnd && caretAlignment is PREVIOUS_OFFSET_TRAILING) {
             bounds.width += getCaretWidth();
         }
@@ -3731,7 +3731,7 @@ public int getLineHeight(int offset) {
     int lineIndex = content.getLineAtOffset(offset);
     int lineOffset = content.getOffsetAtLine(lineIndex);
     TextLayout layout = renderer.getTextLayout(lineIndex);
-    int lineInParagraph = layout.getLineIndex(Math.min(offset - lineOffset, layout.getText().length));
+    int lineInParagraph = layout.getLineIndex(Math.min(offset - lineOffset, cast(int)/*64bit*/layout.getText().length));
     int height = layout.getLineBounds(lineInParagraph).height;
     renderer.disposeTextLayout(layout);
     return height;
@@ -4008,7 +4008,7 @@ int getOffsetAtPoint(int x, int y, int lineIndex) {
             int level;
             int offset = offsetInLine;
             while (offset > 0 && Character.isDigit(line.dcharAt(offset)))
-                offset = line.offsetBefore(offset);
+                offset = cast(int)/*64bit*/line.offsetBefore(offset);
             if (offset is 0 && Character.isDigit(line.dcharAt(offset))) {
                 level = isMirrored() ? 1 : 0;
             } else {
@@ -4328,12 +4328,12 @@ int [] getBidiSegments(int lineOffset, String line) {
         return getBidiSegmentsCompatibility(line, lineOffset);
     }
     StyledTextEvent event = sendLineEvent(LineGetSegments, lineOffset, line);
-    int lineLength = line.length;
+    int lineLength = cast(int)/*64bit*/line.length;
     int[] segments;
     if (event is null || event.segments is null || event.segments.length is 0) {
         segments = [0, lineLength];
     } else {
-        int segmentCount = event.segments.length;
+        int segmentCount = cast(int)/*64bit*/event.segments.length;
 
         // test segment index consistency
         if (event.segments[0] !is 0) {
@@ -4360,7 +4360,7 @@ int [] getBidiSegments(int lineOffset, String line) {
  * Supports deprecated setBidiColoring API. Remove when API is removed.
  */
 int [] getBidiSegmentsCompatibility(String line, int lineOffset) {
-    int lineLength = line.length;
+    int lineLength = cast(int)/*64bit*/line.length;
     if (!bidiColoring) {
         return [0, lineLength];
     }
@@ -4383,7 +4383,7 @@ int [] getBidiSegmentsCompatibility(String line, int lineOffset) {
         StyleRange style = styles[i];
         int styleLineStart = Math.max(style.start - lineOffset, 0);
         int styleLineEnd = Math.max(style.start + style.length - lineOffset, styleLineStart);
-        styleLineEnd = Math.min (styleLineEnd, line.length );
+        styleLineEnd = Math.min (styleLineEnd, cast(int)/*64bit*/line.length );
         if (i > 0 && count > 1 &&
             ((styleLineStart >= offsets[count-2] && styleLineStart <= offsets[count-1]) ||
              (styleLineEnd >= offsets[count-2] && styleLineEnd <= offsets[count-1])) &&
@@ -4671,7 +4671,7 @@ public Rectangle getTextBounds(int start, int end) {
     for (int i = lineStart; i <= lineEnd; i++) {
         int lineOffset = content.getOffsetAtLine(i);
         TextLayout layout = renderer.getTextLayout(i);
-        int length = layout.getText().length;
+        int length = cast(int)/*64bit*/layout.getText().length;
         if (length > 0) {
             if (i is lineStart) {
                 if (i is lineEnd) {
@@ -4811,14 +4811,14 @@ int getCaretDirection() {
     int lineOffset = content.getOffsetAtLine(caretLine);
     String line = content.getLine(caretLine);
     int offset = caretOffset - lineOffset;
-    int lineLength = line.length;
+    int lineLength = cast(int)/*64bit*/line.length;
     if (lineLength is 0) return isMirrored() ? SWT.RIGHT : SWT.LEFT;
     if (caretAlignment is PREVIOUS_OFFSET_TRAILING && offset > 0)
-        offset = line.offsetBefore(offset);
+        offset = cast(int)/*64bit*/line.offsetBefore(offset);
     if (offset is lineLength && offset > 0)
-        offset = line.offsetBefore(offset);
+        offset = cast(int)/*64bit*/line.offsetBefore(offset);
     while (offset > 0 && Character.isDigit(line.dcharAt(offset)))
-        offset = line.offsetBefore(offset);
+        offset = cast(int)/*64bit*/line.offsetBefore(offset);
     if (offset is 0 && Character.isDigit(line.dcharAt(offset))) {
         return isMirrored() ? SWT.RIGHT : SWT.LEFT;
     }
@@ -4852,7 +4852,7 @@ int getWordNext (int offset, int movement) {
         int lineIndex = content.getLineAtOffset(offset);
         lineOffset = content.getOffsetAtLine(lineIndex);
         lineText = content.getLine(lineIndex);
-        int lineLength = lineText.length;
+        int lineLength = cast(int)/*64bit*/lineText.length;
         if (offset is lineOffset + lineLength) {
             newOffset = content.getOffsetAtLine(lineIndex + 1);
         } else {
@@ -4878,7 +4878,7 @@ int getWordPrevious(int offset, int movement) {
         if (offset is lineOffset) {
             String nextLineText = content.getLine(lineIndex - 1);
             int nextLineOffset = content.getOffsetAtLine(lineIndex - 1);
-            newOffset = nextLineOffset + nextLineText.length;
+            newOffset = nextLineOffset + cast(int)/*64bit*/nextLineText.length;
         } else {
             TextLayout layout = renderer.getTextLayout(lineIndex);
             newOffset = lineOffset + layout.getPreviousOffset(offset - lineOffset, movement);
@@ -4910,7 +4910,7 @@ Point getPointAtOffset(int offset) {
     String line = content.getLine(lineIndex);
     int lineOffset = content.getOffsetAtLine(lineIndex);
     int offsetInLine = offset - lineOffset;
-    int lineLength = line.length;
+    int lineLength = cast(int)/*64bit*/line.length;
     if (lineIndex < content.getLineCount() - 1) {
         int afterEndLineOffset = content.getOffsetAtLine(lineIndex + 1);
         if (lineLength < offsetInLine && offsetInLine < afterEndLineOffset) {
@@ -5065,7 +5065,7 @@ void internalRedrawRange(int start, int length) {
     TextLayout layout = renderer.getTextLayout(startLine);
     int lineX = leftMargin - horizontalScrollOffset, startLineY = getLinePixel(startLine);
     int[] offsets = layout.getLineOffsets();
-    int startIndex = layout.getLineIndex(Math.min(start, layout.getText().length));
+    int startIndex = layout.getLineIndex(Math.min(start, cast(int)/*64bit*/layout.getText().length));
 
     /* Redraw end of line before start line if wrapped and start offset is first char */
     if (wordWrap && startIndex > 0 && offsets[startIndex] is start) {
@@ -5078,7 +5078,7 @@ void internalRedrawRange(int start, int length) {
     }
 
     if (startLine is endLine) {
-        int endIndex = layout.getLineIndex(Math.min(end, layout.getText().length));
+        int endIndex = layout.getLineIndex(Math.min(end, cast(int)/*64bit*/layout.getText().length));
         if (startIndex is endIndex) {
             /* Redraw rect between start and end offset if start and end offsets are in same wrapped line */
             Rectangle rect = layout.getBounds( start, getPreviousCharOffset(startLine, end) );
@@ -5109,7 +5109,7 @@ void internalRedrawRange(int start, int length) {
         layout = renderer.getTextLayout(endLine);
         offsets = layout.getLineOffsets();
     }
-    int endIndex = layout.getLineIndex(Math.min(end, layout.getText().length));
+    int endIndex = layout.getLineIndex(Math.min(end, cast(int)/*64bit*/layout.getText().length));
     Rectangle endRect = layout.getBounds(offsets[endIndex], getPreviousCharOffset(endLine, end));
     if (endRect.height is 0) {
         Rectangle bounds = layout.getLineBounds(endIndex);
@@ -5141,7 +5141,7 @@ void handleCompositionChanged(Event event) {
     String text = event.text;
     int start = event.start;
     int end = event.end;
-    int length = text.length;
+    int length = cast(int)/*64bit*/text.length;
     if (length is ime.getCommitCount()) {
         content.replaceTextRange(start, end - start, "");
         caretOffset = ime.getCompositionOffset();
@@ -5736,7 +5736,7 @@ Label getAssociatedLabel () {
 }
 String stripMnemonic (String string) {
     int index = 0;
-    int length_ = string.length;
+    int length_ = cast(int)/*64bit*/string.length;
     do {
         while ((index < length_) && (string[index] !is '&')) index++;
         if (++index >= length_) return string;
@@ -5755,7 +5755,7 @@ String stripMnemonic (String string) {
 dchar _findMnemonic (String string) {
     if (string is null) return '\0';
     int index = 0;
-    int length_ = string.length;
+    int length_ = cast(int)/*64bit*/string.length;
     do {
         while (index < length_ && string[index] !is '&') index++;
         if (++index >= length_) return '\0';
@@ -5985,7 +5985,7 @@ void modifyContent(Event event, bool updateCaret) {
         if (isListening(ExtendedModify)) {
             styledTextEvent = new StyledTextEvent(content);
             styledTextEvent.start = event.start;
-            styledTextEvent.end = event.start + event.text.length;
+            styledTextEvent.end = event.start + cast(int)/*64bit*/event.text.length;
             styledTextEvent.text = content.getTextRange(event.start, replacedLength);
         }
         if (updateCaret) {
@@ -6015,7 +6015,7 @@ void modifyContent(Event event, bool updateCaret) {
         // fixes 1GBB8NJ
         if (updateCaret) {
             // always update the caret location. fixes 1G8FODP
-            setSelection(event.start + event.text.length, 0, true);
+            setSelection(event.start + cast(int)/*64bit*/event.text.length, 0, true);
             showCaret();
         }
         sendModifyEvent(event);
@@ -6803,10 +6803,10 @@ void sendModifyEvent(Event event) {
         accessible.textChanged(ACC.TEXT_DELETE, event.start, event.end - event.start);
     } else {
         if (event.start is event.end) {
-            accessible.textChanged(ACC.TEXT_INSERT, event.start, event.text.length);
+            accessible.textChanged(ACC.TEXT_INSERT, event.start, cast(int)/*64bit*/event.text.length);
         } else {
             accessible.textChanged(ACC.TEXT_DELETE, event.start, event.end - event.start);
-            accessible.textChanged(ACC.TEXT_INSERT, event.start, event.text.length);
+            accessible.textChanged(ACC.TEXT_INSERT, event.start, cast(int)/*64bit*/event.text.length);
         }
     }
     notifyListeners(SWT.Modify, event);
@@ -8197,7 +8197,7 @@ public void setText(String text) {
         if (isListening(ExtendedModify)) {
             styledTextEvent = new StyledTextEvent(content);
             styledTextEvent.start = event.start;
-            styledTextEvent.end = event.start + event.text.length;
+            styledTextEvent.end = event.start + cast(int)/*64bit*/event.text.length;
             styledTextEvent.text = content.getTextRange(event.start, event.end - event.start);
         }
         content.setText(event.text);
@@ -8472,6 +8472,6 @@ int getPreviousCharOffset(String F = __FILE__, uint L = __LINE__)(int lineIndex,
         getDwtLogger().warn(F, L, Format("Clamped UTF-8 offset:\noffsetInLine = {}, line.length = {}, line = {}", offsetInLine, line.length, line));
         return offsetInLine - 1;
     }
-    return line.offsetBefore(offsetInLine);
+    return cast(int)/*64bit*/line.offsetBefore(offsetInLine);
 }
 }

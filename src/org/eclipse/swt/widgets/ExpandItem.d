@@ -164,8 +164,8 @@ private void drawChevron (HDC hDC, RECT* rect) {
                 px,py, px+1,py, px+1,py+1, px+2,py+1, px+2,py+2, px+3,py+2, px+3,py+3,
                 px+3,py+2, px+4,py+2, px+4,py+1,  px+5,py+1, px+5,py, px+7,py];
     }
-    OS.Polyline (hDC, cast(POINT*)polyline1.ptr, polyline1.length / 2);
-    OS.Polyline (hDC, cast(POINT*)polyline2.ptr, polyline2.length / 2);
+    OS.Polyline (hDC, cast(POINT*)polyline1.ptr, cast(int)/*64bit*/polyline1.length / 2);
+    OS.Polyline (hDC, cast(POINT*)polyline2.ptr, cast(int)/*64bit*/polyline2.length / 2);
     if (hover) {
         HPEN whitePen = OS.CreatePen (OS.PS_SOLID, 1, OS.GetSysColor (OS.COLOR_3DHILIGHT));
         HPEN darkGrayPen = OS.CreatePen (OS.PS_SOLID, 1, OS.GetSysColor (OS.COLOR_3DSHADOW));
@@ -174,13 +174,13 @@ private void drawChevron (HDC hDC, RECT* rect) {
                 rect.left, rect.bottom,
                 rect.left, rect.top,
                 rect.right, rect.top];
-        OS.Polyline (hDC, cast(POINT*)points1.ptr, points1.length / 2);
+        OS.Polyline (hDC, cast(POINT*)points1.ptr, cast(int)/*64bit*/points1.length / 2);
         OS.SelectObject (hDC, darkGrayPen);
         int [] points2 = [
                 rect.right, rect.top,
                 rect.right, rect.bottom,
                 rect.left, rect.bottom];
-        OS.Polyline (hDC, cast(POINT*)points2.ptr, points2.length / 2);
+        OS.Polyline (hDC, cast(POINT*)points2.ptr, cast(int)/*64bit*/points2.length / 2);
         OS.SelectObject (hDC, oldPen);
         OS.DeleteObject (whitePen);
         OS.DeleteObject (darkGrayPen);
@@ -215,10 +215,10 @@ void drawItem (GC gc, HTHEME hTheme, RECT* clipRect, bool drawFocus) {
         rect.left += ExpandItem.TEXT_INSET;
         auto buffer = StrToTCHARs ( text/+, parent.getCodePage ()+/ );
         if (hTheme !is null) {
-            OS.DrawThemeText (hTheme, hDC, OS.EBP_NORMALGROUPHEAD, 0, buffer.ptr, buffer.length, OS.DT_VCENTER | OS.DT_SINGLELINE, 0, &rect);
+            OS.DrawThemeText (hTheme, hDC, OS.EBP_NORMALGROUPHEAD, 0, buffer.ptr, cast(int)/*64bit*/buffer.length, OS.DT_VCENTER | OS.DT_SINGLELINE, 0, &rect);
         } else {
             int oldBkMode = OS.SetBkMode (hDC, OS.TRANSPARENT);
-            OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, OS.DT_VCENTER | OS.DT_SINGLELINE);
+            OS.DrawText (hDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &rect, OS.DT_VCENTER | OS.DT_SINGLELINE);
             OS.SetBkMode (hDC, oldBkMode);
         }
     }
@@ -246,7 +246,7 @@ void drawItem (GC gc, HTHEME hTheme, RECT* clipRect, bool drawFocus) {
                     x, y + headerHeight + height,
                     x + width - 1, y + headerHeight + height,
                     x + width - 1, y + headerHeight - 1];
-            OS.Polyline (hDC, cast(POINT*) points.ptr, points.length / 2);
+            OS.Polyline (hDC, cast(POINT*) points.ptr, cast(int)/*64bit*/points.length / 2);
             OS.SelectObject (hDC, oldPen);
             OS.DeleteObject (pen);
         }
@@ -344,9 +344,9 @@ int getPreferredWidth (HTHEME hTheme, HDC hDC) {
         RECT rect;
         auto buffer = StrToTCHARs (/+parent.getCodePage (),+/ text);
         if (hTheme !is null) {
-            OS.GetThemeTextExtent (hTheme, hDC, OS.EBP_NORMALGROUPHEAD, 0, buffer.ptr, buffer.length, OS.DT_SINGLELINE, null, &rect);
+            OS.GetThemeTextExtent (hTheme, hDC, OS.EBP_NORMALGROUPHEAD, 0, buffer.ptr, cast(int)/*64bit*/buffer.length, OS.DT_SINGLELINE, null, &rect);
         } else {
-            OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, OS.DT_CALCRECT);
+            OS.DrawText (hDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &rect, OS.DT_CALCRECT);
         }
         width += (rect.right - rect.left);
     }

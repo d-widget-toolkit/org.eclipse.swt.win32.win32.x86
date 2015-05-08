@@ -95,7 +95,7 @@ public override int read() {
     return nextDecodedByte & 0xFF;
 }
 
-public override int read(byte[] buffer, int off, int len) {
+public override ptrdiff_t read(byte[] buffer, ptrdiff_t off, ptrdiff_t len) {
     for (int i = 0; i < len; i++) {
         int b = read();
         if (b is -1) return i;

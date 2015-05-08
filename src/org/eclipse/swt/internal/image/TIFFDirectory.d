@@ -146,7 +146,7 @@ void decodePixels(ImageData image)  {
     byte[] imageData = new byte[(imageWidth * depth + 7) / 8 * imageLength];
     image.data = imageData;
     int destIndex = 0;
-    int length = stripOffsets.length;
+    int length = cast(int)/*64bit*/stripOffsets.length;
     for (int i = 0; i < length; i++) {
         /* Read a strip */
         byte[] data = new byte[](stripByteCounts[i]);
@@ -242,10 +242,10 @@ int formatStrips(int rowByteSize, int nbrRows, byte[] data, int maxStripByteSize
     int n, nbrRowsPerStrip;
     if (rowByteSize > maxStripByteSize) {
         /* Each strip contains 1 row */
-        n = data.length / rowByteSize;
+        n = cast(int)/*64bit*/data.length / rowByteSize;
         nbrRowsPerStrip = 1;
     } else {
-        int nbr = (data.length + maxStripByteSize - 1) / maxStripByteSize;
+        int nbr = (cast(int)/*64bit*/data.length + maxStripByteSize - 1) / maxStripByteSize;
         nbrRowsPerStrip = nbrRows / nbr;
         n = (nbrRows + nbrRowsPerStrip - 1) / nbrRowsPerStrip;
     }
@@ -276,7 +276,7 @@ int formatStrips(int rowByteSize, int nbrRows, byte[] data, int maxStripByteSize
         offset += stripByteSize;
     }
     /* The last strip may contain fewer rows */
-    int mod = data.length % stripByteSize;
+    int mod = cast(int)/*64bit*/data.length % stripByteSize;
     if (mod !is 0) counts[counts.length - 1] = mod;
 
     strips[0] = offsets;
@@ -291,8 +291,8 @@ int[] formatColorMap(RGB[] rgbs) {
     * 8 bit to 16 bit.
     */
     int[] colorMap = new int[rgbs.length * 3];
-    int offsetGreen = rgbs.length;
-    int offsetBlue = rgbs.length * 2;
+    int offsetGreen = cast(int)/*64bit*/rgbs.length;
+    int offsetBlue = cast(int)/*64bit*/rgbs.length * 2;
     for (int i = 0; i < rgbs.length; i++) {
         colorMap[i] = rgbs[i].red << 8 | rgbs[i].red;
         colorMap[i + offsetGreen] = rgbs[i].green << 8 | rgbs[i].green;
@@ -515,7 +515,7 @@ void write(int photometricInterpretation)  {
     }
     int stripOffsetsOffset = NO_VALUE, stripByteCountsOffset = NO_VALUE;
     int xResolutionOffset, yResolutionOffset, colorMapOffset = NO_VALUE;
-    int cnt = stripOffsets.length;
+    int cnt = cast(int)/*64bit*/stripOffsets.length;
     if (cnt > 1) {
         stripOffsetsOffset = nextOffset;
         nextOffset += 4 * cnt;
@@ -547,7 +547,7 @@ void write(int photometricInterpretation)  {
     writeEntry(TAG_StripByteCounts, TYPE_LONG, cnt, cnt > 1 ? stripByteCountsOffset : stripByteCounts[0]);
     writeEntry(TAG_XResolution, TYPE_RATIONAL, 1, xResolutionOffset);
     writeEntry(TAG_YResolution, TYPE_RATIONAL, 1, yResolutionOffset);
-    if (isColorMap) writeEntry(TAG_ColorMap, TYPE_SHORT, colorMap.length, colorMapOffset);
+    if (isColorMap) writeEntry(TAG_ColorMap, TYPE_SHORT, cast(int)/*64bit*/colorMap.length, colorMapOffset);
     /* Offset of next IFD (0 for last IFD) */
     ostr.writeInt(0);
 

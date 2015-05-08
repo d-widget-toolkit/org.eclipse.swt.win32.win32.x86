@@ -316,7 +316,7 @@ public PrinterData open() {
         /* Get driver and device from the DEVNAMES struct */
         auto hMem = pd.hDevNames;
         /* Ensure size is a multiple of 2 bytes on UNICODE platforms */
-        int size = OS.GlobalSize(hMem) / TCHAR.sizeof * TCHAR.sizeof;
+        auto size = OS.GlobalSize(hMem) / TCHAR.sizeof * TCHAR.sizeof;
         auto ptr = OS.GlobalLock(hMem);
         short[4] offsets;
         OS.MoveMemory(offsets.ptr, ptr, 2 * offsets.length);

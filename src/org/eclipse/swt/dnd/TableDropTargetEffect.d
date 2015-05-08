@@ -160,8 +160,8 @@ public class TableDropTargetEffect : DropTargetEffect {
         } else {
             if (pinfo.iItem !is -1 && scrollIndex is pinfo.iItem && scrollBeginTime !is 0) {
                 if (System.currentTimeMillis() >= scrollBeginTime) {
-                    int top = Math.max (0, OS.SendMessage (handle, OS.LVM_GETTOPINDEX, 0, 0));
-                    int count = OS.SendMessage (handle, OS.LVM_GETITEMCOUNT, 0, 0);
+                    int top = Math.max (0, cast(int)/*64bit*/OS.SendMessage (handle, OS.LVM_GETTOPINDEX, 0, 0));
+                    int count = cast(int)/*64bit*/OS.SendMessage (handle, OS.LVM_GETITEMCOUNT, 0, 0);
                     int index = (scrollIndex - 1 < top) ? Math.max(0, scrollIndex - 1) : Math.min(count - 1, scrollIndex + 1);
                     bool scroll = true;
                     if (pinfo.iItem is top) {

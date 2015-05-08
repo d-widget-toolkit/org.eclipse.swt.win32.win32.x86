@@ -274,7 +274,7 @@ TryConst!(Code) findCode(int value, in Code[] codes) {
     int i, j, k;
 
     i = -1;
-    j = codes.length;
+    j = cast(int)/*64bit*/codes.length;
     while (true) {
         k = (j + i) / 2;
         if (value < codes[k].min) {
@@ -596,7 +596,7 @@ void store() {
 public byte[] deflate(in byte[] input) {
 
     istr = input;
-    inLength = input.length;
+    inLength = cast(int)/*64bit*/input.length;
 
     // write zlib header
     bytes.write(cast(byte) 0x78); // window size = 0x70 (32768), compression method = 0x08

@@ -125,7 +125,7 @@ public void addSelectionListener (SelectionListener listener) {
     addListener (SWT.DefaultSelection,typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.DefWindowProc (hwnd, msg, wParam, lParam);
 }
@@ -197,17 +197,17 @@ override String windowClass () {
     return display.windowClass();
 }
 
-override int windowProc () {
+override ptrdiff_t windowProc () {
     return display.windowProc();
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     super.WM_ERASEBKGND (wParam, lParam);
     drawBackground (cast(HANDLE) wParam);
     return LRESULT.ONE;
 }
 
-override LRESULT WM_KEYDOWN (int wParam, int lParam) {
+override LRESULT WM_KEYDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KEYDOWN (wParam, lParam);
     if (result !is null) return result;
     switch (wParam) {
@@ -274,11 +274,11 @@ override LRESULT WM_KEYDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
+override LRESULT WM_GETDLGCODE (WPARAM wParam, LPARAM lParam) {
     return new LRESULT (OS.DLGC_STATIC);
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_LBUTTONDOWN (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
 
@@ -331,7 +331,7 @@ override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
+override LRESULT WM_LBUTTONUP (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_LBUTTONUP (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
 
@@ -361,7 +361,7 @@ override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
+override LRESULT WM_MOUSEMOVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSEMOVE (wParam, lParam);
     if (result !is null) return result;
     if (!dragging || (wParam & OS.MK_LBUTTON) is 0) return result;
@@ -416,7 +416,7 @@ override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SETCURSOR (int wParam, int lParam) {
+override LRESULT WM_SETCURSOR (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETCURSOR (wParam, lParam);
     if (result !is null) return result;
     int hitTest = cast(short) OS.LOWORD (lParam);

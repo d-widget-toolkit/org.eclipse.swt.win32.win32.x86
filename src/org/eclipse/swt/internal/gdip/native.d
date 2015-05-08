@@ -29,8 +29,8 @@ enum DebugEventLevel {
 
 alias void  function(DebugEventLevel level, char* message) DebugEventProc;
 
-alias int   function(out uint token) NotificationHookProc;
-alias void  function(in  uint token) NotificationUnhookProc;
+alias int   function(out ULONG_PTR token) NotificationHookProc;
+alias void  function(in  ULONG_PTR token) NotificationUnhookProc;
 
 
 /******************************************************************************
@@ -57,7 +57,7 @@ struct GpBitmapData {
   int Stride;
   int PixelFormat;
   void* Scan0;
-  int Reserved;
+  size_t Reserved;
 }
 
 struct GpColorMatrix {
@@ -210,7 +210,7 @@ alias uint GraphicsState;
 extern (Windows):
 
 version( STATIC_GDIPLUS ){
-Status GdiplusStartup(uint* token, GdiplusStartupInput* input, GdiplusStartupOutput* output);
+Status GdiplusStartup(ULONG_PTR* token, GdiplusStartupInput* input, GdiplusStartupOutput* output);
 void   GdiplusShutdown(in uint token);
 Status GdipCreateFromHDC(Handle hdc, out Handle graphics);
 Status GdipCreateFromHDC2(Handle hdc, Handle hDevice, out Handle graphics);
@@ -728,8 +728,8 @@ void loadLib_Gdip(){
 }
 else{ // version(!STATIC_GDIPLUS)
 import java.nonstandard.SharedLib;
-Status function(uint* token, GdiplusStartupInput* input, GdiplusStartupOutput* output) GdiplusStartup;
-void   function(in uint token) GdiplusShutdown;
+Status function(ULONG_PTR* token, GdiplusStartupInput* input, GdiplusStartupOutput* output) GdiplusStartup;
+void   function(in ULONG_PTR token) GdiplusShutdown;
 Status function(Handle hdc, out Handle graphics) GdipCreateFromHDC;
 Status function(Handle hdc, Handle hDevice, out Handle graphics) GdipCreateFromHDC2;
 Status function(Handle hwnd, out Handle graphics) GdipCreateFromHWND;

@@ -46,7 +46,7 @@ void seek(int pos) {
                 System.arraycopy(oldBuffers, 0, buffers, 0, oldBuffers.length);
             }
             if (buffers[index] is null) buffers[index] = new byte[CHUNK_SIZE];
-            int cnt = inputStream.read(buffers[index], offset, Math.min(n, CHUNK_SIZE - offset));
+            int cnt = cast(int)/*64bit*/inputStream.read(buffers[index], offset, Math.min(n, CHUNK_SIZE - offset));
             n -= cnt;
             next += cnt;
             index++;
@@ -56,7 +56,7 @@ void seek(int pos) {
 }
 
 void read(byte b[]) {
-    int size = b.length;
+    int size = cast(int)/*64bit*/b.length;
     int nCached = Math.min(size, next - current);
     int nMissing = size - next + current;
     int destNext = 0;
@@ -84,7 +84,7 @@ void read(byte b[]) {
                 System.arraycopy(oldBuffers, 0, buffers, 0, oldBuffers.length);
             }
             if (buffers[index] is null) buffers[index] = new byte[CHUNK_SIZE];
-            int cnt = inputStream.read(buffers[index], offset, Math.min(nMissing, CHUNK_SIZE - offset));
+            auto cnt = inputStream.read(buffers[index], offset, Math.min(nMissing, CHUNK_SIZE - offset));
             System.arraycopy(buffers[index], offset, b, destNext, cnt);
             nMissing -= cnt;
             next += cnt;

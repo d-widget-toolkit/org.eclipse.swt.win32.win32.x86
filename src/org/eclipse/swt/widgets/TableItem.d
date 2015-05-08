@@ -264,16 +264,16 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
     if (parent.fixScrollWidth) parent.setScrollWidth (null, true);
     RECT rect;
     auto hwnd = parent.handle;
-    int bits = OS.SendMessage (hwnd, OS.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0);
+    auto bits = OS.SendMessage (hwnd, OS.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0);
     if (column is 0 && (bits & OS.LVS_EX_FULLROWSELECT) is 0) {
         if (parent.explorerTheme) {
             rect.left = OS.LVIR_ICON;
             parent.ignoreCustomDraw = true;
-            int code = OS.SendMessage (hwnd, OS. LVM_GETITEMRECT, row, &rect);
+            auto code = OS.SendMessage (hwnd, OS. LVM_GETITEMRECT, row, &rect);
             parent.ignoreCustomDraw = false;
             if (code is 0) return RECT.init;
             if (getText) {
-                int width = 0;
+                .LRESULT width = 0;
                 auto hFont = fontHandle (column);
                 if (hFont is cast(HFONT)-1 && hDC is null) {
                     LPCTSTR buffer = StrToTCHARz (parent.getCodePage (), text);
@@ -287,7 +287,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
                     }
                     RECT textRect;
                     int flags = OS.DT_NOPREFIX | OS.DT_SINGLELINE | OS.DT_CALCRECT;
-                    OS.DrawText (textDC, buffer.ptr, buffer.length, &textRect, flags);
+                    OS.DrawText (textDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &textRect, flags);
                     width = textRect.right - textRect.left;
                     if (hDC is null) {
                         if (oldFont !is cast(HFONT)-1) OS.SelectObject (textDC, oldFont);
@@ -301,7 +301,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
             if (getText) {
                 rect.left = OS.LVIR_SELECTBOUNDS;
                 parent.ignoreCustomDraw = true;
-                int code = OS.SendMessage (hwnd, OS.LVM_GETITEMRECT, row, &rect);
+                auto code = OS.SendMessage (hwnd, OS.LVM_GETITEMRECT, row, &rect);
                 parent.ignoreCustomDraw = false;
                 if (code is 0) return RECT.init;
                 if (!getImage) {
@@ -315,7 +315,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
             } else {
                 rect.left = OS.LVIR_ICON;
                 parent.ignoreCustomDraw = true;
-                int code = OS.SendMessage (hwnd, OS.LVM_GETITEMRECT, row, &rect);
+                auto code = OS.SendMessage (hwnd, OS.LVM_GETITEMRECT, row, &rect);
                 parent.ignoreCustomDraw = false;
                 if (code is 0) return RECT.init;
             }
@@ -346,7 +346,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
             */
             rect.left = getText ? OS.LVIR_LABEL : OS.LVIR_ICON;
             parent.ignoreCustomDraw = true;
-            int code = OS.SendMessage (hwnd, OS. LVM_GETSUBITEMRECT, row, &rect);
+            auto code = OS.SendMessage (hwnd, OS. LVM_GETSUBITEMRECT, row, &rect);
             parent.ignoreCustomDraw = false;
             if (code is 0) return RECT.init;
             /*
@@ -388,7 +388,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
         } else {
             rect.left = OS.LVIR_ICON;
             parent.ignoreCustomDraw = true;
-            int code = OS.SendMessage (hwnd, OS. LVM_GETSUBITEMRECT, row, &rect);
+            auto code = OS.SendMessage (hwnd, OS. LVM_GETSUBITEMRECT, row, &rect);
             parent.ignoreCustomDraw = false;
             if (code is 0) return RECT.init;
             if (!hasImage) rect.right = rect.left;
@@ -398,7 +398,7 @@ RECT getBounds (int row, int column, bool getText, bool getImage, bool fullText,
                     RECT textRect;
                     StringT buffer = StrToTCHARs (parent.getCodePage (), string, false);
                     int flags = OS.DT_NOPREFIX | OS.DT_SINGLELINE | OS.DT_CALCRECT;
-                    OS.DrawText (hDC, buffer.ptr, buffer.length, &textRect, flags);
+                    OS.DrawText (hDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &textRect, flags);
                     rect.right += textRect.right - textRect.left + Table.INSET * 3 + 1;
                 }
             }
@@ -876,7 +876,7 @@ public void setFont (Font font){
             lvItem.mask = OS.LVIF_TEXT;
             lvItem.iItem = itemIndex;
             lvItem.pszText = OS.LPSTR_TEXTCALLBACK;
-            OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, cast(int) &lvItem);
+            OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, &lvItem);
             cached = false;
         }
     }
@@ -940,7 +940,7 @@ public void setFont (int index, Font font) {
                 lvItem.mask = OS.LVIF_TEXT;
                 lvItem.iItem = itemIndex;
                 lvItem.pszText = OS.LPSTR_TEXTCALLBACK;
-                OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, cast(int) &lvItem);
+                OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, &lvItem);
                 cached = false;
             }
         }
@@ -1147,7 +1147,7 @@ public void setImageIndent (int indent) {
             lvItem.mask = OS.LVIF_INDENT;
             lvItem.iItem = index;
             lvItem.iIndent = indent;
-            OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, cast(int) &lvItem);
+            OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, &lvItem);
         }
     }
     parent.setScrollWidth (this, false);
@@ -1220,7 +1220,7 @@ public void setText (int index, String string) {
                 lvItem.mask = OS.LVIF_TEXT;
                 lvItem.iItem = itemIndex;
                 lvItem.pszText = OS.LPSTR_TEXTCALLBACK;
-                OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, cast(int) &lvItem);
+                OS.SendMessage (hwnd, OS.LVM_SETITEM, 0, &lvItem);
                 cached = false;
             }
         }

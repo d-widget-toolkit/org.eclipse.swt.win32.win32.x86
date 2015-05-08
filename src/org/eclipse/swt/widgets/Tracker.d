@@ -840,13 +840,13 @@ public void setStippled (bool stippled) {
     this.stippled = stippled;
 }
 
-private static extern(Windows) int transparentFunc (HWND hwnd, int msg, int wParam, int lParam) {
+private static extern(Windows) .LRESULT transparentFunc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     Display d = Display.getCurrent();
     auto t = cast(Tracker) d.findControl( hwnd );
     return t.transparentProc( hwnd, msg, wParam, lParam );
 }
 
-int transparentProc (HWND hwnd, int msg, int wParam, int lParam) {
+.LRESULT transparentProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
         /*
         * We typically do not want to answer that the transparent window is
@@ -924,7 +924,7 @@ void update () {
     }
 }
 
-override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
+override LRESULT wmKeyDown (HWND hwnd, WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.wmKeyDown (hwnd, wParam, lParam);
     if (result !is null) return result;
     bool isMirrored = parent !is null && (parent.style & SWT.MIRRORED) !is 0;
@@ -987,7 +987,7 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
              * values have changed.
              */
             if (rectangles !is oldRectangles) {
-                int length = rectangles.length;
+                auto length = rectangles.length;
                 if (length !is rectsToErase.length) {
                     draw = true;
                 } else {
@@ -1030,7 +1030,7 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
              * values have changed.
              */
             if (rectangles !is oldRectangles) {
-                int length = rectangles.length;
+                auto length = rectangles.length;
                 if (length !is rectsToErase.length) {
                     draw = true;
                 } else {
@@ -1059,7 +1059,7 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmSysKeyDown (HWND hwnd, int wParam, int lParam) {
+override LRESULT wmSysKeyDown (HWND hwnd, WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.wmSysKeyDown (hwnd, wParam, lParam);
     if (result !is null) return result;
     cancelled = true;
@@ -1067,7 +1067,7 @@ override LRESULT wmSysKeyDown (HWND hwnd, int wParam, int lParam) {
     return result;
 }
 
-LRESULT wmMouse (int message, int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmMouse (int message, WPARAM wParam, LPARAM lParam) {
     bool isMirrored = parent !is null && (parent.style & SWT.MIRRORED) !is 0;
     int newPos = OS.GetMessagePos ();
     int newX = OS.GET_X_LPARAM (newPos);
@@ -1110,7 +1110,7 @@ LRESULT wmMouse (int message, int /*long*/ wParam, int /*long*/ lParam) {
              * values have changed.
              */
             if (rectangles !is oldRectangles) {
-                int length = rectangles.length;
+                auto length = rectangles.length;
                 if (length !is rectsToErase.length) {
                     draw = true;
                 } else {
@@ -1162,7 +1162,7 @@ LRESULT wmMouse (int message, int /*long*/ wParam, int /*long*/ lParam) {
              * values have changed.
              */
             if (rectangles !is oldRectangles) {
-                int length = rectangles.length;
+                auto length = rectangles.length;
                 if (length !is rectsToErase.length) {
                     draw = true;
                 } else {

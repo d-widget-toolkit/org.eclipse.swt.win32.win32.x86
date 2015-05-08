@@ -234,7 +234,7 @@ public this(String string) {
         }
         String buffer = string.substring(start);
         auto wname = StrToTCHARs(buffer);
-        int len = Math.min(OS.LF_FACESIZE - 1, wname.length);
+        int len = Math.min(OS.LF_FACESIZE - 1, cast(int)/*64bit*/wname.length);
         newData.lfFaceName[ 0 .. len ] = wname[ 0 .. len ];
         newData.lfFaceName[ len .. $ ] = 0;
         data = newData;
@@ -394,7 +394,7 @@ public String getLocale () {
     }
 
     String result = buffer.toString ();
-    int length_ = result.length;
+    int length_ = cast(int)/*64bit*/result.length;
     if (length_ > 0) {
         if (result.charAt (length_ - 1) is sep) {
             result = result.substring (0, length_ - 1);
@@ -502,7 +502,7 @@ public void setLocale(String locale) {
     lang = country = variant = null;
     if (locale !is null) {
         char sep = '_';
-        int length_ = locale.length;
+        int length_ = cast(int)/*64bit*/locale.length;
         int firstSep, secondSep;
 
         firstSep = locale.indexOf(sep);
@@ -557,7 +557,7 @@ public void setName(String name) {
 
     /* The field lfFaceName must be NULL terminated */
     auto wname = StrToTCHARs(name);
-    int len = Math.min(OS.LF_FACESIZE - 1, wname.length);
+    int len = Math.min(OS.LF_FACESIZE - 1, cast(int)/*64bit*/wname.length);
     data.lfFaceName[0 .. len] = wname[ 0 .. len ];
     data.lfFaceName[len .. $] = 0;
 }

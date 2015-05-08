@@ -38,7 +38,7 @@ void hook (int eventType, OleListener handler) {
             return;
         }
     }
-    int size = types.length;
+    int size = cast(int)/*64bit*/types.length;
     int [] newTypes = new int [size + 4];
     OleListener [] newHandlers = new OleListener [size + 4];
     System.arraycopy (types, 0, newTypes, 0, size);

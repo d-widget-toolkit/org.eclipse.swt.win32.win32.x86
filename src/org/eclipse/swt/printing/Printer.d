@@ -313,7 +313,7 @@ public bool startJob(String jobName) {
     if (jobName !is null && jobName.length !is 0) {
         /* Use the character encoding for the default locale */
         StringT buffer = StrToTCHARs(0, jobName, true);
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         lpszDocName = cast(TCHAR*) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory(lpszDocName, buffer.ptr, byteCount);
         di.lpszDocName = lpszDocName;
@@ -322,7 +322,7 @@ public bool startJob(String jobName) {
     if (data.printToFile && data.fileName !is null) {
         /* Use the character encoding for the default locale */
         StringT buffer = StrToTCHARs(0, data.fileName, true);
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         lpszOutput = cast(TCHAR*) OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory(lpszOutput, buffer.ptr, byteCount);
         di.lpszOutput = lpszOutput;

@@ -194,12 +194,12 @@ int compressRLE8Data(byte[] src, int srcOffset, int numBytes, byte[] dest, bool 
 }
 void decompressData(byte[] src, byte[] dest, int stride, int cmp) {
     if (cmp is 1) { // BMP_RLE8_COMPRESSION
-        if (decompressRLE8Data(src, src.length, stride, dest, dest.length) <= 0)
+        if (decompressRLE8Data(src, cast(int)/*64bit*/src.length, stride, dest, cast(int)/*64bit*/dest.length) <= 0)
             SWT.error(SWT.ERROR_INVALID_IMAGE);
         return;
     }
     if (cmp is 2) { // BMP_RLE4_COMPRESSION
-        if (decompressRLE4Data(src, src.length, stride, dest, dest.length) <= 0)
+        if (decompressRLE4Data(src, cast(int)/*64bit*/src.length, stride, dest, cast(int)/*64bit*/dest.length) <= 0)
             SWT.error(SWT.ERROR_INVALID_IMAGE);
         return;
     }
@@ -544,7 +544,7 @@ PaletteData paletteFromBytes(byte[] bytes, int numColors) {
  * the given device independent palette.
  */
 static byte[] paletteToBytes(PaletteData pal) {
-    int n = pal.colors is null ? 0 : (pal.colors.length < 256 ? pal.colors.length : 256);
+    int n = pal.colors is null ? 0 : (pal.colors.length < 256 ? cast(int)/*64bit*/pal.colors.length : 256);
     byte[] bytes = new byte[n * 4];
     int offset = 0;
     for (int i = 0; i < n; i++) {
@@ -666,7 +666,7 @@ override void unloadIntoByteStream(ImageLoader loader) {
     } else {
         if (pal.isDirect)
             SWT.error(SWT.ERROR_INVALID_IMAGE);
-        numCols = pal.colors.length;
+        numCols = cast(int)/*64bit*/pal.colors.length;
         rgbs = paletteToBytes(pal);
     }
     // Fill in file header, except for bfsize, which is done later.
@@ -688,7 +688,7 @@ override void unloadIntoByteStream(ImageLoader loader) {
     byte[] data = ostr.toByteArray();
 
     // Calculate file size
-    fileHeader[1] = fileHeader[4] + data.length;
+    fileHeader[1] = fileHeader[4] + cast(int)/*64bit*/data.length;
 
     // Write the headers
     try {
@@ -707,7 +707,7 @@ override void unloadIntoByteStream(ImageLoader loader) {
         outputStream.writeShort(1);
         outputStream.writeShort(cast(short)image.depth);
         outputStream.writeInt(comp);
-        outputStream.writeInt(data.length);
+        outputStream.writeInt(cast(int)/*64bit*/data.length);
         outputStream.writeInt(pelsPerMeter.x);
         outputStream.writeInt(pelsPerMeter.y);
         outputStream.writeInt(numCols);

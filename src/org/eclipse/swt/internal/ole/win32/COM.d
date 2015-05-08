@@ -566,32 +566,32 @@ public static int VtblCall(int fnNumber, void* ppVtbl, int arg0){
 
 public static int VtblCall(int fnNumber, void* ppVtbl, void* arg0){
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)arg0);
+	return fn(ppVtbl, cast(size_t)arg0);
 }
 
 public static int VtblCall(int fnNumber, void* ppVtbl, wchar* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)arg0);
+	return fn(ppVtbl, cast(size_t)arg0);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, wchar* arg0, wchar* arg1){
 	Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)arg0, cast(int)arg1);
+	return fn(ppVtbl, cast(size_t)arg0, cast(int)arg1);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, wchar* arg0, int arg1) {
 	Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)arg0, arg1);
+	return fn(ppVtbl, cast(size_t)arg0, arg1);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, wchar* arg0, int arg1, int arg2, int arg3, int[] arg4) {
 	Function6 fn = cast(Function6)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)arg0, arg1, arg2, arg3, cast(int)cast(int*)arg4);
+	return fn(ppVtbl, cast(size_t)arg0, arg1, arg2, arg3, cast(int)cast(int*)arg4);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, wchar* arg0, int arg1, int arg2, int arg3, int arg4, int[] arg5) {
 	Function7 fn = cast(Function7)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)arg0, arg1, arg2, arg3, arg4, cast(int)cast(int*)arg5);
+	return fn(ppVtbl, cast(size_t)arg0, arg1, arg2, arg3, arg4, cast(int)cast(int*)arg5);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, int[] arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)cast(int*)arg0);
+	return fn(ppVtbl, cast(size_t)cast(int*)arg0);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, int[] arg1) {
 	Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
@@ -643,7 +643,7 @@ public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, STATSTG* arg1, 
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, MSG* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, MSG* arg1, int arg2, int arg3, int arg4, RECT* arg5) {
 	Function7 fn = cast(Function7)(*cast(int **)ppVtbl)[fnNumber];
@@ -662,62 +662,62 @@ public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, bool arg1) {
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, CAUUID* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, CONTROLINFO* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, FORMATETC* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, FORMATETC* arg0, STGMEDIUM* arg1) {
 	Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), cast(int)(arg1));
+	return fn(ppVtbl, cast(size_t)(arg0), cast(int)(arg1));
 }
 // TODO: BOOL type ???
 public static int VtblCall(int fnNumber, void* ppVtbl, FORMATETC* arg0, STGMEDIUM* arg1, int arg2) {
 	Function4 fn = cast(Function4)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), cast(int)(arg1), arg2);
+	return fn(ppVtbl, cast(size_t)(arg0), cast(int)(arg1), arg2);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, GUID* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 
 public static int VtblCall(int fnNumber, void* ppVtbl, GUID* arg0, int[] arg1) {
 	Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), cast(int)cast(int*)arg1);
+	return fn(ppVtbl, cast(size_t)(arg0), cast(int)cast(int*)arg1);
 }
 
 public static int VtblCall(int fnNumber, void* ppVtbl, GUID* arg0, int arg1, int arg2, int arg3, int[] arg4) {
 	Function6 fn = cast(Function6)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), arg1, arg2, arg3, cast(int)cast(int*)arg4);
+	return fn(ppVtbl, cast(size_t)(arg0), arg1, arg2, arg3, cast(int)cast(int*)arg4);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, GUID* arg0, int arg1, int arg2, int arg3, int arg4) {
 	Function6 fn = cast(Function6)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), arg1, arg2, arg3, arg4);
+	return fn(ppVtbl, cast(size_t)(arg0), arg1, arg2, arg3, arg4);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, GUID* arg0, int arg1, OLECMD* arg2, OLECMDTEXT* arg3) {
 	Function5 fn = cast(Function5)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), arg1, cast(int)(arg2), cast(int)(arg3));
+	return fn(ppVtbl, cast(size_t)(arg0), arg1, cast(int)(arg2), cast(int)(arg3));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, LICINFO* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, RECT* arg0, int arg1, int arg2) {
 	Function4 fn = cast(Function4)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), arg1, arg2);
+	return fn(ppVtbl, cast(size_t)(arg0), arg1, arg2);
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, RECT* arg0, RECT* arg1) {
 	Function3 fn = cast(Function3)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0), cast(int)(arg1));
+	return fn(ppVtbl, cast(size_t)(arg0), cast(int)(arg1));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, RECT* arg0) {
 	Function2 fn = cast(Function2)(*cast(int **)ppVtbl)[fnNumber];
-	return fn(ppVtbl, cast(int)(arg0));
+	return fn(ppVtbl, cast(size_t)(arg0));
 }
 public static int VtblCall(int fnNumber, void* ppVtbl, int arg0, int[] arg1, int[] arg2, int[] arg3, int[] arg4) {
 	Function6 fn = cast(Function6)(*cast(int **)ppVtbl)[fnNumber];

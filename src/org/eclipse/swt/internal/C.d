@@ -24,7 +24,7 @@ public class C : Platform {
     } else { // Phobos
         alias std.c.string.memmove MoveMemory;
     }
-//public static final native void free (int /*long*/ ptr);
-//public static final native int /*long*/ getenv (byte[] wcsToMbcs);
-//public static final native int /*long*/ malloc (int /*long*/ size);
+//public static final native void free (ptrdiff_t ptr);
+//public static final native ptrdiff_t getenv (byte[] wcsToMbcs);
+//public static final native ptrdiff_t malloc (ptrdiff_t size);
 }

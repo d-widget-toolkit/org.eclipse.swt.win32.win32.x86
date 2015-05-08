@@ -495,7 +495,7 @@ public Control getControl () {
  */
 public DropTargetListener[] getDropListeners() {
     Listener[] listeners = getListeners(DND.DragEnter);
-    int length = listeners.length;
+    int length = cast(int)/*64bit*/listeners.length;
     DropTargetListener[] dropListeners = new DropTargetListener[length];
     int count = 0;
     for (int i = 0; i < length; i++) {

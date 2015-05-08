@@ -115,7 +115,7 @@ public this (int type) {
 
 override protected Point computeSize (Composite composite, int wHint, int hHint, bool flushCache) {
     Control [] children = composite.getChildren ();
-    int count = children.length;
+    int count = cast(int)/*64bit*/children.length;
     int maxWidth = 0, maxHeight = 0;
     for (int i=0; i<count; i++) {
         Control child = children [i];
@@ -191,7 +191,7 @@ String getName () {
 override protected void layout (Composite composite, bool flushCache) {
     Rectangle rect = composite.getClientArea ();
     Control [] children = composite.getChildren ();
-    int count = children.length;
+    int count = cast(int)/*64bit*/children.length;
     if (count is 0) return;
     int width = rect.width - marginWidth * 2;
     int height = rect.height - marginHeight * 2;

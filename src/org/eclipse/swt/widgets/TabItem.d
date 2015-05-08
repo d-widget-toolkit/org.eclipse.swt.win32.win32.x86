@@ -131,7 +131,7 @@ void _setText (int index, String string) {
     */
     if (OS.COMCTL32_MAJOR >= 6 && image !is null) {
         if (string.indexOf ('&') !is -1) {
-            int length_ = string.length ;
+            int length_ = cast(int)/*64bit*/string.length ;
             char[] text = new char [length_];
             string.getChars ( 0, length_, text, 0);
             int i = 0, j = 0;
@@ -144,7 +144,7 @@ void _setText (int index, String string) {
     auto hwnd = parent.handle;
     auto hHeap = OS.GetProcessHeap ();
     StringT buffer = StrToTCHARs (parent.getCodePage (), string, true);
-    int byteCount = buffer.length  * TCHAR.sizeof;
+    auto byteCount = buffer.length  * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (pszText, buffer.ptr, byteCount);
     TCITEM tcItem;

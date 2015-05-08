@@ -1642,7 +1642,7 @@ static int closestMatch(int depth, byte red, byte green, byte blue, int redMask,
     int r, g, b;
     int minDistance = 0x7fffffff;
     int nearestPixel = 0;
-    int n = reds.length;
+    int n = cast(int)/*64bit*/reds.length;
     for (int j = 0; j < n; j++) {
         r = (reds[j] & 0xFF) - (red & 0xFF);
         g = (greens[j] & 0xFF) - (green & 0xFF);
@@ -2331,7 +2331,7 @@ static void blit(int op,
     int sp = spr;
     int ap = apr;
     int destPaletteSize = 1 << destDepth;
-    if ((destReds !is null) && (destReds.length < destPaletteSize)) destPaletteSize = destReds.length;
+    if ((destReds !is null) && (destReds.length < destPaletteSize)) destPaletteSize = cast(int)/*64bit*/destReds.length;
     byte[] paletteMapping = null;
     bool isExactPaletteMapping = true;
     switch (alphaMode) {
@@ -2359,7 +2359,7 @@ static void blit(int op,
             /*** Generate a palette mapping ***/
             int srcPaletteSize = 1 << srcDepth;
             paletteMapping = new byte[srcPaletteSize];
-            if ((srcReds !is null) && (srcReds.length < srcPaletteSize)) srcPaletteSize = srcReds.length;
+            if ((srcReds !is null) && (srcReds.length < srcPaletteSize)) srcPaletteSize = cast(int)/*64bit*/srcReds.length;
             for (int i = 0, r, g, b, index; i < srcPaletteSize; ++i) {
                 r = srcReds[i] & 0xff;
                 g = srcGreens[i] & 0xff;
@@ -3233,7 +3233,7 @@ static void blit(int op,
     int lastindex = 0, lastr = -1, lastg = -1, lastb = -1;
     int[] rerr, gerr, berr;
     int destPaletteSize = 1 << destDepth;
-    if ((destReds !is null) && (destReds.length < destPaletteSize)) destPaletteSize = destReds.length;
+    if ((destReds !is null) && (destReds.length < destPaletteSize)) destPaletteSize = cast(int)/*64bit*/destReds.length;
     if (ditherEnabled) {
         rerr = new int[destWidth + 2];
         gerr = new int[destWidth + 2];

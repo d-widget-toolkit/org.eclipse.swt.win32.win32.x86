@@ -605,7 +605,7 @@ public this (Device device, String filename) {
     */
     if (gdip && (void*).sizeof is 8 && filename.toLowerCase().endsWith(".gif")) gdip = false;
     if (gdip) {
-        int length = filename.length;
+        int length = cast(int)/*64bit*/filename.length;
         char[] chars = new char[length+1];
         filename.getChars(0, length, chars, 0);
         auto bitmap = Gdip.Bitmap_new( .StrToWCHARz( filename ), false);
@@ -882,7 +882,7 @@ HBITMAP createDIBFromDDB(HDC hDC, HBITMAP hBitmap, int width, int height) {
 // active, even though it might be unlikely given the short span of time that the
 // function has them stored in the int array.
 
-int /*long*/ [] createGdipImage() {
+ptrdiff_t [] createGdipImage() {
     switch (type) {
         case SWT.BITMAP: {
             if (alpha !is -1 || alphaData !is null || transparentPixel !is -1) {
@@ -977,9 +977,9 @@ int /*long*/ [] createGdipImage() {
                 auto pixels = cast(ubyte*)OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, srcData.length);
                 if (pixels is null) SWT.error(SWT.ERROR_NO_HANDLES);
                 OS.MoveMemory(pixels, srcData.ptr, sizeInBytes);
-                return [ cast(int)(Gdip.Bitmap_new(imgWidth, imgHeight, dibBM.bmWidthBytes, Gdip.PixelFormat32bppARGB, pixels)), cast(int) pixels];
+                return [cast(ptrdiff_t)Gdip.Bitmap_new(imgWidth, imgHeight, dibBM.bmWidthBytes, Gdip.PixelFormat32bppARGB, pixels), cast(ptrdiff_t)pixels];
             }
-            return [cast(int)Gdip.Bitmap_new(handle, null), 0];
+            return [cast(ptrdiff_t)Gdip.Bitmap_new(handle, null), 0];
         }
         case SWT.ICON: {
             /*
@@ -1050,7 +1050,7 @@ int /*long*/ [] createGdipImage() {
             }
             if (iconInfo.hbmColor !is null) OS.DeleteObject(iconInfo.hbmColor);
             if (iconInfo.hbmMask !is null) OS.DeleteObject(iconInfo.hbmMask);
-            return [ cast(int)img, cast(int) pixels ];
+            return [ cast(ptrdiff_t)img, cast(ptrdiff_t)pixels ];
         }
         default: SWT.error(SWT.ERROR_INVALID_IMAGE);
     }
@@ -1665,12 +1665,12 @@ static HGDIOBJ createDIB(int width, int height, int depth) {
  * if the regular GetIconInfo had been used.
  */
 static void GetIconInfo(Image image, ICONINFO* info) {
-    int[] result = init_(image.device, null, image.data);
+    ptrdiff_t[] result = init_(image.device, null, image.data);
     info.hbmColor = cast(HBITMAP)result[0];
     info.hbmMask = cast(HBITMAP)result[1];
 }
 
-static int[] init_(Device device, Image image, ImageData i) {
+static ptrdiff_t[] init_(Device device, Image image, ImageData i) {
 
     /*
      * BUG in Windows 98:
@@ -1771,7 +1771,7 @@ static int[] init_(Device device, Image image, ImageData i) {
     bmiHeader.biBitCount = cast(short)i.depth;
     if (useBitfields) bmiHeader.biCompression = OS.BI_BITFIELDS;
     else bmiHeader.biCompression = OS.BI_RGB;
-    bmiHeader.biClrUsed = rgbs is null ? 0 : rgbs.length;
+    bmiHeader.biClrUsed = rgbs is null ? 0 : cast(int)/*64bit*/rgbs.length;
     byte[] bmi;
     if (i.palette.isDirect)
         bmi = new byte[BITMAPINFOHEADER.sizeof + (useBitfields ? 12 : 0)];
@@ -1837,7 +1837,7 @@ static int[] init_(Device device, Image image, ImageData i) {
     }
     OS.MoveMemory(pBits, data.ptr, data.length);
 
-    int /*long*/ [] result = null;
+    ptrdiff_t [] result = null;
     if (i.getTransparencyType() is SWT.TRANSPARENCY_MASK) {
         /* Get the HDC for the device */
         auto hDC = device.internal_new_GC(null);
@@ -1865,7 +1865,7 @@ static int[] init_(Device device, Image image, ImageData i) {
         OS.DeleteObject(hDib);
 
         if (image is null) {
-            result = [ cast(int) hBitmap, cast(int) hMask];
+            result = [cast(ptrdiff_t)hBitmap, cast(ptrdiff_t)hMask];
         } else {
             /* Create the icon */
             ICONINFO info;
@@ -1882,7 +1882,7 @@ static int[] init_(Device device, Image image, ImageData i) {
         }
     } else {
         if (image is null) {
-            result = [ cast(int) hDib];
+            result = [cast(ptrdiff_t)hDib];
         } else {
             image.handle = hDib;
             image.type = SWT.BITMAP;
@@ -1890,7 +1890,7 @@ static int[] init_(Device device, Image image, ImageData i) {
             if (image.transparentPixel is -1) {
                 image.alpha = i.alpha;
                 if (i.alpha is -1 && i.alphaData !is null) {
-                    int length = i.alphaData.length;
+                    int length = cast(int)/*64bit*/i.alphaData.length;
                     image.alphaData = new byte[length];
                     System.arraycopy(i.alphaData, 0, image.alphaData, 0, length);
                 }
@@ -1900,7 +1900,7 @@ static int[] init_(Device device, Image image, ImageData i) {
     return result;
 }
 
-static int[] init__(Device device, Image image, ImageData source, ImageData mask) {
+static ptrdiff_t[] init__(Device device, Image image, ImageData source, ImageData mask) {
     /* Create a temporary image and locate the black pixel */
     ImageData imageData;
     int blackIndex = 0;
@@ -1920,7 +1920,7 @@ static int[] init__(Device device, Image image, ImageData source, ImageData mask
                 /* Grow the palette with black */
                 rgbs = new RGB[source.transparentPixel + 1];
                 System.arraycopy(newRGBs, 0, rgbs, 0, newRGBs.length);
-                for (int i = newRGBs.length; i <= source.transparentPixel; i++) {
+                for (auto i = newRGBs.length; i <= source.transparentPixel; i++) {
                     rgbs[i] = new RGB(0, 0, 0);
                 }
             } else {

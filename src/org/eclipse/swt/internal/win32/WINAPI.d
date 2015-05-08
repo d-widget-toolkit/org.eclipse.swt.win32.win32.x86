@@ -11,6 +11,7 @@ import java.nonstandard.SafeUtf;
 
 version(Tango){
     import tango.sys.win32.Types;
+    import tango.stdc.stdint;
     static import tango.sys.win32.UserGdi;
     public alias tango.sys.win32.UserGdi STDWINAPI;
 
@@ -226,6 +227,8 @@ version(Tango){
     alias STDWINAPI.MessageBoxIndirectA MessageBoxIndirectA;
     alias STDWINAPI.GetWindowLongA GetWindowLongA;
     alias STDWINAPI.SetWindowLongA SetWindowLongA;
+    alias STDWINAPI.GetWindowLongPtrA GetWindowLongPtrA;
+    alias STDWINAPI.SetWindowLongPtrA SetWindowLongPtrA;
     alias STDWINAPI.GetClassLongA GetClassLongA;
     alias STDWINAPI.SetClassLongA SetClassLongA;
     alias STDWINAPI.FindWindowA FindWindowA;
@@ -619,6 +622,8 @@ version(Tango){
     alias STDWINAPI.MessageBoxIndirectW MessageBoxIndirectW;
     alias STDWINAPI.GetWindowLongW GetWindowLongW;
     alias STDWINAPI.SetWindowLongW SetWindowLongW;
+    alias STDWINAPI.GetWindowLongPtrW GetWindowLongPtrW;
+    alias STDWINAPI.SetWindowLongPtrW SetWindowLongPtrW;
     alias STDWINAPI.GetClassLongW GetClassLongW;
     alias STDWINAPI.SetClassLongW SetClassLongW;
     alias STDWINAPI.FindWindowW FindWindowW;
@@ -1727,8 +1732,8 @@ version(Tango){
     alias STDWINAPI.SHFileOperationW SHFileOperationW;
     alias STDWINAPI.SHFreeNameMappings SHFreeNameMappings;
     extern(Windows) { //Workaround Tango bugs
-        DWORD SHGetFileInfoA(LPCSTR, DWORD, SHFILEINFOA*, UINT, UINT);
-        DWORD SHGetFileInfoW(LPCWSTR, DWORD, SHFILEINFOW*, UINT, UINT);
+        DWORD_PTR SHGetFileInfoA(LPCSTR, DWORD, SHFILEINFOA*, UINT, UINT);
+        DWORD_PTR SHGetFileInfoW(LPCWSTR, DWORD, SHFILEINFOW*, UINT, UINT);
         WINBOOL SHGetPathFromIDListA(LPCITEMIDLIST, LPSTR);
         WINBOOL SHGetPathFromIDListW(LPCITEMIDLIST, LPWSTR);
     }
@@ -1756,6 +1761,8 @@ version(Tango){
     alias STDWINAPI.CreateWaitableTimerW CreateWaitableTimerW;
     alias STDWINAPI.SetWaitableTimer SetWaitableTimer;
 } else { // Phobos
+    import std.stdint;
+
         /+ Functions +/
         extern(Windows)
         {
@@ -1795,9 +1802,9 @@ version(Tango){
             void OutputDebugStringA(LPCSTR);
             HRSRC FindResourceA(HINST, LPCSTR, LPCSTR);
             HRSRC FindResourceExA(HINST, LPCSTR, LPCSTR, ushort);
-            WINBOOL EnumResourceTypesA(HINST, ENUMRESTYPEPROC, LONG);
-            WINBOOL EnumResourceNamesA(HINST, LPCSTR, ENUMRESNAMEPROC, LONG);
-            WINBOOL EnumResourceLanguagesA(HINST, LPCSTR, LPCSTR, ENUMRESLANGPROC, LONG);
+            WINBOOL EnumResourceTypesA(HINST, ENUMRESTYPEPROC, LONG_PTR);
+            WINBOOL EnumResourceNamesA(HINST, LPCSTR, ENUMRESNAMEPROC, LONG_PTR);
+            WINBOOL EnumResourceLanguagesA(HINST, LPCSTR, LPCSTR, ENUMRESLANGPROC, LONG_PTR);
             HANDLE BeginUpdateResourceA(LPCSTR, WINBOOL);
             WINBOOL UpdateResourceA(HANDLE, LPCSTR, LPCSTR, ushort, LPVOID, DWORD);
             WINBOOL EndUpdateResourceA(HANDLE, WINBOOL);
@@ -1862,7 +1869,7 @@ version(Tango){
             WINBOOL SetFileSecurityA(LPCSTR, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR);
             WINBOOL GetFileSecurityA(LPCSTR, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR, DWORD, LPDWORD);
             HANDLE FindFirstChangeNotificationA(LPCSTR, WINBOOL, DWORD);
-            WINBOOL IsBadStringPtrA(LPCSTR, UINT);
+            WINBOOL IsBadStringPtrA(LPCSTR, UINT_PTR);
             WINBOOL LookupAccountSidA(LPCSTR, PSID, LPSTR, LPDWORD, LPSTR, LPDWORD, PSID_NAME_USE);
             WINBOOL LookupAccountNameA(LPCSTR, LPCSTR, PSID, LPDWORD, LPSTR, LPDWORD, PSID_NAME_USE);
             WINBOOL LookupPrivilegeValueA(LPCSTR, LPCSTR, PLUID);
@@ -1895,9 +1902,9 @@ version(Tango){
             LRESULT SendMessageA(HWND, UINT, void*, LPARAM);
             LRESULT SendMessageA(HWND, UINT, WPARAM, void*);
             LRESULT SendMessageA(HWND, UINT, void*, void*);
-            LRESULT SendMessageTimeoutA(HWND, UINT, WPARAM, LPARAM, UINT, UINT, LPDWORD);
+            LRESULT SendMessageTimeoutA(HWND, UINT, WPARAM, LPARAM, UINT, UINT, PDWORD_PTR);
             WINBOOL SendNotifyMessageA(HWND, UINT, WPARAM, LPARAM);
-            WINBOOL SendMessageCallbackA(HWND, UINT, WPARAM, LPARAM, SENDASYNCPROC, DWORD);
+            WINBOOL SendMessageCallbackA(HWND, UINT, WPARAM, LPARAM, SENDASYNCPROC, ULONG_PTR);
             WINBOOL PostMessageA(HWND, UINT, WPARAM, LPARAM);
             WINBOOL PostThreadMessageA(DWORD, UINT, WPARAM, LPARAM);
             LRESULT DefWindowProcA(HWND, UINT, WPARAM, LPARAM);
@@ -1910,8 +1917,8 @@ version(Tango){
             HWND CreateWindowExA(DWORD, LPCSTR, LPCSTR, DWORD, int, int, int, int, HWND, HMENU, HINST, LPVOID);
             HWND CreateDialogParamA(HINST, LPCSTR, HWND, DLGPROC, LPARAM);
             HWND CreateDialogIndirectParamA(HINST, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
-            int DialogBoxParamA(HINST, LPCSTR, HWND, DLGPROC, LPARAM);
-            int DialogBoxIndirectParamA(HINST, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
+            INT_PTR DialogBoxParamA(HINST, LPCSTR, HWND, DLGPROC, LPARAM);
+            INT_PTR DialogBoxIndirectParamA(HINST, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
             WINBOOL SetDlgItemTextA(HWND, int, LPCSTR);
             UINT GetDlgItemTextA(HWND, int, LPSTR, int);
             LONG SendDlgItemMessageA(HWND, int, UINT, WPARAM, LPARAM);
@@ -1946,9 +1953,9 @@ version(Tango){
             HMENU LoadMenuIndirectA(LPMENUTEMPLATE);
             WINBOOL ChangeMenuA(HMENU, UINT, LPCSTR, UINT, UINT);
             int GetMenuStringA(HMENU, UINT, LPSTR, int, UINT);
-            WINBOOL InsertMenuA(HMENU, UINT, UINT, UINT, LPCSTR);
-            WINBOOL AppendMenuA(HMENU, UINT, UINT, LPCSTR);
-            WINBOOL ModifyMenuA(HMENU, UINT, UINT, UINT, LPCSTR);
+            WINBOOL InsertMenuA(HMENU, UINT, UINT, UINT_PTR, LPCSTR);
+            WINBOOL AppendMenuA(HMENU, UINT, UINT_PTR, LPCSTR);
+            WINBOOL ModifyMenuA(HMENU, UINT, UINT, UINT_PTR, LPCSTR);
             WINBOOL InsertMenuItemA(HMENU, UINT, WINBOOL, LPCMENUITEMINFO);
             WINBOOL GetMenuItemInfoA(HMENU, UINT, WINBOOL, LPMENUITEMINFO);
             WINBOOL SetMenuItemInfoA(HMENU, UINT, WINBOOL, LPCMENUITEMINFO);
@@ -1971,6 +1978,13 @@ version(Tango){
             int MessageBoxIndirectA(LPMSGBOXPARAMS);
             LONG GetWindowLongA(HWND, int);
             LONG SetWindowLongA(HWND, int, LONG);
+            version (Win32) {
+                alias GetWindowLongA GetWindowLongPtrA;
+                alias SetWindowLongA SetWindowLongPtrA;
+            } else {
+                LONG_PTR GetWindowLongPtrA(HWND, int);
+                LONG_PTR SetWindowLongPtrA(HWND, int, LONG_PTR);
+            }
             DWORD GetClassLongA(HWND, int);
             DWORD SetClassLongA(HWND, int, LONG);
             HWND FindWindowA(LPCSTR, LPCSTR);
@@ -1991,7 +2005,7 @@ version(Tango){
             LRESULT DefFrameProcA(HWND, HWND, UINT, WPARAM, LPARAM);
             LRESULT DefMDIChildProcA(HWND, UINT, WPARAM, LPARAM);
             HWND CreateMDIWindowA(LPSTR, LPSTR, DWORD, int, int, int, int, HWND, HINST, LPARAM);
-            WINBOOL WinHelpA(HWND, LPCSTR, UINT, DWORD);
+            WINBOOL WinHelpA(HWND, LPCSTR, UINT, ULONG_PTR);
             LONG ChangeDisplaySettingsA(LPDEVMODE, DWORD);
             WINBOOL EnumDisplaySettingsA(LPCSTR, DWORD, LPDEVMODE);
             WINBOOL SystemParametersInfoA(UINT, UINT, PVOID, UINT);
@@ -2036,7 +2050,7 @@ version(Tango){
             WINBOOL SetICMProfileA(HDC, LPSTR);
             WINBOOL UpdateICMRegKeyA(DWORD, DWORD, LPSTR, UINT);
             int EnumICMProfilesA(HDC, ICMENUMPROC, LPARAM);
-            int PropertySheetA(LPCPROPSHEETHEADER);
+            INT_PTR PropertySheetA(LPCPROPSHEETHEADER);
             HIMAGELIST ImageList_LoadImageA(HINST, LPCSTR, int, int, COLORREF, UINT, UINT);
             HWND CreateStatusWindowA(LONG, LPCSTR, HWND, UINT);
             void DrawStatusTextA(HDC, LPRECT, LPCSTR);
@@ -2188,9 +2202,9 @@ version(Tango){
             void OutputDebugStringW(LPCWSTR);
             HRSRC FindResourceW(HINST, LPCWSTR, LPCWSTR);
             HRSRC FindResourceExW(HINST, LPCWSTR, LPCWSTR, ushort);
-            WINBOOL EnumResourceTypesW(HINST, ENUMRESTYPEPROC, LONG);
-            WINBOOL EnumResourceNamesW(HINST, LPCWSTR, ENUMRESNAMEPROC, LONG);
-            WINBOOL EnumResourceLanguagesW(HINST, LPCWSTR, LPCWSTR, ENUMRESLANGPROC, LONG);
+            WINBOOL EnumResourceTypesW(HINST, ENUMRESTYPEPROC, LONG_PTR);
+            WINBOOL EnumResourceNamesW(HINST, LPCWSTR, ENUMRESNAMEPROC, LONG_PTR);
+            WINBOOL EnumResourceLanguagesW(HINST, LPCWSTR, LPCWSTR, ENUMRESLANGPROC, LONG_PTR);
             HANDLE BeginUpdateResourceW(LPCWSTR, WINBOOL);
             WINBOOL UpdateResourceW(HANDLE, LPCWSTR, LPCWSTR, ushort, LPVOID, DWORD);
             WINBOOL EndUpdateResourceW(HANDLE, WINBOOL);
@@ -2255,7 +2269,7 @@ version(Tango){
             WINBOOL SetFileSecurityW(LPCWSTR, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR);
             WINBOOL GetFileSecurityW(LPCWSTR, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR, DWORD, LPDWORD);
             HANDLE FindFirstChangeNotificationW(LPCWSTR, WINBOOL, DWORD);
-            WINBOOL IsBadStringPtrW(LPCWSTR, UINT);
+            WINBOOL IsBadStringPtrW(LPCWSTR, UINT_PTR);
             WINBOOL LookupAccountSidW(LPCWSTR, PSID, LPWSTR, LPDWORD, LPWSTR, LPDWORD, PSID_NAME_USE);
             WINBOOL LookupAccountNameW(LPCWSTR, LPCWSTR, PSID, LPDWORD, LPWSTR, LPDWORD, PSID_NAME_USE);
             WINBOOL LookupPrivilegeValueW(LPCWSTR, LPCWSTR, PLUID);
@@ -2288,9 +2302,9 @@ version(Tango){
             LRESULT SendMessageW(HWND, UINT, WPARAM, void*);
             LRESULT SendMessageW(HWND, UINT, void*, LPARAM);
             LRESULT SendMessageW(HWND, UINT, void*, void*);
-            LRESULT SendMessageTimeoutW(HWND, UINT, WPARAM, LPARAM, UINT, UINT, LPDWORD);
+            LRESULT SendMessageTimeoutW(HWND, UINT, WPARAM, LPARAM, UINT, UINT, PDWORD_PTR);
             WINBOOL SendNotifyMessageW(HWND, UINT, WPARAM, LPARAM);
-            WINBOOL SendMessageCallbackW(HWND, UINT, WPARAM, LPARAM, SENDASYNCPROC, DWORD);
+            WINBOOL SendMessageCallbackW(HWND, UINT, WPARAM, LPARAM, SENDASYNCPROC, ULONG_PTR);
             WINBOOL PostMessageW(HWND, UINT, WPARAM, LPARAM);
             WINBOOL PostThreadMessageW(DWORD, UINT, WPARAM, LPARAM);
             LRESULT DefWindowProcW(HWND, UINT, WPARAM, LPARAM);
@@ -2303,8 +2317,8 @@ version(Tango){
             HWND CreateWindowExW(DWORD, LPCWSTR, LPCWSTR, DWORD, int, int, int, int, HWND, HMENU, HINST, LPVOID);
             HWND CreateDialogParamW(HINST, LPCWSTR, HWND, DLGPROC, LPARAM);
             HWND CreateDialogIndirectParamW(HINST, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
-            int DialogBoxParamW(HINST, LPCWSTR, HWND, DLGPROC, LPARAM);
-            int DialogBoxIndirectParamW(HINST, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
+            INT_PTR DialogBoxParamW(HINST, LPCWSTR, HWND, DLGPROC, LPARAM);
+            INT_PTR DialogBoxIndirectParamW(HINST, LPCDLGTEMPLATE, HWND, DLGPROC, LPARAM);
             WINBOOL SetDlgItemTextW(HWND, int, LPCWSTR);
             UINT GetDlgItemTextW(HWND, int, LPWSTR, int);
             LONG SendDlgItemMessageW(HWND, int, UINT, WPARAM, LPARAM);
@@ -2339,9 +2353,9 @@ version(Tango){
             HMENU LoadMenuIndirectW(LPMENUTEMPLATE);
             WINBOOL ChangeMenuW(HMENU, UINT, LPCWSTR, UINT, UINT);
             int GetMenuStringW(HMENU, UINT, LPWSTR, int, UINT);
-            WINBOOL InsertMenuW(HMENU, UINT, UINT, UINT, LPCWSTR);
-            WINBOOL AppendMenuW(HMENU, UINT, UINT, LPCWSTR);
-            WINBOOL ModifyMenuW(HMENU, UINT, UINT, UINT, LPCWSTR);
+            WINBOOL InsertMenuW(HMENU, UINT, UINT, UINT_PTR, LPCWSTR);
+            WINBOOL AppendMenuW(HMENU, UINT, UINT_PTR, LPCWSTR);
+            WINBOOL ModifyMenuW(HMENU, UINT, UINT, UINT_PTR, LPCWSTR);
             WINBOOL InsertMenuItemW(HMENU, UINT, WINBOOL, LPCMENUITEMINFO);
             WINBOOL GetMenuItemInfoW(HMENU, UINT, WINBOOL, LPMENUITEMINFO);
             WINBOOL SetMenuItemInfoW(HMENU, UINT, WINBOOL, LPCMENUITEMINFO);
@@ -2362,8 +2376,15 @@ version(Tango){
             int MessageBoxW(HWND, LPCWSTR, LPCWSTR, UINT);
             int MessageBoxExW(HWND, LPCWSTR, LPCWSTR, UINT, ushort);
             int MessageBoxIndirectW(LPMSGBOXPARAMS);
-            LONG GetWindowLongW(HWND, int);
             LONG SetWindowLongW(HWND, int, LONG);
+            LONG GetWindowLongW(HWND, int);
+            version (Win32) {
+                alias SetWindowLongW SetWindowLongPtrW;
+                alias GetWindowLongW GetWindowLongPtrW;
+            } else {
+                LONG_PTR SetWindowLongPtrW(HWND, int, LONG_PTR);
+                LONG_PTR GetWindowLongPtrW(HWND, int);
+            }
             DWORD GetClassLongW(HWND, int);
             DWORD SetClassLongW(HWND, int, LONG);
             HWND FindWindowW(LPCWSTR, LPCWSTR);
@@ -2384,7 +2405,7 @@ version(Tango){
             LRESULT DefFrameProcW(HWND, HWND, UINT, WPARAM, LPARAM);
             LRESULT DefMDIChildProcW(HWND, UINT, WPARAM, LPARAM);
             HWND CreateMDIWindowW(LPWSTR, LPWSTR, DWORD, int, int, int, int, HWND, HINST, LPARAM);
-            WINBOOL WinHelpW(HWND, LPCWSTR, UINT, DWORD);
+            WINBOOL WinHelpW(HWND, LPCWSTR, UINT, ULONG_PTR);
             LONG ChangeDisplaySettingsW(LPDEVMODE, DWORD);
             WINBOOL EnumDisplaySettingsW(LPCWSTR, DWORD, LPDEVMODE);
             WINBOOL SystemParametersInfoW(UINT, UINT, PVOID, UINT);
@@ -2431,7 +2452,7 @@ version(Tango){
             WINBOOL UpdateICMRegKeyW(DWORD, DWORD, LPWSTR, UINT);
             int EnumICMProfilesW(HDC, ICMENUMPROC, LPARAM);
             HPROPSHEETPAGE CreatePropertySheetPageW(LPCPROPSHEETPAGE);
-            int PropertySheetW(LPCPROPSHEETHEADER);
+            INT_PTR PropertySheetW(LPCPROPSHEETHEADER);
             HIMAGELIST ImageList_LoadImageW(HINST, LPCWSTR, int, int, COLORREF, UINT, UINT);
             HWND CreateStatusWindowW(LONG, LPCWSTR, HWND, UINT);
             void DrawStatusTextW(HDC, LPRECT, LPCWSTR);
@@ -2562,54 +2583,54 @@ version(Tango){
             WINBOOL DisableThreadLibraryCalls(HMODULE);
             FARPROC GetProcAddress(HINST, LPCSTR);
             DWORD GetVersion();
-            HGLOBAL GlobalAlloc(UINT, DWORD);
-            HGLOBAL GlobalReAlloc(HGLOBAL, DWORD, UINT);
-            DWORD GlobalSize(HGLOBAL);
+            HGLOBAL GlobalAlloc(UINT, SIZE_T);
+            HGLOBAL GlobalReAlloc(HGLOBAL, SIZE_T, UINT);
+            SIZE_T GlobalSize(HGLOBAL);
             UINT GlobalFlags(HGLOBAL);
             LPVOID GlobalLock(HGLOBAL);
             HGLOBAL GlobalHandle(LPCVOID);
             WINBOOL GlobalUnlock(HGLOBAL);
             HGLOBAL GlobalFree(HGLOBAL);
-            UINT GlobalCompact(DWORD);
+            SIZE_T GlobalCompact(DWORD);
             void GlobalFix(HGLOBAL);
             void GlobalUnfix(HGLOBAL);
             LPVOID GlobalWire(HGLOBAL);
             WINBOOL GlobalUnWire(HGLOBAL);
             void GlobalMemoryStatus(LPMEMORYSTATUS);
-            HLOCAL LocalAlloc(UINT, UINT);
-            HLOCAL LocalReAlloc(HLOCAL, UINT, UINT);
+            HLOCAL LocalAlloc(UINT, SIZE_T);
+            HLOCAL LocalReAlloc(HLOCAL, SIZE_T, UINT);
             LPVOID LocalLock(HLOCAL);
             HLOCAL LocalHandle(LPCVOID);
             WINBOOL LocalUnlock(HLOCAL);
-            UINT LocalSize(HLOCAL);
+            SIZE_T LocalSize(HLOCAL);
             UINT LocalFlags(HLOCAL);
             HLOCAL LocalFree(HLOCAL);
-            UINT LocalShrink(HLOCAL, UINT);
-            UINT LocalCompact(UINT);
-            WINBOOL FlushInstructionCache(HANDLE, LPCVOID, DWORD);
-            LPVOID VirtualAlloc(LPVOID, DWORD, DWORD, DWORD);
-            WINBOOL VirtualFree(LPVOID, DWORD, DWORD);
-            WINBOOL VirtualProtect(LPVOID, DWORD, DWORD, PDWORD);
-            DWORD VirtualQuery(LPCVOID, PMEMORY_BASIC_INFORMATION, DWORD);
-            WINBOOL VirtualProtectEx(HANDLE, LPVOID, DWORD, DWORD, PDWORD);
-            DWORD VirtualQueryEx(HANDLE, LPCVOID, PMEMORY_BASIC_INFORMATION, DWORD);
-            HANDLE HeapCreate(DWORD, DWORD, DWORD);
+            SIZE_T LocalShrink(HLOCAL, UINT);
+            SIZE_T LocalCompact(UINT);
+            WINBOOL FlushInstructionCache(HANDLE, LPCVOID, SIZE_T);
+            LPVOID VirtualAlloc(LPVOID, SIZE_T, DWORD, DWORD);
+            WINBOOL VirtualFree(LPVOID, SIZE_T, DWORD);
+            WINBOOL VirtualProtect(LPVOID, SIZE_T, DWORD, PDWORD);
+            DWORD VirtualQuery(LPCVOID, PMEMORY_BASIC_INFORMATION, SIZE_T);
+            WINBOOL VirtualProtectEx(HANDLE, LPVOID, SIZE_T, DWORD, PDWORD);
+            DWORD VirtualQueryEx(HANDLE, LPCVOID, PMEMORY_BASIC_INFORMATION, SIZE_T);
+            HANDLE HeapCreate(DWORD, SIZE_T, SIZE_T);
             WINBOOL HeapDestroy(HANDLE);
-            LPVOID HeapAlloc(HANDLE, DWORD, DWORD);
-            LPVOID HeapReAlloc(HANDLE, DWORD, LPVOID, DWORD);
+            LPVOID HeapAlloc(HANDLE, DWORD, SIZE_T);
+            LPVOID HeapReAlloc(HANDLE, DWORD, LPVOID, SIZE_T);
             WINBOOL HeapFree(HANDLE, DWORD, LPVOID);
-            DWORD HeapSize(HANDLE, DWORD, LPCVOID);
+            SIZE_T HeapSize(HANDLE, DWORD, LPCVOID);
             WINBOOL HeapValidate(HANDLE, DWORD, LPCVOID);
-            UINT HeapCompact(HANDLE, DWORD);
+            SIZE_T HeapCompact(HANDLE, DWORD);
             HANDLE GetProcessHeap();
             DWORD GetProcessHeaps(DWORD, PHANDLE);
             WINBOOL HeapLock(HANDLE);
             WINBOOL HeapUnlock(HANDLE);
             WINBOOL HeapWalk(HANDLE, LPPROCESS_HEAP_ENTRY);
-            WINBOOL GetProcessAffinityMask(HANDLE, LPDWORD, LPDWORD);
+            WINBOOL GetProcessAffinityMask(HANDLE, PDWORD_PTR, PDWORD_PTR);
             WINBOOL GetProcessTimes(HANDLE, LPFILETIME, LPFILETIME, LPFILETIME, LPFILETIME);
-            WINBOOL GetProcessWorkingSetSize(HANDLE, LPDWORD, LPDWORD);
-            WINBOOL SetProcessWorkingSetSize(HANDLE, DWORD, DWORD);
+            WINBOOL GetProcessWorkingSetSize(HANDLE, PSIZE_T, PSIZE_T);
+            WINBOOL SetProcessWorkingSetSize(HANDLE, SIZE_T, SIZE_T);
             HANDLE OpenProcess(DWORD, WINBOOL, DWORD);
             HANDLE GetCurrentProcess();
             DWORD GetCurrentProcessId();
@@ -2617,12 +2638,12 @@ version(Tango){
             WINBOOL TerminateProcess(HANDLE, UINT);
             WINBOOL GetExitCodeProcess(HANDLE, LPDWORD);
             void FatalExit(int);
-            void RaiseException(DWORD, DWORD, DWORD);
+            void RaiseException(DWORD, DWORD, DWORD, const ULONG_PTR*);
             LONG UnhandledExceptionFilter(EMPTYRECORD*);
-            HANDLE CreateRemoteThread(HANDLE, LPSECURITY_ATTRIBUTES, DWORD, LPTHREAD_START_ROUTINE, LPVOID, DWORD, LPDWORD);
+            HANDLE CreateRemoteThread(HANDLE, LPSECURITY_ATTRIBUTES, SIZE_T, LPTHREAD_START_ROUTINE, LPVOID, DWORD, LPDWORD);
             HANDLE GetCurrentThread();
             DWORD GetCurrentThreadId();
-            DWORD SetThreadAffinityMask(HANDLE, DWORD);
+            DWORD_PTR SetThreadAffinityMask(HANDLE, DWORD_PTR);
             WINBOOL SetThreadPriority(HANDLE, int);
             int GetThreadPriority(HANDLE);
             WINBOOL GetThreadTimes(HANDLE, LPFILETIME, LPFILETIME, LPFILETIME, LPFILETIME);
@@ -2632,10 +2653,10 @@ version(Tango){
             WINBOOL GetThreadSelectorEntry(HANDLE, DWORD, LPLDT_ENTRY);
             DWORD GetLastError();
             void SetLastError(DWORD);
-            HANDLE CreateIoCompletionPort(HANDLE, HANDLE, DWORD, DWORD);
+            HANDLE CreateIoCompletionPort(HANDLE, HANDLE, ULONG_PTR, DWORD);
             UINT SetErrorMode(UINT);
-            WINBOOL ReadProcessMemory(HANDLE, LPCVOID, LPVOID, DWORD, LPDWORD);
-            WINBOOL WriteProcessMemory(HANDLE, LPVOID, LPVOID, DWORD, LPDWORD);
+            WINBOOL ReadProcessMemory(HANDLE, LPCVOID, LPVOID, SIZE_T, PSIZE_T);
+            WINBOOL WriteProcessMemory(HANDLE, LPVOID, LPVOID, SIZE_T, PSIZE_T);
             WINBOOL GetThreadContext(HANDLE, LPCONTEXT);
             DWORD SuspendThread(HANDLE);
             DWORD ResumeThread(HANDLE);
@@ -2741,8 +2762,8 @@ version(Tango){
             WINBOOL TransactNamedPipe(HANDLE, LPVOID, DWORD, LPVOID, DWORD, LPDWORD, LPOVERLAPPED);
             WINBOOL GetMailslotInfo(HANDLE, LPDWORD, LPDWORD, LPDWORD, LPDWORD);
             WINBOOL SetMailslotInfo(HANDLE, DWORD);
-            LPVOID MapViewOfFile(HANDLE, DWORD, DWORD, DWORD, DWORD);
-            WINBOOL FlushViewOfFile(LPCVOID, DWORD);
+            LPVOID MapViewOfFile(HANDLE, DWORD, DWORD, DWORD, SIZE_T);
+            WINBOOL FlushViewOfFile(LPCVOID, SIZE_T);
             WINBOOL UnmapViewOfFile(LPVOID);
             HFILE OpenFile(LPCSTR, LPOFSTRUCT, UINT);
             HFILE _lopen(LPCSTR, int);
@@ -2837,15 +2858,15 @@ version(Tango){
             WINBOOL SetKernelObjectSecurity(HANDLE, SECURITY_INFORMATION, PSECURITY_DESCRIPTOR);
             WINBOOL FindNextChangeNotification(HANDLE);
             WINBOOL FindCloseChangeNotification(HANDLE);
-            WINBOOL VirtualLock(LPVOID, DWORD);
-            WINBOOL VirtualUnlock(LPVOID, DWORD);
-            LPVOID MapViewOfFileEx(HANDLE, DWORD, DWORD, DWORD, DWORD, LPVOID);
+            WINBOOL VirtualLock(LPVOID, SIZE_T);
+            WINBOOL VirtualUnlock(LPVOID, SIZE_T);
+            LPVOID MapViewOfFileEx(HANDLE, DWORD, DWORD, DWORD, SIZE_T, LPVOID);
             WINBOOL SetPriorityClass(HANDLE, DWORD);
             DWORD GetPriorityClass(HANDLE);
-            WINBOOL IsBadReadPtr(POINTER, UINT);
-            WINBOOL IsBadWritePtr(LPVOID, UINT);
-            WINBOOL IsBadHugeReadPtr(POINTER, UINT);
-            WINBOOL IsBadHugeWritePtr(LPVOID, UINT);
+            WINBOOL IsBadReadPtr(POINTER, UINT_PTR);
+            WINBOOL IsBadWritePtr(LPVOID, UINT_PTR);
+            WINBOOL IsBadHugeReadPtr(POINTER, UINT_PTR);
+            WINBOOL IsBadHugeWritePtr(LPVOID, UINT_PTR);
             WINBOOL IsBadCodePtr(FARPROC);
             WINBOOL AllocateLocallyUniqueId(PLUID);
             WINBOOL QueryPerformanceCounter(PLARGE_INTEGER);
@@ -2906,7 +2927,7 @@ version(Tango){
             WINBOOL AnyPopup();
             WINBOOL BringWindowToTop(HWND);
             WINBOOL IsZoomed(HWND);
-            WINBOOL EndDialog(HWND, int);
+            WINBOOL EndDialog(HWND, INT_PTR);
             HWND GetDlgItem(HWND, int);
             WINBOOL SetDlgItemInt(HWND, int, UINT, WINBOOL);
             UINT GetDlgItemInt(HWND, int, WINBOOL*, WINBOOL);
@@ -2946,16 +2967,16 @@ version(Tango){
             int ToAsciiEx(UINT, UINT, PBYTE, LPWORD, UINT, HKL);
             int ToUnicode(UINT, UINT, PBYTE, LPWSTR, int, UINT);
             DWORD OemKeyScan(ushort);
-            void keybd_event(ubyte, ubyte, DWORD, POINTER);
-            void mouse_event(DWORD, DWORD, DWORD, DWORD);
+            void keybd_event(ubyte, ubyte, DWORD, ULONG_PTR);
+            void mouse_event(DWORD, DWORD, DWORD, DWORD, ULONG_PTR);
             WINBOOL GetInputState();
             DWORD GetQueueStatus(UINT);
             HWND GetCapture();
             HWND SetCapture(HWND);
             WINBOOL ReleaseCapture();
             DWORD MsgWaitForMultipleObjects(DWORD, LPHANDLE, WINBOOL, DWORD, DWORD);
-            UINT SetTimer(HWND, UINT, UINT, TIMERPROC);
-            WINBOOL KillTimer(HWND, UINT);
+            UINT_PTR SetTimer(HWND, UINT_PTR, UINT, TIMERPROC);
+            WINBOOL KillTimer(HWND, UINT_PTR);
             WINBOOL IsWindowUnicode(HWND);
             WINBOOL EnableWindow(HWND, WINBOOL);
             WINBOOL IsWindowEnabled(HWND);
@@ -2984,7 +3005,7 @@ version(Tango){
             WINBOOL SetMenuDefaultItem(HMENU, UINT, UINT);
             WINBOOL GetMenuItemRect(HWND, HMENU, UINT, LPRECT);
             int MenuItemFromPoint(HWND, HMENU, POINT);
-            DWORD DragObject(HWND, HWND, UINT, DWORD, HCURSOR);
+            DWORD DragObject(HWND, HWND, UINT, ULONG_PTR, HCURSOR);
             WINBOOL DragDetect(HWND, POINT);
             WINBOOL DrawIcon(HDC, int, int, HICON);
             WINBOOL UpdateWindow(HWND);
@@ -3363,10 +3384,10 @@ version(Tango){
             WINBOOL ImageList_SetIconSize(HIMAGELIST, int, int);
             WINBOOL ImageList_GetImageInfo(HIMAGELIST, int, IMAGEINFO*);
             HIMAGELIST ImageList_Merge(HIMAGELIST, int, HIMAGELIST, int, int, int);
-            HWND CreateToolbarEx(HWND, DWORD, UINT, int, HINST, UINT, LPCTBBUTTON, int, int, int, int, int, UINT);
-            HBITMAP CreateMappedBitmap(HINST, int, UINT, LPCOLORMAP, int);
+            HWND CreateToolbarEx(HWND, DWORD, UINT, int, HINST, UINT_PTR, LPCTBBUTTON, int, int, int, int, int, UINT);
+            HBITMAP CreateMappedBitmap(HINST, INT_PTR, UINT, LPCOLORMAP, int);
             void MenuHelp(UINT, WPARAM, LPARAM, HMENU, HINST, HWND);
-            WINBOOL ShowHideMenuCtl(HWND, UINT, LPINT);
+            WINBOOL ShowHideMenuCtl(HWND, UINT_PTR, LPINT);
             void GetEffectiveClientRect(HWND, LPRECT);
             WINBOOL MakeDragList(HWND);
             void DrawInsert(HWND, HWND);
@@ -3462,7 +3483,7 @@ version(Tango){
             UINT DdeQueryConvInfo(HCONV, DWORD, PCONVINFO);
             HCONV DdeQueryNextServer(HCONVLIST, HCONV);
             HCONV DdeReconnect(HCONV);
-            BOOL DdeSetUserHandle(HCONV, DWORD, DWORD);
+            BOOL DdeSetUserHandle(HCONV, DWORD, DWORD_PTR);
             BOOL DdeUnaccessData(HDDEDATA);
             WINBOOL DdeUninitialize(DWORD);
             void SHAddToRecentDocs(UINT);
@@ -3471,19 +3492,19 @@ version(Tango){
             int SHFileOperationA(LPSHFILEOPSTRUCTA);
             int SHFileOperationW(LPSHFILEOPSTRUCTW);
             void SHFreeNameMappings(HANDLE);
-            DWORD SHGetFileInfoA(LPCSTR, DWORD, SHFILEINFOA*, UINT, UINT);
-            DWORD SHGetFileInfoW(LPCWSTR, DWORD, SHFILEINFOW*, UINT, UINT);
+            DWORD_PTR SHGetFileInfoA(LPCSTR, DWORD, SHFILEINFOA*, UINT, UINT);
+            DWORD_PTR SHGetFileInfoW(LPCWSTR, DWORD, SHFILEINFOW*, UINT, UINT);
             WINBOOL SHGetPathFromIDListA(LPCITEMIDLIST, LPSTR);
             WINBOOL SHGetPathFromIDListW(LPCITEMIDLIST, LPWSTR);
             HRESULT SHGetSpecialFolderLocation(HWND, int, LPITEMIDLIST*);
-            THANDLE CreateThread(POINTER, DWORD, TFNTHREADSTARTROUTINE, POINTER, DWORD, DWORD*);
+            THANDLE CreateThread(POINTER, SIZE_T, TFNTHREADSTARTROUTINE, POINTER, DWORD, DWORD*);
             BOOL DdeSetQualityOfService(HWND, TSECURITYQUALITYOFSERVICE*, PSECURITYQUALITYOFSERVICE);
             BOOL GetCommMask(THANDLE, DWORD*);
             BOOL GetDiskFreeSpaceExA(LPCSTR, void*, void*, PLARGEINTEGER);
             BOOL GetDiskFreeSpaceExW(LPWSTR, void*, void*, PLARGEINTEGER);
             DWORD GetKerningPairs(HDC, DWORD, void*);
             BOOL GetOverlappedResult(THANDLE, TOVERLAPPED*, DWORD*, BOOL);
-            BOOL GetQueuedCompletionStatus(THANDLE, DWORD*, DWORD*, POVERLAPPED*, DWORD);
+            BOOL GetQueuedCompletionStatus(THANDLE, DWORD*, ULONG_PTR*, POVERLAPPED*, DWORD);
             BOOL GetSystemPowerStatus(TSYSTEMPOWERSTATUS*);
             BOOL ReadFile(THANDLE, void*, DWORD, DWORD*, POVERLAPPED);
             BOOL SetThreadContext(THANDLE, TCONTEXT*);
@@ -3699,7 +3720,7 @@ HANDLE CreateActCtxW(
 }
 BOOL ActivateActCtx(
   HACTCTX hActCtx,
-  uint* lpCookie
+  ULONG_PTR* lpCookie
 );
 +/
 }
@@ -4646,7 +4667,7 @@ BOOL GradientFill(
 //LPVOID HeapAlloc(
 //    HANDLE hHeap,  // handle to the private heap block
 //    DWORD dwFlags, // heap allocation control flags
-//    DWORD dwBytes  // number of bytes to allocate
+//    SIZE_T dwBytes  // number of bytes to allocate
 //);
 //BOOL HeapFree(
 //    HANDLE hHeap,  // handle to the heap
@@ -4778,7 +4799,7 @@ BOOL InitCommonControlsEx(
 //  HMENU hMenu,      // handle to menu
 //  UINT uPosition,   // menu item that new menu item precedes
 //  UINT uFlags,      // menu item flags
-//  UINT uIDNewItem,  // menu item identifier or handle to drop-down
+//  UINT_PTR uIDNewItem,  // menu item identifier or handle to drop-down
 //                    // menu or submenu
 //  LPCSTR lpNewItem // menu item content
 //);
@@ -4786,7 +4807,7 @@ BOOL InitCommonControlsEx(
 //  HMENU hMenu,      // handle to menu
 //  UINT uPosition,   // menu item that new menu item precedes
 //  UINT uFlags,      // menu item flags
-//  UINT uIDNewItem,  // menu item identifier or handle to drop-down
+//  UINT_PTR uIDNewItem,  // menu item identifier or handle to drop-down
 //                    // menu or submenu
 //  LPCWSTR lpNewItem // menu item content
 //);
@@ -5129,11 +5150,11 @@ void OleUninitialize();
 //alias STDWIN.RoundRect RoundRect;
 
 // basic
-void RtlMoveMemory(void* Destination, LPCVOID Source, DWORD Length);
+void RtlMoveMemory(void* Destination, LPCVOID Source, SIZE_T Length);
 // extends
-void RtlMoveMemory(int Destination, LPCVOID Source, DWORD Length);
-void RtlMoveMemory(void* Destination, int Source, DWORD Length);
-void RtlMoveMemory(int Destination, int Source, DWORD Length);
+void RtlMoveMemory(intptr_t Destination, LPCVOID Source, SIZE_T Length);
+void RtlMoveMemory(void* Destination, intptr_t Source, SIZE_T Length);
+void RtlMoveMemory(intptr_t Destination, intptr_t Source, SIZE_T Length);
 
 LPITEMIDLIST SHBrowseForFolderA(
     BROWSEINFOA* lpbi
@@ -5165,7 +5186,7 @@ HRESULT ScriptBreak(
   SCRIPT_LOGATTR *psla
 );
 HRESULT ScriptCPtoX(
-  UTF16index iCP,//Logical character position in the run.
+  int iCP,//Logical character position in the run.
   BOOL fTrailing,
   UTF16shift cChars,//Number of characters in the run.
   int cGlyphs,
@@ -5226,12 +5247,12 @@ HRESULT ScriptStringAnalyse(
 );
 HRESULT ScriptStringOut(
   SCRIPT_STRING_ANALYSIS ssa, 
-  int iX, 
-  int iY, 
+  INT iX, 
+  INT iY, 
   UINT uOptions, 
   RECT* prc, 
-  UTF16index iMinSel, //starting pos for substringing output string
-  UTF16index iMaxSel, //ending pos for substringing output string
+  INT iMinSel, //starting pos for substringing output string
+  INT iMaxSel, //ending pos for substringing output string
   BOOL fDisabled 
 );
 HRESULT ScriptStringFree(

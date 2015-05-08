@@ -89,7 +89,7 @@ public this(Device device, Image image) {
     if (image is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (image.isDisposed()) SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     this.device.checkGDIP();
-    int /*long*/[] gdipImage = image.createGdipImage();
+    ptrdiff_t [] gdipImage = image.createGdipImage();
     auto img = cast(Gdip.Image) gdipImage[0];
     int width = Gdip.Image_GetWidth(img);
     int height = Gdip.Image_GetHeight(img);

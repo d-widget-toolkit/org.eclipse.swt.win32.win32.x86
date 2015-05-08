@@ -56,7 +56,7 @@ STDAPI CoLockObjectExternal(
   BOOL fLastUnlockReleases
 );
 LPVOID CoTaskMemAlloc(
-  ULONG cb
+  SIZE_T cb
 );
 void CoTaskMemFree(
   void * pv

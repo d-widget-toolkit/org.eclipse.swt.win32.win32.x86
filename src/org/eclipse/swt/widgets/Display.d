@@ -145,7 +145,7 @@ public class Display : Device {
     /* Windows and Events */
     Event [] eventQueue;
     //Callback windowCallback;
-    //int windowProc_;
+    //ptrdiff_t windowProc_;
     int threadId;
     StringT windowClass_, windowShadowClass;
     mixin(gshared!(`static int WindowClassCount;`));
@@ -154,8 +154,8 @@ public class Display : Device {
     EventTable eventTable, filterTable;
 
     /* Widget Table */
-    int freeSlot;
-    int [] indexTable;
+    ptrdiff_t freeSlot;
+    ptrdiff_t [] indexTable;
     Control lastControl, lastGetControl;
     HANDLE lastHwnd;
     HWND lastGetHwnd;
@@ -258,9 +258,9 @@ public class Display : Device {
     int nextTrayId;
 
     /* Timers */
-    int /*long*/ [] timerIds;
+    UINT_PTR [] timerIds;
     Runnable [] timerList;
-    int /*long*/ nextTimerId = SETTINGS_ID + 1;
+    UINT_PTR nextTimerId = SETTINGS_ID + 1;
     static const int SETTINGS_ID = 100;
     static const int SETTINGS_DELAY = 2000;
 
@@ -510,7 +510,7 @@ Control _getFocusControl () {
 
 void addBar (Menu menu) {
     if (bars is null) bars = new Menu [4];
-    int length_ = bars.length;
+    int length_ = cast(int)/*64bit*/bars.length;
     for (int i=0; i<length_; i++) {
         if (bars [i] is menu) return;
     }
@@ -530,12 +530,12 @@ void addBar (Menu menu) {
 void addControl (HANDLE handle, Control control) {
     if (handle is null) return;
     if (freeSlot is -1) {
-        int length_ = (freeSlot = indexTable.length) + GROW_SIZE;
-        int [] newIndexTable = new int [length_];
+        auto length_ = (freeSlot = indexTable.length) + GROW_SIZE;
+        ptrdiff_t [] newIndexTable = new ptrdiff_t [length_];
         Control [] newControlTable = new Control [length_];
         System.arraycopy (indexTable, 0, newIndexTable, 0, freeSlot);
         System.arraycopy (controlTable, 0, newControlTable, 0, freeSlot);
-        for (int i=freeSlot; i<length_-1; i++) newIndexTable [i] = i + 1;
+        for (auto i=freeSlot; i<length_-1; i++) newIndexTable [i] = i + 1;
         newIndexTable [length_ - 1] = -1;
         indexTable = newIndexTable;
         controlTable = newControlTable;
@@ -545,7 +545,7 @@ void addControl (HANDLE handle, Control control) {
     } else {
         OS.SetWindowLongPtr (handle, OS.GWLP_USERDATA, freeSlot + 1);
     }
-    int oldSlot = freeSlot;
+    auto oldSlot = freeSlot;
     freeSlot = indexTable [oldSlot];
     indexTable [oldSlot] = -2;
     controlTable [oldSlot] = control;
@@ -634,7 +634,7 @@ void addMenuItem (MenuItem item) {
             return;
         }
     }
-    item.id = items.length + ID_START;
+    item.id = cast(int)/*64bit*/items.length + ID_START;
     MenuItem [] newItems = new MenuItem [items.length + 64];
     newItems [items.length] = item;
     System.arraycopy (items, 0, newItems, 0, items.length);
@@ -643,7 +643,7 @@ void addMenuItem (MenuItem item) {
 
 void addPopup (Menu menu) {
     if (popups is null) popups = new Menu [4];
-    int length_ = popups.length;
+    int length_ = cast(int)/*64bit*/popups.length;
     for (int i=0; i<length_; i++) {
         if (popups [i] is menu) return;
     }
@@ -776,7 +776,7 @@ static void checkDisplay (Thread thread, bool multiple) {
 
 void clearModal (Shell shell) {
     if (modalShells is null) return;
-    int index = 0, length_ = modalShells.length;
+    int index = 0, length_ = cast(int)/*64bit*/modalShells.length;
     while (index < length_) {
         if (modalShells [index] is shell) break;
         if (modalShells [index] is null) return;
@@ -1209,7 +1209,7 @@ void drawMenuBars () {
     bars = null;
 }
 
-private static extern(Windows) int embeddedFunc (HWND hwnd, int msg, int wParam, int lParam) {
+private static extern(Windows) .LRESULT embeddedFunc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
         case SWT_KEYMSG: {
             MSG* keyMsg = cast(MSG*)lParam;
@@ -1326,7 +1326,7 @@ public Widget findWidget (HANDLE handle) {
  *
  * @since 3.1
  */
-public Widget findWidget (HANDLE handle, int id) {
+public Widget findWidget (HANDLE handle, ptrdiff_t id) {
     checkDevice ();
     //TODO - should ids be long
     Control control = getControl (handle);
@@ -1350,7 +1350,7 @@ public Widget findWidget (HANDLE handle, int id) {
  *
  * @since 3.3
  */
-public Widget findWidget (Widget widget, int /*long*/ id) {
+public Widget findWidget (Widget widget, ptrdiff_t id) {
     checkDevice ();
     //TODO - should ids be long
     if (cast(Control)widget) {
@@ -1359,12 +1359,12 @@ public Widget findWidget (Widget widget, int /*long*/ id) {
     return null;
 }
 
-private static extern(Windows) int foregroundIdleProcFunc (int code, uint wParam, int lParam) {
+private static extern(Windows) .LRESULT foregroundIdleProcFunc (int code, WPARAM wParam, LPARAM lParam) {
     auto d = Display.getCurrent();
     return d.foregroundIdleProc( code, wParam, lParam );
 }
 
-int foregroundIdleProc (int code, int wParam, int lParam) {
+.LRESULT foregroundIdleProc (int code, WPARAM wParam, LPARAM lParam) {
     if (code >= 0) {
         if (runMessages && getMessageCount () !is 0) {
             if (runMessagesInIdle) {
@@ -1458,7 +1458,7 @@ public static Display getCurrent () {
     return findDisplay (Thread.currentThread ());
 }
 
-int getClickCount (int type, int button, HWND hwnd, int lParam) {
+int getClickCount (int type, int button, HWND hwnd, LPARAM lParam) {
     switch (type) {
         case SWT.MouseDown:
             int doubleClick = OS.GetDoubleClickTime ();
@@ -1525,9 +1525,9 @@ Control getControl (HANDLE handle) {
     if (lastGetControl !is null && lastGetHwnd is handle) {
         return lastGetControl;
     }
-    int index;
+    ptrdiff_t index;
     static if (USE_PROPERTY) {
-        index = cast(int) OS.GetProp (handle, cast(wchar*)SWT_OBJECT_INDEX) - 1;
+        index = cast(ptrdiff_t)OS.GetProp (handle, cast(wchar*)SWT_OBJECT_INDEX) - 1;
     } else {
         index = OS.GetWindowLongPtr (handle, OS.GWLP_USERDATA) - 1;
     }
@@ -1762,7 +1762,7 @@ String getFontName (LOGFONT* logFont) {
     } else {
         chars = new char[OS.LF_FACESIZE];
         byte[] bytes = logFont.lfFaceName;
-        OS.MultiByteToWideChar (OS.CP_ACP, OS.MB_PRECOMPOSED, bytes, bytes.length, chars, chars.length);
+        OS.MultiByteToWideChar (OS.CP_ACP, OS.MB_PRECOMPOSED, bytes, cast(int)/*64bit*/bytes.length, chars, cast(int)/*64bit*/chars.length);
     }
     return TCHARzToStr( chars );
 }
@@ -1868,7 +1868,7 @@ ImageList getImageList (int style, int width, int height) {
     if (imageList is null) imageList = new ImageList [4];
 
     int i = 0;
-    int length_ = imageList.length;
+    int length_ = cast(int)/*64bit*/imageList.length;
     while (i < length_) {
         ImageList list = imageList [i];
         if (list is null) break;
@@ -1898,7 +1898,7 @@ ImageList getImageListToolBar (int style, int width, int height) {
     if (toolImageList is null) toolImageList = new ImageList [4];
 
     int i = 0;
-    int length_ = toolImageList.length;
+    int length_ = cast(int)/*64bit*/toolImageList.length;
     while (i < length_) {
         ImageList list = toolImageList [i];
         if (list is null) break;
@@ -1928,7 +1928,7 @@ ImageList getImageListToolBarDisabled (int style, int width, int height) {
     if (toolDisabledImageList is null) toolDisabledImageList = new ImageList [4];
 
     int i = 0;
-    int length_ = toolDisabledImageList.length;
+    int length_ = cast(int)/*64bit*/toolDisabledImageList.length;
     while (i < length_) {
         ImageList list = toolDisabledImageList [i];
         if (list is null) break;
@@ -1958,7 +1958,7 @@ ImageList getImageListToolBarHot (int style, int width, int height) {
     if (toolHotImageList is null) toolHotImageList = new ImageList [4];
 
     int i = 0;
-    int length_ = toolHotImageList.length;
+    int length_ = cast(int)/*64bit*/toolHotImageList.length;
     while (i < length_) {
         ImageList list = toolHotImageList [i];
         if (list is null) break;
@@ -2002,7 +2002,7 @@ int getMessageCount () {
 
 Shell getModalShell () {
     if (modalShells is null) return null;
-    int index = modalShells.length;
+    int index = cast(int)/*64bit*/modalShells.length;
     while (--index >= 0) {
         Shell shell = modalShells [index];
         if (shell !is null) return shell;
@@ -2027,7 +2027,7 @@ public org.eclipse.swt.widgets.Monitor.Monitor [] getMonitors () {
         return [getPrimaryMonitor ()];
     }
     monitors = new org.eclipse.swt.widgets.Monitor.Monitor [4];
-    OS.EnumDisplayMonitors (null, null, &monitorEnumFunc, cast(int)cast(void*)this );
+    OS.EnumDisplayMonitors (null, null, &monitorEnumFunc, cast(ptrdiff_t)cast(void*)this );
     org.eclipse.swt.widgets.Monitor.Monitor [] result = new org.eclipse.swt.widgets.Monitor.Monitor [monitorCount];
     System.arraycopy (monitors, 0, result, 0, monitorCount);
     monitors = null;
@@ -2035,11 +2035,11 @@ public org.eclipse.swt.widgets.Monitor.Monitor [] getMonitors () {
     return result;
 }
 
-static extern(Windows) int getMsgFunc (int code, uint wParam, int lParam) {
+static extern(Windows) .LRESULT getMsgFunc (int code, WPARAM wParam, LPARAM lParam) {
     return Display.getCurrent().getMsgProc( code, wParam, lParam );
 }
 
-int getMsgProc (int code, int wParam, int lParam) {
+.LRESULT getMsgProc (int code, WPARAM wParam, LPARAM lParam) {
     if (embeddedHwnd is null) {
         auto hInstance = OS.GetModuleHandle (null);
         embeddedHwnd = OS.CreateWindowEx (0,
@@ -2068,7 +2068,7 @@ int getMsgProc (int code, int wParam, int lParam) {
                     auto hHeap = OS.GetProcessHeap ();
                     MSG* keyMsg = cast(MSG*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, MSG.sizeof);
                     *keyMsg = *msg;
-                    OS.PostMessage (hwndMessage, SWT_KEYMSG, wParam, cast(int)keyMsg);
+                    OS.PostMessage (hwndMessage, SWT_KEYMSG, wParam, cast(LPARAM)keyMsg);
                     switch (msg.wParam) {
                         case OS.VK_SHIFT:
                         case OS.VK_MENU:
@@ -2113,7 +2113,7 @@ public org.eclipse.swt.widgets.Monitor.Monitor getPrimaryMonitor () {
         return monitor;
     }
     monitors = new org.eclipse.swt.widgets.Monitor.Monitor [4];
-    OS.EnumDisplayMonitors (null, null, &monitorEnumFunc, cast(int)cast(void*)this);
+    OS.EnumDisplayMonitors (null, null, &monitorEnumFunc, cast(ptrdiff_t)cast(void*)this);
     org.eclipse.swt.widgets.Monitor.Monitor result = null;
     MONITORINFO lpmi;
     lpmi.cbSize = MONITORINFO.sizeof;
@@ -2609,7 +2609,7 @@ override protected void init_ () {
         }
     }
     +/
-    int byteCount = windowClass_.length * TCHAR.sizeof;
+    auto byteCount = windowClass_.length * TCHAR.sizeof;
     auto buf = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     lpWndClass.lpszClassName = buf;
     OS.MoveMemory (buf, windowClass_.ptr, byteCount);
@@ -2672,9 +2672,9 @@ override protected void init_ () {
     }
 
     /* Initialize the Widget Table */
-    indexTable = new int [GROW_SIZE];
+    indexTable = new ptrdiff_t [GROW_SIZE];
     controlTable = new Control [GROW_SIZE];
-    for (int i=0; i<GROW_SIZE-1; i++) indexTable [i] = i + 1;
+    for (auto i=0; i<GROW_SIZE-1; i++) indexTable [i] = i + 1;
     indexTable [GROW_SIZE - 1] = -1;
 }
 
@@ -2942,17 +2942,17 @@ static wchar mbcsToWcs (int ch, int codePage) {
     }
     wchar [] unicode = new wchar [1];
     int cp = codePage !is 0 ? codePage : OS.CP_ACP;
-    int count = OS.MultiByteToWideChar (cp, OS.MB_PRECOMPOSED, buffer.ptr, buffer.length, unicode.ptr, 1);
+    int count = OS.MultiByteToWideChar (cp, OS.MB_PRECOMPOSED, buffer.ptr, cast(int)/*64bit*/buffer.length, unicode.ptr, 1);
     if (count is 0) return 0;
     return unicode [0];
 }
 
-private static extern(Windows) int messageProcFunc (HWND hwnd, uint msg, uint wParam, int lParam) {
+private static extern(Windows) .LRESULT messageProcFunc (HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam) {
     Display d = Display.getCurrent();
     return d.messageProc( hwnd, msg, wParam, lParam );
 }
 
-int messageProc (HWND hwnd, uint msg, uint wParam, int lParam) {
+.LRESULT messageProc (HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
         case SWT_RUNASYNC: {
             if (runMessagesInIdle) runAsyncMessages (false);
@@ -2991,7 +2991,7 @@ int messageProc (HWND hwnd, uint msg, uint wParam, int lParam) {
                                     * Windows NT is bit 32 while the high bit on Windows 95 is bit 16.
                                     * They should both be bit 32.  The fix is to test the right bit.
                                     */
-                                    int mapKey = OS.MapVirtualKey (keyMsg.wParam, 2);
+                                    int mapKey = OS.MapVirtualKey (cast(int)/*64bit*/keyMsg.wParam, 2);
                                     if (mapKey !is 0) {
                                         accentKey = (mapKey & (OS.IsWinNT ? 0x80000000 : 0x8000)) !is 0;
                                         if (!accentKey) {
@@ -3193,7 +3193,7 @@ int messageProc (HWND hwnd, uint msg, uint wParam, int lParam) {
     return OS.DefWindowProc (hwnd, msg, wParam, lParam);
 }
 
-private static extern(Windows) int monitorEnumFunc (HMONITOR hmonitor, HDC hdc, RECT* lprcMonitor, int dwData) {
+private static extern(Windows) BOOL monitorEnumFunc (HMONITOR hmonitor, HDC hdc, RECT* lprcMonitor, LPARAM dwData) {
     auto d = cast(Display)cast(void*)dwData;
     return d.monitorEnumProc( hmonitor, hdc, lprcMonitor );
 }
@@ -3220,12 +3220,12 @@ int monitorEnumProc (HMONITOR hmonitor, HDC hdc, RECT* lprcMonitor) {
     return 1;
 }
 
-private static extern(Windows) int msgFilterProcFunc (int code, uint wParam, int lParam) {
+private static extern(Windows) .LRESULT msgFilterProcFunc (int code, WPARAM wParam, LPARAM lParam) {
     Display pThis = Display.getCurrent();
     return pThis.msgFilterProc( code, wParam, lParam );
 }
 
-int msgFilterProc (int code, int wParam, int lParam) {
+.LRESULT msgFilterProc (int code, WPARAM wParam, LPARAM lParam) {
     switch (code) {
         case OS.MSGF_COMMCTRL_BEGINDRAG: {
             if (!runDragDrop && !dragCancelled) {
@@ -3471,7 +3471,7 @@ void postEvent (Event event) {
     */
     if (eventQueue is null) eventQueue = new Event [4];
     int index = 0;
-    int length_ = eventQueue.length;
+    int length_ = cast(int)/*64bit*/eventQueue.length;
     while (index < length_) {
         if (eventQueue [index] is null) break;
         index++;
@@ -3718,7 +3718,7 @@ void releaseDisplay () {
 
 void releaseImageList (ImageList list) {
     int i = 0;
-    int length_ = imageList.length;
+    int length_ = cast(int)/*64bit*/imageList.length;
     while (i < length_) {
         if (imageList [i] is list) {
             if (list.removeRef () > 0) return;
@@ -3737,7 +3737,7 @@ void releaseImageList (ImageList list) {
 
 void releaseToolImageList (ImageList list) {
     int i = 0;
-    int length_ = toolImageList.length;
+    int length_ = cast(int)/*64bit*/toolImageList.length;
     while (i < length_) {
         if (toolImageList [i] is list) {
             if (list.removeRef () > 0) return;
@@ -3756,7 +3756,7 @@ void releaseToolImageList (ImageList list) {
 
 void releaseToolHotImageList (ImageList list) {
     int i = 0;
-    int length_ = toolHotImageList.length;
+    int length_ = cast(int)/*64bit*/toolHotImageList.length;
     while (i < length_) {
         if (toolHotImageList [i] is list) {
             if (list.removeRef () > 0) return;
@@ -3775,7 +3775,7 @@ void releaseToolHotImageList (ImageList list) {
 
 void releaseToolDisabledImageList (ImageList list) {
     int i = 0;
-    int length_ = toolDisabledImageList.length;
+    int length_ = cast(int)/*64bit*/toolDisabledImageList.length;
     while (i < length_) {
         if (toolDisabledImageList [i] is list) {
             if (list.removeRef () > 0) return;
@@ -3866,9 +3866,9 @@ Control removeControl (HANDLE handle) {
     if (handle is null) return null;
     lastControl = lastGetControl = null;
     Control control = null;
-    int index;
+    ptrdiff_t index;
     static if (USE_PROPERTY) {
-        index = cast(int)OS.RemoveProp (handle, cast(wchar*)SWT_OBJECT_INDEX) - 1;
+        index = cast(ptrdiff_t)OS.RemoveProp (handle, cast(wchar*)SWT_OBJECT_INDEX) - 1;
     } else {
         index = OS.GetWindowLongPtr (handle, OS.GWLP_USERDATA) - 1;
         OS.SetWindowLongPtr (handle, OS.GWLP_USERDATA, 0);
@@ -3912,7 +3912,7 @@ bool runDeferredEvents () {
         /* Take an event off the queue */
         Event event = eventQueue [0];
         if (event is null) break;
-        int length_ = eventQueue.length;
+        int length_ = cast(int)/*64bit*/eventQueue.length;
         System.arraycopy (eventQueue, 1, eventQueue, 0, --length_);
         eventQueue [length_] = null;
 
@@ -3943,7 +3943,7 @@ bool runPopups () {
     while (popups !is null) {
         Menu menu = popups [0];
         if (menu is null) break;
-        int length_ = popups.length;
+        int length_ = cast(int)/*64bit*/popups.length;
         System.arraycopy (popups, 1, popups, 0, --length_);
         popups [length_] = null;
         runDeferredEvents ();
@@ -3975,7 +3975,7 @@ void runSettings () {
     }
 }
 
-bool runTimer (int /*long*/ id) {
+bool runTimer (WPARAM id) {
     if (timerList !is null && timerIds !is null) {
         int index = 0;
         while (index <timerIds.length) {
@@ -3998,7 +3998,7 @@ void saveResources () {
     if (resources is null) {
         resources = new Resource [RESOURCE_SIZE];
     } else {
-        resourceCount = resources.length;
+        resourceCount = cast(int)/*64bit*/resources.length;
         Resource [] newResources = new Resource [resourceCount + RESOURCE_SIZE];
         System.arraycopy (resources, 0, newResources, 0, resourceCount);
         resources = newResources;
@@ -4234,7 +4234,7 @@ void setModalDialog (Dialog modalDailog) {
 
 void setModalShell (Shell shell) {
     if (modalShells is null) modalShells = new Shell [4];
-    int index = 0, length_ = modalShells.length;
+    int index = 0, length_ = cast(int)/*64bit*/modalShells.length;
     while (index < length_) {
         if (modalShells [index] is shell) return;
         if (modalShells [index] is null) break;
@@ -4382,13 +4382,13 @@ public void timerExec (int milliseconds, Runnable runnable) {
     if (runnable is null) error (SWT.ERROR_NULL_ARGUMENT);
     assert( runnable );
     if (timerList is null) timerList = new Runnable [4];
-    if (timerIds is null) timerIds = new int /*long*/ [4];
+    if (timerIds is null) timerIds = new UINT_PTR [4];
     int index = 0;
     while (index < timerList.length) {
         if (timerList [index] is runnable) break;
         index++;
     }
-    int /*long*/ timerId = 0;
+    UINT_PTR timerId = 0;
     if (index !is timerList.length) {
         timerId = timerIds [index];
         if (milliseconds < 0) {
@@ -4409,12 +4409,12 @@ public void timerExec (int milliseconds, Runnable runnable) {
             Runnable [] newTimerList = new Runnable [timerList.length + 4];
             SimpleType!(Runnable).arraycopy (timerList, 0, newTimerList, 0, timerList.length);
             timerList = newTimerList;
-            int /*long*/ [] newTimerIds = new int /*long*/ [timerIds.length + 4];
+            UINT_PTR [] newTimerIds = new UINT_PTR [timerIds.length + 4];
             System.arraycopy (timerIds, 0, newTimerIds, 0, timerIds.length);
             timerIds = newTimerIds;
         }
     }
-    int newTimerID = OS.SetTimer (hwndMessage, timerId, milliseconds, null);
+    auto newTimerID = OS.SetTimer (hwndMessage, timerId, milliseconds, null);
     if (newTimerID !is 0) {
         timerList [index] = runnable;
         timerIds [index] = newTimerID;
@@ -4590,16 +4590,16 @@ static int wcsToMbcs (char ch) {
     return wcsToMbcs (ch, 0);
 }
 
-private static extern(Windows) int windowProcFunc (HWND hwnd, uint msg, uint wParam, int lParam) {
+private static extern(Windows) .LRESULT windowProcFunc (HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam) {
     auto d = Display.getCurrent();
     return d.windowProc( hwnd, msg, wParam, lParam );
 }
 
-int windowProc(){
-    return cast(int)&windowProcFunc;
+ptrdiff_t windowProc(){
+    return cast(ptrdiff_t)&windowProcFunc;
 }
 
-int windowProc (HWND hwnd, uint msg, uint wParam, int lParam) {
+.LRESULT windowProc (HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  On Vista only, it is faster to
     * compute and answer the data for the visible columns
@@ -4645,9 +4645,9 @@ int windowProc (HWND hwnd, uint msg, uint wParam, int lParam) {
     if (lastControl !is null && lastHwnd is hwnd) {
         return lastControl.windowProc (hwnd, msg, wParam, lParam);
     }
-    int index;
+    ptrdiff_t index;
     static if (USE_PROPERTY) {
-        index = cast(int)OS.GetProp (hwnd, cast(wchar*)SWT_OBJECT_INDEX) - 1;
+        index = cast(ptrdiff_t)OS.GetProp (hwnd, cast(wchar*)SWT_OBJECT_INDEX) - 1;
     } else {
         index = OS.GetWindowLongPtr (hwnd, OS.GWLP_USERDATA) - 1;
     }
@@ -4665,7 +4665,7 @@ int windowProc (HWND hwnd, uint msg, uint wParam, int lParam) {
 static String withCrLf (String string) {
 
     /* If the string is empty, return the string. */
-    int length_ = string.length;
+    int length_ = cast(int)/*64bit*/string.length;
     if (length_ is 0) return string;
 
     /*

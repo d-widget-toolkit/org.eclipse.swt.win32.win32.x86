@@ -171,9 +171,9 @@ public class TableDragSourceEffect : DragSourceEffect {
         if (table.isListening (SWT.EraseItem) || table.isListening (SWT.PaintItem)) return null;
         TableItem[] selection = table.getSelection();
         if (selection.length is 0) return null;
-        int /*long*/ tableImageList = OS.SendMessage (table.handle, OS.LVM_GETIMAGELIST, OS.LVSIL_SMALL, 0);
+        auto tableImageList = OS.SendMessage (table.handle, OS.LVM_GETIMAGELIST, OS.LVSIL_SMALL, 0);
         if (tableImageList !is 0) {
-            int count = Math.min(selection.length, 10);
+            int count = Math.min(cast(int)/*64bit*/selection.length, 10);
             Rectangle bounds = selection[0].getBounds(0);
             for (int i = 1; i < count; i++) {
                 bounds = bounds.makeUnion(selection[i].getBounds(0));

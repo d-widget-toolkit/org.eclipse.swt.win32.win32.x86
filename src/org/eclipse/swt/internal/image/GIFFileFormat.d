@@ -452,7 +452,7 @@ final class GIFFileFormat : FileFormat {
 
         /* Step 1: Acquire GIF parameters. */
         ImageData[] data = loader.data;
-        int frameCount = data.length;
+        int frameCount = cast(int)/*64bit*/data.length;
         bool multi = frameCount > 1;
         ImageData firstImage = data[0];
         int logicalScreenWidth = multi ? loader.logicalScreenWidth : firstImage.width;

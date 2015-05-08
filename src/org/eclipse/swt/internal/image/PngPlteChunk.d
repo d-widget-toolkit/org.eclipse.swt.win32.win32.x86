@@ -28,7 +28,7 @@ class PngPlteChunk : PngChunk {
     int paletteSize;
 
 this(PaletteData palette) {
-    super(palette.getRGBs().length * 3);
+    super(cast(int)/*64bit*/palette.getRGBs().length * 3);
     paletteSize = length / 3;
     setType(TYPE_PLTE);
     setPaletteData(palette);

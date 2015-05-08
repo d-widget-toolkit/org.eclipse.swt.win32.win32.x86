@@ -439,7 +439,7 @@ public Control getControl() {
     return control;
 }
 
-.LRESULT GetData(FORMATETC *pFormatetc, STGMEDIUM *pmedium) {
+HRESULT GetData(FORMATETC *pFormatetc, STGMEDIUM *pmedium) {
     /* Called by a data consumer to obtain data from a source data object.
        The GetData method renders the data described in the specified FORMATETC
        structure and transfers it through the specified STGMEDIUM structure.
@@ -501,7 +501,7 @@ public Control getControl() {
  */
 public DragSourceListener[] getDragListeners() {
     Listener[] listeners = getListeners(DND.DragStart);
-    int length = listeners.length;
+    int length = cast(int)/*64bit*/listeners.length;
     DragSourceListener[] dragListeners = new DragSourceListener[length];
     int count = 0;
     for (int i = 0; i < length; i++) {
@@ -538,11 +538,11 @@ public Transfer[] getTransfer(){
     return transferAgents;
 }
 
-package .LRESULT GiveFeedback(DWORD dwEffect) {
+package .HRESULT GiveFeedback(DWORD dwEffect) {
     return COM.DRAGDROP_S_USEDEFAULTCURSORS;
 }
 
-package .LRESULT QueryContinueDrag(int fEscapePressed, DWORD grfKeyState) {
+package .HRESULT QueryContinueDrag(int fEscapePressed, DWORD grfKeyState) {
     if (topControl !is null && topControl.isDisposed()) return COM.DRAGDROP_S_CANCEL;
     if (fEscapePressed !is 0){
         if (hwndDrag !is null) OS.ImageList_DragLeave(hwndDrag);
@@ -612,7 +612,7 @@ private int osToOp(int osOperation){
     return operation;
 }
 
-private .LRESULT QueryGetData(FORMATETC* pFormatetc) {
+private HRESULT QueryGetData(FORMATETC* pFormatetc) {
     if (transferAgents is null) return COM.E_FAIL;
     TransferData transferData = new TransferData();
     transferData.formatetc = new FORMATETC();
@@ -687,7 +687,7 @@ public void removeDragListener(DragSourceListener listener) {
     removeListener(DND.DragEnd, listener);
 }
 
-.LRESULT SetData(FORMATETC* pFormatetc, STGMEDIUM* pmedium, int fRelease) {
+HRESULT SetData(FORMATETC* pFormatetc, STGMEDIUM* pmedium, int fRelease) {
     if (pFormatetc is null || pmedium is null) return COM.E_INVALIDARG;
     FORMATETC* formatetc = new FORMATETC();
     COM.MoveMemory(formatetc, pFormatetc, FORMATETC.sizeof);
@@ -761,13 +761,13 @@ extern (Windows):
 
 
     // interface IDataObject
-    LRESULT GetData( FORMATETC *pFormatetc, STGMEDIUM *pmedium) { return parent.GetData(pFormatetc, pmedium); }
-    LRESULT GetDataHere(FORMATETC * pFormatetc, STGMEDIUM * pmedium) { return COM.E_NOTIMPL; }
-    LRESULT QueryGetData(FORMATETC* pFormatetc) { return parent.QueryGetData(pFormatetc); }
-    LRESULT GetCanonicalFormatEtc(FORMATETC* pFormatetcIn, FORMATETC* pFormatetcOut) { return COM.E_NOTIMPL; }
-    LRESULT SetData(FORMATETC* pFormatetc, STGMEDIUM * pmedium, BOOL fRelease) { return parent.SetData(pFormatetc, pmedium, fRelease); }
-    LRESULT EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC * ppenumFormatetc) { return parent.EnumFormatEtc(dwDirection, ppenumFormatetc); }
-    LRESULT DAdvise(FORMATETC* pFormatetc, DWORD advf, IAdviseSink pAdvSink, DWORD* pdwConnection) { return COM.E_NOTIMPL; }
-    LRESULT DUnadvise(DWORD dwConnection) { return COM.E_NOTIMPL; }
-    LRESULT EnumDAdvise(IEnumSTATDATA * ppenumAdvise) { return COM.E_NOTIMPL; }
+    HRESULT GetData( FORMATETC *pFormatetc, STGMEDIUM *pmedium) { return parent.GetData(pFormatetc, pmedium); }
+    HRESULT GetDataHere(FORMATETC * pFormatetc, STGMEDIUM * pmedium) { return COM.E_NOTIMPL; }
+    HRESULT QueryGetData(FORMATETC* pFormatetc) { return parent.QueryGetData(pFormatetc); }
+    HRESULT GetCanonicalFormatEtc(FORMATETC* pFormatetcIn, FORMATETC* pFormatetcOut) { return COM.E_NOTIMPL; }
+    HRESULT SetData(FORMATETC* pFormatetc, STGMEDIUM * pmedium, BOOL fRelease) { return parent.SetData(pFormatetc, pmedium, fRelease); }
+    HRESULT EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC * ppenumFormatetc) { return parent.EnumFormatEtc(dwDirection, ppenumFormatetc); }
+    HRESULT DAdvise(FORMATETC* pFormatetc, DWORD advf, IAdviseSink pAdvSink, DWORD* pdwConnection) { return COM.E_NOTIMPL; }
+    HRESULT DUnadvise(DWORD dwConnection) { return COM.E_NOTIMPL; }
+    HRESULT EnumDAdvise(IEnumSTATDATA * ppenumAdvise) { return COM.E_NOTIMPL; }
 }

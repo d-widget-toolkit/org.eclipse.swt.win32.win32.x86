@@ -137,7 +137,7 @@ public this (Composite parent, int style) {
     super (parent, checkStyle (style));
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     if (hwnd is hwndText) {
         return OS.CallWindowProc (EditProc, hwnd, msg, wParam, lParam);
@@ -333,7 +333,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
             StringBuffer buffer = new StringBuffer ();
             buffer.append (string);
             buffer.append (getDecimalSeparator ());
-            int count = digits - string.length;
+            int count = digits - cast(int)/*64bit*/string.length;
             while (count >= 0) {
                 buffer.append ("0");
                 count--;
@@ -342,7 +342,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
         }
         StringT buffer = StrToTCHARs (getCodePage (), string, false);
         int flags = OS.DT_CALCRECT | OS.DT_EDITCONTROL | OS.DT_NOPREFIX;
-        OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, flags);
+        OS.DrawText (hDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &rect, flags);
         width = rect.right - rect.left;
         if (newFont !is null ) OS.SelectObject (hDC, oldFont);
         OS.ReleaseDC (hwndText, hDC);
@@ -380,7 +380,7 @@ override public Rectangle computeTrim (int x, int y, int width, int height) {
     * the single-line text widget in an editable combo
     * box.
     */
-    int /*long*/ margins = OS.SendMessage (hwndText, OS.EM_GETMARGINS, 0, 0);
+    auto margins = OS.SendMessage (hwndText, OS.EM_GETMARGINS, 0, 0);
     x -= OS.LOWORD (margins);
     width += OS.LOWORD (margins) + OS.HIWORD (margins);
     if ((style & SWT.BORDER) !is 0) {
@@ -555,7 +555,7 @@ public int getSelection () {
     static if (OS.IsWinCE) {
         return OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
     } else {
-        return OS.SendMessage (hwndUpDown, OS.UDM_GETPOS32, 0, 0);
+        return cast(int)/*64bit*/OS.SendMessage (hwndUpDown, OS.UDM_GETPOS32, 0, 0);
     }
 }
 
@@ -576,7 +576,7 @@ int getSelectionText (bool [] parseFail) {
                 if (decimalPart.length > digits) {
                     decimalPart = decimalPart.substring (0, digits);
                 } else {
-                    int i = digits - decimalPart.length;
+                    int i = digits - cast(int)/*64bit*/decimalPart.length;
                     for (int j = 0; j < i; j++) {
                         decimalPart = decimalPart ~ "0";
                     }
@@ -760,7 +760,7 @@ void removeVerifyListener (VerifyListener listener) {
     eventTable.unhook (SWT.Verify, listener);
 }
 
-override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event event) {
+override bool sendKeyEvent (int type, int msg, WPARAM wParam, LPARAM lParam, Event event) {
     if (!super.sendKeyEvent (type, msg, wParam, lParam, event)) {
         return false;
     }
@@ -883,7 +883,7 @@ public void setDigits (int value) {
     static if (OS.IsWinCE) {
         pos = OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
     } else {
-        pos = OS.SendMessage (hwndUpDown, OS.UDM_GETPOS32, 0, 0);
+        pos = cast(int)/*64bit*/OS.SendMessage (hwndUpDown, OS.UDM_GETPOS32, 0, 0);
     }
     setSelection (pos, false, true, false);
 }
@@ -909,7 +909,7 @@ public void setIncrement (int value) {
     checkWidget ();
     if (value < 1) return;
     auto hHeap = OS.GetProcessHeap ();
-    int count = OS.SendMessage (hwndUpDown, OS.UDM_GETACCEL, 0, cast(UDACCEL*)null);
+    auto count = OS.SendMessage (hwndUpDown, OS.UDM_GETACCEL, 0, cast(UDACCEL*)null);
     auto udaccels = cast(UDACCEL*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, UDACCEL.sizeof * count);
     OS.SendMessage (hwndUpDown, OS.UDM_GETACCEL, count, udaccels);
     int first = -1;
@@ -943,7 +943,7 @@ public void setMaximum (int value) {
     int min;
     OS.SendMessage (hwndUpDown , OS.UDM_GETRANGE32, &min, null);
     if (value <= min) return;
-    int pos;
+    .LRESULT pos;
     static if (OS.IsWinCE) {
         pos = OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
     } else {
@@ -971,7 +971,7 @@ public void setMinimum (int value) {
     int max;
     OS.SendMessage (hwndUpDown , OS.UDM_GETRANGE32, null, &max);
     if (value >= max) return;
-    int pos;
+    .LRESULT pos;
     static if (OS.IsWinCE) {
         pos = OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
     } else {
@@ -1031,7 +1031,7 @@ void setSelection (int value, bool setPos, bool setText, bool notify) {
         } else {
             string = String_valueOf(Math.abs (value));
             String decimalSeparator = getDecimalSeparator ();
-            int index = string.length - digits;
+            int index = cast(int)/*64bit*/string.length - digits;
             StringBuffer buffer = new StringBuffer ();
             if (value < 0) buffer.append ("-");
             if (index > 0) {
@@ -1133,7 +1133,7 @@ public void setValues (int selection, int minimum, int maximum, int digits, int 
 
 override void subclass () {
     super.subclass ();
-    int /*long*/ newProc = display.windowProc;
+    auto newProc = display.windowProc;
     OS.SetWindowLongPtr (hwndText, OS.GWLP_WNDPROC, newProc);
     OS.SetWindowLongPtr (hwndUpDown, OS.GWLP_WNDPROC, newProc);
 }
@@ -1186,7 +1186,7 @@ override int widgetExtStyle () {
     return super.widgetExtStyle () & ~OS.WS_EX_CLIENTEDGE;
 }
 
-override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT windowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (hwnd is hwndText || hwnd is hwndUpDown) {
         LRESULT result = null;
         switch (msg) {
@@ -1247,30 +1247,30 @@ override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
     return super.windowProc (hwnd, msg, wParam, lParam);
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     super.WM_ERASEBKGND (wParam, lParam);
     drawBackground (cast(HANDLE)wParam);
     return LRESULT.ONE;
 }
 
-override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
+override LRESULT WM_KILLFOCUS (WPARAM wParam, LPARAM lParam) {
     return null;
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     OS.SetFocus (hwndText);
     OS.SendMessage (hwndText, OS.EM_SETSEL, 0, -1);
     return null;
 }
 
-override LRESULT WM_SETFONT (int wParam, int lParam) {
+override LRESULT WM_SETFONT (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETFONT (wParam, lParam);
     if (result !is null) return result;
     OS.SendMessage (hwndText, OS.WM_SETFONT, wParam, lParam);
     return result;
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SIZE (wParam, lParam);
     if (isDisposed ()) return result;
     int width = OS.LOWORD (lParam), height = OS.HIWORD (lParam);
@@ -1283,7 +1283,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmChar (HWND hwnd, int wParam, int lParam) {
+override LRESULT wmChar (HWND hwnd, WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.wmChar (hwnd, wParam, lParam);
     if (result !is null) return result;
     /*
@@ -1304,7 +1304,7 @@ override LRESULT wmChar (HWND hwnd, int wParam, int lParam) {
     return result;
 }
 
-LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
+LRESULT wmClipboard (HWND hwndText, int msg, WPARAM wParam, LPARAM lParam) {
     if ((style & SWT.READ_ONLY) !is 0) return null;
 //  if (!hooks (SWT.Verify) && !filters (SWT.Verify)) return null;
     bool call = false;
@@ -1356,10 +1356,10 @@ LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
             StringT buffer = StrToTCHARs (getCodePage (), newText, true);
             if (msg is OS.WM_SETTEXT) {
                 auto hHeap = OS.GetProcessHeap ();
-                int byteCount = buffer.length * TCHAR.sizeof;
+                auto byteCount = buffer.length * TCHAR.sizeof;
                 auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
                 OS.MoveMemory (pszText, buffer.ptr, byteCount);
-                int code = OS.CallWindowProc (EditProc, hwndText, msg, wParam, cast(int) pszText);
+                auto code = OS.CallWindowProc (EditProc, hwndText, msg, wParam, cast(ptrdiff_t)pszText);
                 OS.HeapFree (hHeap, 0, pszText);
                 return new LRESULT (code);
             } else {
@@ -1371,7 +1371,7 @@ LRESULT wmClipboard (HWND hwndText, int msg, int wParam, int lParam) {
     return null;
 }
 
-override LRESULT wmCommandChild (int wParam, int lParam) {
+override LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
     int code = OS.HIWORD (wParam);
     switch (code) {
         case OS.EN_CHANGE:
@@ -1379,7 +1379,7 @@ override LRESULT wmCommandChild (int wParam, int lParam) {
             bool [] parseFail = new bool [1];
             int value = getSelectionText (parseFail);
             if (!parseFail [0]) {
-                int pos;
+                .LRESULT pos;
                 static if (OS.IsWinCE) {
                     pos = OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
                 } else {
@@ -1395,7 +1395,7 @@ override LRESULT wmCommandChild (int wParam, int lParam) {
     return super.wmCommandChild (wParam, lParam);
 }
 
-override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
+override LRESULT wmKeyDown (HWND hwnd, WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.wmKeyDown (hwnd, wParam, lParam);
     if (result !is null) return result;
 
@@ -1412,7 +1412,7 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
     }
     if (delta !is 0) {
         bool [1] parseFail;
-        int value = getSelectionText (parseFail);
+        .LRESULT value = getSelectionText (parseFail);
         if (parseFail [0]) {
             static if (OS.IsWinCE) {
                 value = OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
@@ -1420,7 +1420,7 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
                 value = OS.SendMessage (hwndUpDown, OS.UDM_GETPOS32, 0, 0);
             }
         }
-        int newValue = value + delta;
+        auto newValue = value + delta;
         int max, min;
         OS.SendMessage (hwndUpDown , OS.UDM_GETRANGE32, &min, &max);
         if ((style & SWT.WRAP) !is 0) {
@@ -1428,7 +1428,7 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
             if (newValue > max ) newValue = min;
         }
         newValue = Math.min (Math.max (min , newValue), max );
-        if (value !is newValue) setSelection (newValue, true, true, true);
+        if (value !is newValue) setSelection (cast(int)/*64bit*/newValue, true, true, true);
     }
 
     /*  Stop the edit control from moving the caret */
@@ -1441,21 +1441,21 @@ override LRESULT wmKeyDown (HWND hwnd, int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmKillFocus (HWND hwnd, int wParam, int lParam) {
+override LRESULT wmKillFocus (HWND hwnd, WPARAM wParam, LPARAM lParam) {
     bool [1] parseFail;
-    int value = getSelectionText (parseFail);
+    .LRESULT value = getSelectionText (parseFail);
     if (parseFail [0]) {
         static if (OS.IsWinCE) {
             value = OS.LOWORD (OS.SendMessage (hwndUpDown, OS.UDM_GETPOS, 0, 0));
         } else {
             value = OS.SendMessage (hwndUpDown, OS.UDM_GETPOS32, 0, 0);
         }
-        setSelection (value, false, true, false);
+        setSelection (cast(int)/*64bit*/value, false, true, false);
     }
     return super.wmKillFocus (hwnd, wParam, lParam);
 }
 
-override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
+override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
     switch (hdr.code) {
         case OS.UDN_DELTAPOS:
             NMUPDOWN* lpnmud = cast(NMUPDOWN*)lParam;
@@ -1485,7 +1485,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
     return super.wmNotifyChild (hdr, wParam, lParam);
 }
 
-override LRESULT wmScrollChild (int wParam, int lParam) {
+override LRESULT wmScrollChild (WPARAM wParam, LPARAM lParam) {
     int code = OS.LOWORD (wParam);
     switch (code) {
         case OS.SB_THUMBPOSITION:

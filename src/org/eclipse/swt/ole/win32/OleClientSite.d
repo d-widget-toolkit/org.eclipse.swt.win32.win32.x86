@@ -655,7 +655,7 @@ public String getProgramID(){
     if (appClsid !is null){
         wchar* hMem;
         if (COM.ProgIDFromCLSID(appClsid, &hMem) is COM.S_OK) {
-            int length = OS.GlobalSize(hMem);
+            auto length = OS.GlobalSize(hMem);
             auto ptr = OS.GlobalLock(hMem);
             wchar[] buffer = new wchar[length];
             COM.MoveMemory(buffer.ptr, ptr, length);
@@ -688,7 +688,7 @@ int ActivateMe(IOleDocumentView pViewToActivate) {
     objDocumentView.Show(1);//TRUE
     return COM.S_OK;
 }
-protected int GetWindow(HWND* phwnd) {
+protected HRESULT GetWindow(HWND* phwnd) {
     if (phwnd is null)
         return COM.E_INVALIDARG;
     if (frame is null) {
@@ -737,7 +737,7 @@ private int GetWindowContext(IOleInPlaceFrame* ppFrame, IOleInPlaceUIWindow* ppD
     Menu menubar = shell.getMenuBar();
     if (menubar !is null && !menubar.isDisposed()) {
         auto hwnd = shell.handle;
-        auto cAccel = OS.SendMessage(hwnd, OS.WM_APP, 0, 0);
+        auto cAccel = cast(uint)/*64bit*/OS.SendMessage(hwnd, OS.WM_APP, 0, 0);
         if (cAccel !is 0) {
             auto hAccel = cast(HACCEL) OS.SendMessage(hwnd, OS.WM_APP+1, 0, 0);
             if (hAccel !is null) {
@@ -930,7 +930,7 @@ private void onTraverse(Event event) {
 private int OnViewChange(int dwAspect, int lindex) {
     return COM.S_OK;
 }
-protected int QueryInterface(REFCIID riid, void ** ppvObject) {
+protected HRESULT QueryInterface(REFCIID riid, void ** ppvObject) {
 
     if (riid is null || ppvObject is null)
         return COM.E_NOINTERFACE;

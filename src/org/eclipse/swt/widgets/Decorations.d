@@ -323,7 +323,7 @@ override protected void checkSubclass () {
     if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.DefMDIChildProc (hwnd, msg, wParam, lParam);
 }
@@ -403,7 +403,7 @@ void createAccelerators () {
         if (!OS.IsPPC) return;
         maxAccel = 1;
     } else {
-        maxAccel = OS.IsPPC ? items.length + 1 : items.length;
+        maxAccel = OS.IsPPC ? cast(int)/*64bit*/items.length + 1 : cast(int)/*64bit*/items.length;
     }
     ACCEL accel;
     byte [] buffer1 = new byte [ACCEL.sizeof];
@@ -1343,10 +1343,10 @@ public void setText (String string) {
     /* Ensure that the title appears in the task bar.*/
     if ((state & FOREIGN_HANDLE) !is 0) {
         auto hHeap = OS.GetProcessHeap ();
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         auto pszText = OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);
-        OS.DefWindowProc (handle, OS.WM_SETTEXT, 0, cast(int) pszText);
+        OS.DefWindowProc (handle, OS.WM_SETTEXT, 0, cast(ptrdiff_t)pszText);
         if (pszText !is null) OS.HeapFree (hHeap, 0, pszText);
     } else {
         OS.SetWindowText (handle, buffer.ptr);
@@ -1442,7 +1442,7 @@ override public void setVisible (bool visible) {
 
 void sort (Image [] images, ImageData [] datas, int width, int height, int depth) {
     /* Shell Sort from K&R, pg 108 */
-    int length = images.length;
+    int length = cast(int)/*64bit*/images.length;
     if (length <= 1) return;
     for (int gap=length/2; gap>0; gap/=2) {
         for (int i=gap; i<length; i++) {
@@ -1507,7 +1507,7 @@ bool translateMDIAccelerator (MSG* msg) {
 
 bool traverseDecorations (bool next) {
     Control [] children = parent._getChildren ();
-    int length = children.length;
+    int length = cast(int)/*64bit*/children.length;
     int index = 0;
     while (index < length) {
         if (children [index] is this) break;
@@ -1598,18 +1598,18 @@ override int widgetStyle () {
     return bits;
 }
 
-override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT windowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
         case Display.SWT_GETACCEL:
         case Display.SWT_GETACCELCOUNT:
             if (hAccel is cast(HACCEL)-1) createAccelerators ();
-            return msg is Display.SWT_GETACCELCOUNT ? nAccel : cast(int)hAccel;
+            return msg is Display.SWT_GETACCELCOUNT ? nAccel : cast(.LRESULT)hAccel;
         default:
     }
     return super.windowProc (hwnd, msg, wParam, lParam);
 }
 
-override LRESULT WM_ACTIVATE (int wParam, int lParam) {
+override LRESULT WM_ACTIVATE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ACTIVATE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -1670,14 +1670,14 @@ override LRESULT WM_ACTIVATE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_CLOSE (int wParam, int lParam) {
+override LRESULT WM_CLOSE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_CLOSE (wParam, lParam);
     if (result !is null) return result;
     if (isEnabled () && isActive ()) closeWidget ();
     return LRESULT.ZERO;
 }
 
-override LRESULT WM_HOTKEY (int wParam, int lParam) {
+override LRESULT WM_HOTKEY (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_HOTKEY (wParam, lParam);
     if (result !is null) return result;
     static if( OS.IsWinCE ){
@@ -1705,13 +1705,13 @@ override LRESULT WM_HOTKEY (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
+override LRESULT WM_KILLFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KILLFOCUS (wParam, lParam);
     saveFocus ();
     return result;
 }
 
-override LRESULT WM_MOVE (int wParam, int lParam) {
+override LRESULT WM_MOVE (WPARAM wParam, LPARAM lParam) {
     if (moved) {
         Point location = getLocation ();
         if (location.x is oldX && location.y is oldY) {
@@ -1723,7 +1723,7 @@ override LRESULT WM_MOVE (int wParam, int lParam) {
     return super.WM_MOVE (wParam, lParam);
 }
 
-override LRESULT WM_NCACTIVATE (int wParam, int lParam) {
+override LRESULT WM_NCACTIVATE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_NCACTIVATE (wParam, lParam);
     if (result !is null) return result;
     if (wParam is 0) {
@@ -1749,7 +1749,7 @@ override LRESULT WM_NCACTIVATE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_QUERYOPEN (int wParam, int lParam) {
+override LRESULT WM_QUERYOPEN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_QUERYOPEN (wParam, lParam);
     if (result !is null) return result;
     sendEvent (SWT.Deiconify);
@@ -1757,13 +1757,13 @@ override LRESULT WM_QUERYOPEN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETFOCUS (wParam, lParam);
     if (savedFocus !is this) restoreFocus ();
     return result;
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = null;
     bool changed = true;
     if (resized) {
@@ -1798,7 +1798,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SYSCOMMAND (int wParam, int lParam) {
+override LRESULT WM_SYSCOMMAND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SYSCOMMAND (wParam, lParam);
     if (result !is null) return result;
     if (!(cast(Shell)this)) {
@@ -1818,7 +1818,7 @@ override LRESULT WM_SYSCOMMAND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_WINDOWPOSCHANGING (int wParam, int lParam) {
+override LRESULT WM_WINDOWPOSCHANGING (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_WINDOWPOSCHANGING (wParam, lParam);
     if (result !is null) return result;
     if (display.lockActiveWindow) {

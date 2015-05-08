@@ -115,7 +115,7 @@ public class Link : Control {
             lpWndClass.hInstance = hInstance;
             lpWndClass.style &= ~OS.CS_GLOBALCLASS;
             lpWndClass.style |= OS.CS_DBLCLKS;
-            int byteCount = LinkClass.length * TCHAR.sizeof;
+            auto byteCount = LinkClass.length * TCHAR.sizeof;
             auto lpszClassName = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
             OS.MoveMemory (lpszClassName, LinkClass.ptr, byteCount);
             lpWndClass.lpszClassName = lpszClassName;
@@ -192,7 +192,7 @@ public void addSelectionListener (SelectionListener listener) {
     addListener (SWT.DefaultSelection, typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     if (LinkProc !is null) {
         /*
@@ -232,7 +232,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 flags |= OS.DT_WORDBREAK;
                 rect.right = wHint;
             }
-            OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, flags);
+            OS.DrawText (hDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &rect, flags);
             width = rect.right - rect.left;
             height = rect.bottom;
         } else {
@@ -463,13 +463,13 @@ public String getText () {
 }
 
 String parse (String string) {
-    int length_ = string.length;
+    int length_ = cast(int)/*64bit*/string.length;
     offsets = new Point [length_ / 4];
     ids = new String [length_ / 4];
     mnemonics = new int [length_ / 4 + 1];
     StringBuffer result = new StringBuffer ();
     char [] buffer = new char [length_];
-    string.getChars (0, string.length, buffer, 0);
+    string.getChars (0, cast(int)/*64bit*/string.length, buffer, 0);
     int index = 0, state = 0, linkIndex = 0;
     int start = 0, tagStart = 0, linkStart = 0, endtagStart = 0, refStart = 0;
 
@@ -529,9 +529,9 @@ String parse (String string) {
             case 6:
                 if (c is '>') {
                     mnemonics [linkIndex] = parseMnemonics (buffer, start, tagStart, result);
-                    int offset = result.length;
+                    int offset = cast(int)/*64bit*/result.length;
                     parseMnemonics (buffer, linkStart, endtagStart, result);
-                    offsets [linkIndex] = new Point (offset, result.length - 1);
+                    offsets [linkIndex] = new Point (offset, cast(int)/*64bit*/result.length - 1);
                     if (ids [linkIndex] is null) {
                         ids [linkIndex] = buffer[ linkStart .. endtagStart ]._idup();
                     }
@@ -743,11 +743,11 @@ override String windowClass () {
     return OS.COMCTL32_MAJOR >= 6 ? TCHARsToStr(LinkClass) : display.windowClass();
 }
 
-override int windowProc () {
-    return LinkProc !is null ? cast(int)LinkProc : display.windowProc();
+override ptrdiff_t windowProc () {
+    return LinkProc !is null ? cast(ptrdiff_t)LinkProc : display.windowProc();
 }
 
-override LRESULT WM_CHAR (int wParam, int lParam) {
+override LRESULT WM_CHAR (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_CHAR (wParam, lParam);
     if (result !is null) return result;
     if (OS.COMCTL32_MAJOR < 6) {
@@ -786,7 +786,7 @@ override LRESULT WM_CHAR (int wParam, int lParam) {
                 * This allows the application to cancel an operation that is normally
                 * performed in WM_KEYDOWN from WM_CHAR.
                 */
-                int /*long*/ code = callWindowProc (handle, OS.WM_KEYDOWN, wParam, lParam);
+                auto code = callWindowProc (handle, OS.WM_KEYDOWN, wParam, lParam);
                 return new LRESULT (code);
             default:
         }
@@ -795,11 +795,11 @@ override LRESULT WM_CHAR (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
+override LRESULT WM_GETDLGCODE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETDLGCODE (wParam, lParam);
     if (result !is null) return result;
     int index, count;
-    int /*long*/ code = 0;
+    .LRESULT code = 0;
     if (OS.COMCTL32_MAJOR >= 6) {
         LITEM item;
         item.mask = OS.LIF_ITEMINDEX | OS.LIF_STATE;
@@ -815,7 +815,7 @@ override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
         code = callWindowProc (handle, OS.WM_GETDLGCODE, wParam, lParam);
     } else {
         index = focusIndex;
-        count = offsets.length;
+        count = cast(int)/*64bit*/offsets.length;
     }
     if (count is 0) {
         return new LRESULT (code | OS.DLGC_STATIC);
@@ -830,16 +830,16 @@ override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETFONT (int wParam, int lParam) {
+override LRESULT WM_GETFONT (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETFONT (wParam, lParam);
     if (result !is null) return result;
-    int /*long*/ code = callWindowProc (handle, OS.WM_GETFONT, wParam, lParam);
+    auto code = callWindowProc (handle, OS.WM_GETFONT, wParam, lParam);
     if (code !is 0) return new LRESULT (code);
     if (font is null) font = defaultFont ();
-    return new LRESULT ( cast(int) font);
+    return new LRESULT (font);
 }
 
-override LRESULT WM_KEYDOWN (int wParam, int lParam) {
+override LRESULT WM_KEYDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KEYDOWN (wParam, lParam);
     if (result !is null) return result;
     if (OS.COMCTL32_MAJOR >= 6) {
@@ -860,13 +860,13 @@ override LRESULT WM_KEYDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
+override LRESULT WM_KILLFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KILLFOCUS (wParam, lParam);
     if (OS.COMCTL32_MAJOR < 6) redraw ();
     return result;
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_LBUTTONDOWN (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
     if (OS.COMCTL32_MAJOR < 6) {
@@ -904,7 +904,7 @@ override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
+override LRESULT WM_LBUTTONUP (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_LBUTTONUP (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
     if (OS.COMCTL32_MAJOR < 6) {
@@ -926,7 +926,7 @@ override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_NCHITTEST (int wParam, int lParam) {
+override LRESULT WM_NCHITTEST (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_NCHITTEST (wParam, lParam);
     if (result !is null) return result;
 
@@ -940,7 +940,7 @@ override LRESULT WM_NCHITTEST (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
+override LRESULT WM_MOUSEMOVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSEMOVE (wParam, lParam);
     if (OS.COMCTL32_MAJOR < 6) {
         int x = OS.GET_X_LPARAM (lParam);
@@ -975,7 +975,7 @@ override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_PAINT (int wParam, int lParam) {
+override LRESULT WM_PAINT (WPARAM wParam, LPARAM lParam) {
     if (OS.COMCTL32_MAJOR >= 6) {
         return super.WM_PAINT (wParam, lParam);
     }
@@ -997,7 +997,7 @@ override LRESULT WM_PAINT (int wParam, int lParam) {
     return LRESULT.ZERO;
 }
 
-override LRESULT WM_PRINTCLIENT (int wParam, int lParam) {
+override LRESULT WM_PRINTCLIENT (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_PRINTCLIENT (wParam, lParam);
     if (OS.COMCTL32_MAJOR < 6) {
         RECT rect;
@@ -1012,13 +1012,13 @@ override LRESULT WM_PRINTCLIENT (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETFOCUS (wParam, lParam);
     if (OS.COMCTL32_MAJOR < 6) redraw ();
     return result;
 }
 
-override LRESULT WM_SETFONT (int wParam, int lParam) {
+override LRESULT WM_SETFONT (WPARAM wParam, LPARAM lParam) {
     if (OS.COMCTL32_MAJOR < 6) {
         layout.setFont (Font.win32_new (display, cast(HANDLE)wParam));
     }
@@ -1027,7 +1027,7 @@ override LRESULT WM_SETFONT (int wParam, int lParam) {
     return super.WM_SETFONT (wParam, lParam);
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SIZE (wParam, lParam);
     if (OS.COMCTL32_MAJOR < 6) {
         RECT rect;
@@ -1038,7 +1038,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmColorChild (int wParam, int lParam) {
+override LRESULT wmColorChild (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.wmColorChild (wParam, lParam);
     /*
     * Feature in Windows.  When a SysLink is disabled, it does
@@ -1052,14 +1052,14 @@ override LRESULT wmColorChild (int wParam, int lParam) {
                 int backPixel = getBackgroundPixel ();
                 OS.SetBkColor (cast(HANDLE)wParam, backPixel);
                 auto hBrush = findBrush (backPixel, OS.BS_SOLID);
-                return new LRESULT ( cast(int) hBrush);
+                return new LRESULT (hBrush);
             }
         }
     }
     return result;
 }
 
-override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
+override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
     if (OS.COMCTL32_MAJOR >= 6) {
         switch (hdr.code) {
             case OS.NM_RETURN:

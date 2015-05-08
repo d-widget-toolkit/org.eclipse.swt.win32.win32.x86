@@ -177,7 +177,7 @@ protected void javaToNative (Object object, TransferData transferData) {
     // Allocate the memory because the caller (DropTarget) has not handed it in
     // The caller of this method must release the data when it is done with it.
     byte[] data = (cast(ArrayWrapperByte)object).array;
-    int size = data.length;
+    int size = cast(int)/*64bit*/data.length;
     auto newPtr = OS.GlobalAlloc(OS.GMEM_FIXED | OS.GMEM_ZEROINIT, size);
     OS.MoveMemory(newPtr, data.ptr, size);
     transferData.stgmedium = new STGMEDIUM();
@@ -210,7 +210,7 @@ protected Object nativeToJava(TransferData transferData) {
     data.Release();
     if (transferData.result !is COM.S_OK) return null;
     auto hMem = stgmedium.unionField;
-    int size = OS.GlobalSize(hMem);
+    auto size = OS.GlobalSize(hMem);
     byte[] buffer = new byte[size];
     auto ptr = OS.GlobalLock(hMem);
     OS.MoveMemory(buffer.ptr, ptr, size);

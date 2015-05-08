@@ -63,7 +63,7 @@ public class Button : Control {
     alias Control.computeSize computeSize;
     alias Control.windowProc windowProc;
 
-    alias extern(Windows) int function( HWND, uint, uint, int ) TWindowProc;
+    alias extern(Windows) .LRESULT function( HWND, uint, WPARAM, LPARAM ) TWindowProc;
     String text = "", message = "";
     Image image, image2, disabledImage;
     ImageList imageList;
@@ -362,7 +362,7 @@ public void addSelectionListener (SelectionListener listener) {
     addListener (SWT.DefaultSelection,typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.CallWindowProc ( ButtonProc, hwnd, msg, wParam, lParam);
 }
@@ -476,7 +476,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 if (newFont !is null) oldFont = OS.SelectObject (hDC, newFont);
                 TEXTMETRIC lptm;
                 OS.GetTextMetrics (hDC, &lptm);
-                int length_ = text.length;
+                int length_ = cast(int)/*64bit*/text.length;
                 if (length_ is 0) {
                     height = Math.max (height, lptm.tmHeight);
                 } else {
@@ -751,7 +751,7 @@ override String getNameText () {
 public bool getSelection () {
     checkWidget ();
     if ((style & (SWT.CHECK | SWT.RADIO | SWT.TOGGLE)) is 0) return false;
-    int /*long*/ flags = OS.SendMessage (handle, OS.BM_GETCHECK, 0, 0);
+    auto flags = OS.SendMessage (handle, OS.BM_GETCHECK, 0, 0);
     return flags !is OS.BST_UNCHECKED;
 }
 
@@ -1007,7 +1007,7 @@ public void setGrayed (bool grayed) {
     checkWidget ();
     if ((style & SWT.CHECK) is 0) return;
     this.grayed = grayed;
-    int /*long*/ flags = OS.SendMessage (handle, OS.BM_GETCHECK, 0, 0);
+    auto flags = OS.SendMessage (handle, OS.BM_GETCHECK, 0, 0);
     if (grayed) {
         if (flags is OS.BST_CHECKED) updateSelection (OS.BST_INDETERMINATE);
     } else {
@@ -1189,12 +1189,12 @@ override String windowClass () {
     return TCHARzToStr( ButtonClass.ptr );
 }
 
-override int windowProc () {
-    return cast(int) ButtonProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) ButtonProc;
 }
 
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ERASEBKGND (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -1216,7 +1216,7 @@ override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
+override LRESULT WM_GETDLGCODE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETDLGCODE (wParam, lParam);
     if (result !is null) return result;
     if ((style & SWT.ARROW) !is 0) {
@@ -1225,7 +1225,7 @@ override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
+override LRESULT WM_KILLFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KILLFOCUS (wParam, lParam);
     if ((style & SWT.PUSH) !is 0 && getDefault ()) {
         menuShell ().setDefaultButton (null, false);
@@ -1233,17 +1233,17 @@ override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     if (ignoreMouse) return null;
     return super.WM_LBUTTONDOWN (wParam, lParam);
 }
 
-override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
+override LRESULT WM_LBUTTONUP (WPARAM wParam, LPARAM lParam) {
     if (ignoreMouse) return null;
     return super.WM_LBUTTONUP (wParam, lParam);
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows. When Windows sets focus to
     * a radio button, it sets the WM_TABSTOP style.
@@ -1264,7 +1264,7 @@ override LRESULT WM_SETFOCUS (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SIZE (wParam, lParam);
     if (result !is null) return result;
     if (OS.COMCTL32_MAJOR >= 6) {
@@ -1282,14 +1282,14 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SYSCOLORCHANGE (int wParam, int lParam) {
+override LRESULT WM_SYSCOLORCHANGE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SYSCOLORCHANGE (wParam, lParam);
     if (result !is null) return result;
     if (image2 !is null) _setImage (image);
     return result;
 }
 
-override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
+override LRESULT WM_UPDATEUISTATE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_UPDATEUISTATE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -1316,7 +1316,7 @@ override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
             }
             if (redraw) {
                 OS.InvalidateRect (handle, null, false);
-                int /*long*/ code = OS.DefWindowProc (handle, OS.WM_UPDATEUISTATE, wParam, lParam);
+                auto code = OS.DefWindowProc (handle, OS.WM_UPDATEUISTATE, wParam, lParam);
                 return new LRESULT (code);
             }
         }
@@ -1324,7 +1324,7 @@ override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmCommandChild (int wParam, int lParam) {
+override LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
     int code = OS.HIWORD (wParam);
     switch (code) {
         case OS.BN_CLICKED:
@@ -1346,7 +1346,7 @@ override LRESULT wmCommandChild (int wParam, int lParam) {
     return super.wmCommandChild (wParam, lParam);
 }
 
-override LRESULT wmColorChild (int wParam, int lParam) {
+override LRESULT wmColorChild (WPARAM wParam, LPARAM lParam) {
     /*
     * Bug in Windows.  For some reason, the HBRUSH that
     * is returned from WM_CTRLCOLOR is misaligned when
@@ -1360,14 +1360,14 @@ override LRESULT wmColorChild (int wParam, int lParam) {
         if ((style & (SWT.RADIO | SWT.CHECK)) !is 0) {
             if (findImageControl () !is null) {
                 OS.SetBkMode (cast(HANDLE)wParam, OS.TRANSPARENT);
-                return new LRESULT ( cast(int) OS.GetStockObject (OS.NULL_BRUSH));
+                return new LRESULT (OS.GetStockObject (OS.NULL_BRUSH));
             }
         }
     }
     return result;
 }
 
-override LRESULT wmDrawChild (int wParam, int lParam) {
+override LRESULT wmDrawChild (WPARAM wParam, LPARAM lParam) {
     if ((style & SWT.ARROW) is 0) return super.wmDrawChild (wParam, lParam);
     auto struct_ = cast(DRAWITEMSTRUCT*)lParam;
     //OS.MoveMemory (struct_, lParam, DRAWITEMSTRUCT.sizeof);

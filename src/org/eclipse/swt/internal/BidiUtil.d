@@ -118,7 +118,7 @@ public static void addLanguageListener (Control control, Runnable runnable) {
 /**
  * Proc used for OS.EnumSystemLanguageGroups call during isBidiPlatform test.
  */
-static extern(Windows) int EnumSystemLanguageGroupsProc(uint lpLangGrpId, wchar* lpLangGrpIdString, wchar* lpLangGrpName, uint options, int lParam) {
+static extern(Windows) int EnumSystemLanguageGroupsProc(uint lpLangGrpId, wchar* lpLangGrpIdString, wchar* lpLangGrpName, uint options, LONG_PTR lParam) {
     if (lpLangGrpId is OS.LGRPID_HEBREW) {
         isBidiPlatform_ = 1;
         return 0;
@@ -140,7 +140,7 @@ static extern(Windows) int EnumSystemLanguageGroupsProc(uint lpLangGrpId, wchar*
  * @param y y position to start rendering
  */
 public static void drawGlyphs(GC gc, wchar[] renderBuffer, int[] renderDx, int x, int y) {
-    int length_ = renderDx.length;
+    int length_ = cast(int)/*64bit*/renderDx.length;
 
     if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION(4, 10)) {
         if (OS.GetLayout (gc.handle) !is 0) {
@@ -151,7 +151,7 @@ public static void drawGlyphs(GC gc, wchar[] renderBuffer, int[] renderDx, int x
     }
     // render transparently to avoid overlapping segments. fixes bug 40006
     int oldBkMode = OS.SetBkMode(gc.handle, OS.TRANSPARENT);
-    OS.ExtTextOutW(gc.handle, x, y, ETO_GLYPH_INDEX , null, renderBuffer.ptr, renderBuffer.length, renderDx.ptr);
+    OS.ExtTextOutW(gc.handle, x, y, ETO_GLYPH_INDEX , null, renderBuffer.ptr, cast(int)/*64bit*/renderBuffer.length, renderDx.ptr);
     OS.SetBkMode(gc.handle, oldBkMode);
 }
 /**
@@ -183,7 +183,7 @@ public static String getRenderInfo(GC gc, String text, int[] order, byte[] class
     }
     OS.TranslateCharsetInfo( cast(uint*)cs, cast(CHARSETINFO*)lpCs.ptr, OS.TCI_SRCCHARSET);
     StringT textBuffer = StrToTCHARs(lpCs[1], text, false);
-    int byteCount = textBuffer.length;
+    int byteCount = cast(int)/*64bit*/textBuffer.length;
     bool linkBefore = (flags & LINKBEFORE) is LINKBEFORE;
     bool linkAfter = (flags & LINKAFTER) is LINKAFTER;
 
@@ -241,7 +241,7 @@ public static String getRenderInfo(GC gc, String text, int[] order, byte[] class
         // the actual number returned may be less in case of Arabic ligatures.
         result.nGlyphs = length_;
         StringT textBuffer2 = StrToTCHARs(lpCs[1], text.substring(offset, offset + length_), false);
-        OS.GetCharacterPlacement(gc.handle, textBuffer2.ptr, textBuffer2.length, 0, &result, dwFlags);
+        OS.GetCharacterPlacement(gc.handle, textBuffer2.ptr, cast(int)/*64bit*/textBuffer2.length, 0, &result, dwFlags);
 
         if (dx !is null) {
             int [] dx2 = new int [result.nGlyphs];
@@ -312,7 +312,7 @@ public static void getOrderInfo(GC gc, String text, int[] order, byte[] classBuf
     int cs = OS.GetTextCharset(gc.handle);
     OS.TranslateCharsetInfo( cast(uint*) cs, cast(CHARSETINFO*)lpCs.ptr, OS.TCI_SRCCHARSET);
     StringT textBuffer = StrToTCHARs(lpCs[1], text, false);
-    int byteCount = textBuffer.length;
+    int byteCount = cast(int)/*64bit*/textBuffer.length;
     bool isRightOriented = false;
     if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION(4, 10)) {
         isRightOriented = OS.GetLayout(gc.handle) !is 0;
@@ -351,7 +351,7 @@ public static void getOrderInfo(GC gc, String text, int[] order, byte[] classBuf
         // the actual number returned may be less in case of Arabic ligatures.
         result.nGlyphs = length_;
         StringT textBuffer2 = StrToTCHARs(lpCs[1], text.substring(offset, offset + length_), false);
-        OS.GetCharacterPlacement(gc.handle, textBuffer2.ptr, textBuffer2.length, 0, &result, dwFlags);
+        OS.GetCharacterPlacement(gc.handle, textBuffer2.ptr, cast(int)/*64bit*/textBuffer2.length, 0, &result, dwFlags);
 
         if (order !is null) {
             int [] order2 = new int [length_];
@@ -409,8 +409,8 @@ public static int getFontBidiAttributes(GC gc) {
  *  KEYBOARD_NON_BIDI)
  */
 public static int getKeyboardLanguage() {
-    int layout = cast(int) OS.GetKeyboardLayout(0);
-    int langID = OS.PRIMARYLANGID(OS.LOWORD(layout));
+    auto layout = OS.GetKeyboardLayout(0);
+    int langID = OS.PRIMARYLANGID(OS.LOWORD(cast(size_t)layout));
     if (langID is LANG_HEBREW) return KEYBOARD_BIDI;
     if (langID is LANG_ARABIC) return KEYBOARD_BIDI;
     // return non-bidi for all other languages
@@ -483,7 +483,7 @@ public static bool isBidiPlatform() {
 public static bool isKeyboardBidi() {
     void*[] list = getKeyboardLanguageList();
     for (int i=0; i<list.length; i++) {
-        int id = OS.PRIMARYLANGID(OS.LOWORD( cast(int) list[i]));
+        int id = OS.PRIMARYLANGID(OS.LOWORD(cast(size_t)list[i]));
         if ((id is LANG_ARABIC) || (id is LANG_HEBREW)) {
             return true;
         }
@@ -521,7 +521,7 @@ public static void setKeyboardLanguage(int language) {
         void*[] list = getKeyboardLanguageList();
         // set to first bidi language
         for (int i=0; i<list.length; i++) {
-            int id = OS.PRIMARYLANGID(OS.LOWORD( cast(int) list[i]));
+            int id = OS.PRIMARYLANGID(OS.LOWORD(cast(size_t)list[i]));
             if ((id is LANG_ARABIC) || (id is LANG_HEBREW)) {
                 OS.ActivateKeyboardLayout(list[i], 0);
                 return;
@@ -533,7 +533,7 @@ public static void setKeyboardLanguage(int language) {
         // set to the first non-bidi language (anything not
         // Hebrew or Arabic)
         for (int i=0; i<list.length; i++) {
-            int id = OS.PRIMARYLANGID(OS.LOWORD( cast(int) list[i]));
+            int id = OS.PRIMARYLANGID(OS.LOWORD(cast(size_t)list[i]));
             if ((id !is LANG_HEBREW) && (id !is LANG_ARABIC)) {
                 OS.ActivateKeyboardLayout(list[i], 0);
                 return;
@@ -574,7 +574,7 @@ public static bool setOrientation (Control control, int orientation) {
 static void subclass(HWND hwnd) {
     HWND key = hwnd;
     if ( ( key in oldProcMap ) is null) {
-        int /*long*/ oldProc = OS.GetWindowLongPtr(hwnd, OS.GWLP_WNDPROC);
+        auto oldProc = OS.GetWindowLongPtr(hwnd, OS.GWLP_WNDPROC);
         oldProcMap[key] = cast(WNDPROC)oldProc;
         WNDPROC t = &windowProc; // test signature
         OS.SetWindowLongPtr(hwnd, OS.GWLP_WNDPROC, cast(LONG_PTR)&windowProc);
@@ -586,7 +586,7 @@ static void subclass(HWND hwnd) {
  * @param charArray character array to reverse
  */
 static void reverse(wchar[] charArray) {
-    int length_ = charArray.length;
+    int length_ = cast(int)/*64bit*/charArray.length;
     for (int i = 0; i <= (length_  - 1) / 2; i++) {
         wchar tmp = charArray[i];
         charArray[i] = charArray[length_ - 1 - i];
@@ -599,7 +599,7 @@ static void reverse(wchar[] charArray) {
  * @param intArray integer array to reverse
  */
 static void reverse(int[] intArray) {
-    int length_ = intArray.length;
+    int length_ = cast(int)/*64bit*/intArray.length;
     for (int i = 0; i <= (length_  - 1) / 2; i++) {
         int tmp = intArray[i];
         intArray[i] = intArray[length_ - 1 - i];
@@ -616,7 +616,7 @@ static void reverse(int[] intArray) {
 */
 static void translateOrder(int[] orderArray, int glyphCount, bool isRightOriented) {
     int maxOrder = 0;
-    int length_ = orderArray.length;
+    int length_ = cast(int)/*64bit*/orderArray.length;
     if (isRightOriented) {
         for (int i=0; i<length_; i++) {
             maxOrder = Math.max(maxOrder, orderArray[i]);
@@ -653,7 +653,7 @@ static void unsubclass(HWND hwnd) {
  *  change event
  * @param msg window message
  */
-static extern(Windows) int windowProc (HWND hwnd, uint msg, uint wParam, int lParam) {
+static extern(Windows) LRESULT windowProc (HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam) {
     HWND key = hwnd;
     switch (msg) {
         case 0x51 /*OS.WM_INPUTLANGCHANGE*/:

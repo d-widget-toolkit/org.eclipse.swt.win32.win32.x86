@@ -175,7 +175,7 @@ public this (Composite parent, int style) {
     super (parent, checkStyle (style));
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     bool redraw = false;
     switch (msg) {
@@ -205,7 +205,7 @@ override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
                     RECT rect;
                     OS.SetRect (&rect, ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right, ps.rcPaint.bottom);
                     drawBackground (hDC, &rect);
-                    OS.CallWindowProc ( EditProc, hwnd, OS.WM_PAINT, cast(int)hDC, lParam);
+                    OS.CallWindowProc ( EditProc, hwnd, OS.WM_PAINT, cast(ptrdiff_t)hDC, lParam);
                     OS.SetWindowOrgEx (hDC, lpPoint1.x, lpPoint1.y, null);
                     OS.SetBrushOrgEx (hDC, lpPoint2.x, lpPoint2.y, null);
                     OS.BitBlt (paintDC, ps.rcPaint.left, ps.rcPaint.top, width, height, hDC, 0, 0, OS.SRCCOPY);
@@ -220,7 +220,7 @@ override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
         }
         default:
     }
-    int /*long*/ code = OS.CallWindowProc (EditProc, hwnd, msg, wParam, lParam);
+    auto code = OS.CallWindowProc (EditProc, hwnd, msg, wParam, lParam);
     switch (msg) {
         case OS.WM_HSCROLL:
         case OS.WM_VSCROLL: {
@@ -431,7 +431,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
         if (newFont !is null) oldFont = OS.SelectObject (hDC, newFont);
         TEXTMETRIC tm;
         OS.GetTextMetrics (hDC, &tm);
-        int count = (style & SWT.SINGLE) !is 0 ? 1 : OS.SendMessage (handle, OS.EM_GETLINECOUNT, 0, 0);
+        int count = (style & SWT.SINGLE) !is 0 ? 1 : cast(int)/*64bit*/OS.SendMessage (handle, OS.EM_GETLINECOUNT, 0, 0);
         height = count * tm.tmHeight;
         RECT rect;
         int flags = OS.DT_CALCRECT | OS.DT_EDITCONTROL | OS.DT_NOPREFIX;
@@ -484,7 +484,7 @@ override public Rectangle computeTrim (int x, int y, int width, int height) {
     * the single-line text widget in an editable combo
     * box.
     */
-    int /*long*/ margins = OS.SendMessage(handle, OS.EM_GETMARGINS, 0, 0);
+    auto margins = OS.SendMessage(handle, OS.EM_GETMARGINS, 0, 0);
     rect.x -= OS.LOWORD (margins);
     rect.width += OS.LOWORD (margins) + OS.HIWORD (margins);
     if ((style & SWT.H_SCROLL) !is 0) rect.width++;
@@ -549,7 +549,7 @@ override bool dragDetect (HWND hwnd, int x, int y, bool filter, bool [] detect, 
         int start, end;
         OS.SendMessage (handle, OS.EM_GETSEL, &start, &end);
         if (start !is end ) {
-            int /*long*/ lParam = OS.MAKELPARAM (x, y);
+            auto lParam = OS.MAKELPARAM (x, y);
             int position = OS.LOWORD (OS.SendMessage (handle, OS.EM_CHARFROMPOS, 0, lParam));
             if (start <= position && position < end) {
                 if (super.dragDetect (hwnd, x, y, filter, detect, consume)) {
@@ -645,7 +645,7 @@ override public int getBorderWidth () {
  */
 public int getCaretLineNumber () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.EM_LINEFROMCHAR, -1, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.EM_LINEFROMCHAR, -1, 0);
 }
 
 /**
@@ -676,7 +676,7 @@ public Point getCaretLocation () {
     * pixel coordinates (0,0).
     */
     int position = getCaretPosition ();
-    int /*long*/ caretPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, position, 0);
+    auto caretPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, position, 0);
     if (caretPos is -1) {
         caretPos = 0;
         if (position >= OS.GetWindowTextLength (handle)) {
@@ -737,8 +737,8 @@ public int getCaretPosition () {
     */
     int caret = start ;
     if (start !is end ) {
-        int startLine = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, start, 0);
-        int endLine = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, end, 0);
+        auto startLine = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, start, 0);
+        auto endLine = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, end, 0);
         if (startLine is endLine) {
             static if (!OS.IsWinCE) {
                 int idThread = OS.GetWindowThreadProcessId (handle, null);
@@ -748,9 +748,9 @@ public int getCaretPosition () {
                     if (lpgui.hwndCaret is handle || lpgui.hwndCaret is null) {
                         POINT ptCurrentPos;
                         if (OS.GetCaretPos (&ptCurrentPos)) {
-                            int endPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, end, 0);
+                            auto endPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, end, 0);
                             if (endPos is -1) {
-                                int startPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, start, 0);
+                                auto startPos = OS.SendMessage (handle, OS.EM_POSFROMCHAR, start, 0);
                                 int startX = cast(short) (startPos & 0xFFFF);
                                 if (ptCurrentPos.x > startX) caret = end;
                             } else {
@@ -762,8 +762,8 @@ public int getCaretPosition () {
                 }
             }
         } else {
-            int caretPos = OS.SendMessage (handle, OS.EM_LINEINDEX, -1, 0);
-            int caretLine = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, caretPos, 0);
+            auto caretPos = OS.SendMessage (handle, OS.EM_LINEINDEX, -1, 0);
+            auto caretLine = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, caretPos, 0);
             if (caretLine is endLine) caret = end;
         }
     }
@@ -860,7 +860,7 @@ public bool getEditable () {
  */
 public int getLineCount () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.EM_GETLINECOUNT, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.EM_GETLINECOUNT, 0, 0);
 }
 
 /**
@@ -966,7 +966,7 @@ public String getMessage () {
 /*public*/ int getPosition (Point point) {
     checkWidget();
     if (point is null) error (SWT.ERROR_NULL_ARGUMENT);
-    int /*long*/ lParam = OS.MAKELPARAM (point.x, point.y);
+    auto lParam = OS.MAKELPARAM (point.x, point.y);
     int position = OS.LOWORD (OS.SendMessage (handle, OS.EM_CHARFROMPOS, 0, lParam));
     if (!OS.IsUnicode && OS.IsDBLocale) position = mbcsToWcsPos (position);
     return position;
@@ -1067,7 +1067,7 @@ int getTabWidth (int tabs) {
     if (newFont !is null) oldFont = OS.SelectObject (hDC, newFont);
     int flags = OS.DT_CALCRECT | OS.DT_SINGLELINE | OS.DT_NOPREFIX;
     StringT SPACE = StrToTCHARs (getCodePage (), " ", false);
-    OS.DrawText (hDC, SPACE.ptr, SPACE.length, &rect, flags);
+    OS.DrawText (hDC, SPACE.ptr, cast(int)/*64bit*/SPACE.length, &rect, flags);
     if (newFont !is null) OS.SelectObject (hDC, oldFont);
     OS.ReleaseDC (handle, hDC);
     return (rect.right - rect.left) * tabs;
@@ -1168,7 +1168,7 @@ public int getTextLimit () {
 public int getTopIndex () {
     checkWidget ();
     if ((style & SWT.SINGLE) !is 0) return 0;
-    return OS.SendMessage (handle, OS.EM_GETFIRSTVISIBLELINE, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.EM_GETFIRSTVISIBLELINE, 0, 0);
 }
 
 /**
@@ -1199,7 +1199,7 @@ public int getTopPixel () {
     * of Rich Edit return zero.
     */
     int [2] buffer;
-    int code = OS.SendMessage (handle, OS.EM_GETSCROLLPOS, 0, buffer.ptr);
+    auto code = OS.SendMessage (handle, OS.EM_GETSCROLLPOS, 0, buffer.ptr);
     if (code is 1) return buffer [1];
     return getTopIndex () * getLineHeight ();
 }
@@ -1252,12 +1252,12 @@ int mbcsToWcsPos (int mbcsPos) {
     int wcsTotal = 0, mbcsTotal = 0;
     CHAR [] buffer = new CHAR [128];
     String delimiter = getLineDelimiter();
-    int delimiterSize = delimiter.length;
-    int count = OS.SendMessageA (handle, OS.EM_GETLINECOUNT, 0, 0);
+    int delimiterSize = cast(int)/*64bit*/delimiter.length;
+    auto count = OS.SendMessageA (handle, OS.EM_GETLINECOUNT, 0, 0);
     for (int line=0; line<count; line++) {
         int wcsSize = 0;
-        int linePos = OS.SendMessageA (handle, OS.EM_LINEINDEX, line, 0);
-        int mbcsSize = OS.SendMessageA (handle, OS.EM_LINELENGTH, linePos, 0);
+        auto linePos = OS.SendMessageA (handle, OS.EM_LINEINDEX, line, 0);
+        auto mbcsSize = OS.SendMessageA (handle, OS.EM_LINELENGTH, linePos, 0);
         if (mbcsSize !is 0) {
             if (mbcsSize + delimiterSize > buffer.length) {
                 buffer = new CHAR [mbcsSize + delimiterSize];
@@ -1266,7 +1266,7 @@ int mbcsToWcsPos (int mbcsPos) {
             buffer [0] = cast(char) (mbcsSize & 0xFF);
             buffer [1] = cast(char) (mbcsSize >> 8);
             mbcsSize = OS.SendMessageA (handle, OS.EM_GETLINE, line, buffer.ptr);
-            wcsSize = OS.MultiByteToWideChar (cp, OS.MB_PRECOMPOSED, buffer.ptr, mbcsSize, null, 0);
+            wcsSize = OS.MultiByteToWideChar (cp, OS.MB_PRECOMPOSED, buffer.ptr, cast(int)/*64bit*/mbcsSize, null, 0);
         }
         if (line - 1 !is count) {
             for (int i=0; i<delimiterSize; i++) {
@@ -1394,7 +1394,7 @@ public void selectAll () {
     OS.SendMessage (handle, OS.EM_SETSEL, 0, -1);
 }
 
-override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event event) {
+override bool sendKeyEvent (int type, int msg, WPARAM wParam, LPARAM lParam, Event event) {
     if (!super.sendKeyEvent (type, msg, wParam, lParam, event)) {
         return false;
     }
@@ -1442,9 +1442,9 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
         case 0x08:  /* Bs */
             if (start is end ) {
                 if (start is 0) return true;
-                int lineStart = OS.SendMessage (handle, OS.EM_LINEINDEX, -1, 0);
+                auto lineStart = OS.SendMessage (handle, OS.EM_LINEINDEX, -1, 0);
                 if (start is lineStart) {
-                    start = start - DELIMITER.length;
+                    start = start - cast(int)/*64bit*/DELIMITER.length;
                 } else {
                     start = start - 1;
                     if (!OS.IsUnicode && OS.IsDBLocale) {
@@ -1461,10 +1461,10 @@ override bool sendKeyEvent (int type, int msg, int wParam, int lParam, Event eve
             if (start is end) {
                 int length = OS.GetWindowTextLength (handle);
                 if (start is length) return true;
-                int line = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, end, 0);
-                int lineStart = OS.SendMessage (handle, OS.EM_LINEINDEX, line + 1, 0);
+                auto line = OS.SendMessage (handle, OS.EM_LINEFROMCHAR, end, 0);
+                auto lineStart = OS.SendMessage (handle, OS.EM_LINEINDEX, line + 1, 0);
                 if (end is lineStart - DELIMITER.length) {
-                    end = end + DELIMITER.length;
+                    end = end + cast(int)/*64bit*/DELIMITER.length;
                 } else {
                     end = end + 1;
                     if (!OS.IsUnicode && OS.IsDBLocale) {
@@ -1528,7 +1528,7 @@ override void setBounds (int x, int y, int width, int height, int flags) {
     if ((flags & OS.SWP_NOSIZE) is 0 && width !is 0) {
         RECT rect;
         OS.GetWindowRect (handle, &rect);
-        int /*long*/ margins = OS.SendMessage (handle, OS.EM_GETMARGINS, 0, 0);
+        auto margins = OS.SendMessage (handle, OS.EM_GETMARGINS, 0, 0);
         int marginWidth = OS.LOWORD (margins) + OS.HIWORD (margins);
         if (rect.right - rect.left <= marginWidth) {
             int start, end;
@@ -1891,7 +1891,7 @@ public void setText (String string) {
         string = verifyText (string, 0, length, null);
         if (string is null) return;
     }
-    int limit = OS.SendMessage (handle, OS.EM_GETLIMITTEXT, 0, 0) & 0x7FFFFFFF;
+    int limit = cast(int)/*64bit*/OS.SendMessage (handle, OS.EM_GETLIMITTEXT, 0, 0) & 0x7FFFFFFF;
     if (string.length > limit) string = string.substring (0, limit);
     LPCTSTR buffer = StrToTCHARz (getCodePage (), string);
     OS.SetWindowText (handle, buffer);
@@ -1954,9 +1954,9 @@ public void setTextLimit (int limit) {
 public void setTopIndex (int index) {
     checkWidget ();
     if ((style & SWT.SINGLE) !is 0) return;
-    int count = OS.SendMessage (handle, OS.EM_GETLINECOUNT, 0, 0);
-    index = Math.min (Math.max (index, 0), count - 1);
-    int topIndex = OS.SendMessage (handle, OS.EM_GETFIRSTVISIBLELINE, 0, 0);
+    auto count = OS.SendMessage (handle, OS.EM_GETLINECOUNT, 0, 0);
+    index = cast(int)/*64bit*/Math.min (Math.max (index, 0), count - 1);
+    auto topIndex = OS.SendMessage (handle, OS.EM_GETFIRSTVISIBLELINE, 0, 0);
     OS.SendMessage (handle, OS.EM_LINESCROLL, 0, index - topIndex);
 }
 
@@ -2012,12 +2012,12 @@ int wcsToMbcsPos (int wcsPos) {
     int wcsTotal = 0, mbcsTotal = 0;
     CHAR [] buffer = new CHAR [128];
     String delimiter = getLineDelimiter ();
-    int delimiterSize = delimiter.length;
-    int count = OS.SendMessageA (handle, OS.EM_GETLINECOUNT, 0, 0);
+    int delimiterSize = cast(int)/*64bit*/delimiter.length;
+    auto count = OS.SendMessageA (handle, OS.EM_GETLINECOUNT, 0, 0);
     for (int line=0; line<count; line++) {
         int wcsSize = 0;
-        int linePos = OS.SendMessageA (handle, OS.EM_LINEINDEX, line, 0);
-        int mbcsSize = OS.SendMessageA (handle, OS.EM_LINELENGTH, linePos, 0);
+        auto linePos = OS.SendMessageA (handle, OS.EM_LINEINDEX, line, 0);
+        auto mbcsSize = OS.SendMessageA (handle, OS.EM_LINELENGTH, linePos, 0);
         if (mbcsSize !is 0) {
             if (mbcsSize + delimiterSize > buffer.length) {
                 buffer = new CHAR [mbcsSize + delimiterSize];
@@ -2026,7 +2026,7 @@ int wcsToMbcsPos (int wcsPos) {
             buffer [0] = cast(char) (mbcsSize & 0xFF);
             buffer [1] = cast(char) (mbcsSize >> 8);
             mbcsSize = OS.SendMessageA (handle, OS.EM_GETLINE, line, buffer.ptr);
-            wcsSize = OS.MultiByteToWideChar (cp, OS.MB_PRECOMPOSED, buffer.ptr, mbcsSize, null, 0);
+            wcsSize = OS.MultiByteToWideChar (cp, OS.MB_PRECOMPOSED, buffer.ptr, cast(int)/*64bit*/mbcsSize, null, 0);
         }
         if (line - 1 !is count) {
             for (int i=0; i<delimiterSize; i++) {
@@ -2044,7 +2044,7 @@ int wcsToMbcsPos (int wcsPos) {
                 if (OS.IsDBCSLeadByte (buffer [index++])) index++;
                 wcsSize++;
             }
-            return mbcsTotal + mbcsSize;
+            return mbcsTotal + cast(int)/*64bit*/mbcsSize;
         }
         wcsTotal += wcsSize;
         mbcsTotal += mbcsSize;
@@ -2086,11 +2086,11 @@ override String windowClass () {
     return TCHARsToStr(EditClass);
 }
 
-override int windowProc () {
-    return cast(int)EditProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t)EditProc;
 }
 
-override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT windowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (msg is OS.EM_UNDO) {
         int bits = OS.GetWindowLong (handle, OS.GWL_STYLE);
         if ((bits & OS.ES_MULTILINE) is 0) {
@@ -2107,7 +2107,7 @@ override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
     return super.windowProc (hwnd, msg, wParam, lParam);
 }
 
-override LRESULT WM_CHAR (int wParam, int lParam) {
+override LRESULT WM_CHAR (WPARAM wParam, LPARAM lParam) {
     if (ignoreCharacter) return null;
     LRESULT result = super.WM_CHAR (wParam, lParam);
     if (result !is null) return result;
@@ -2147,19 +2147,19 @@ override LRESULT WM_CHAR (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_CLEAR (int wParam, int lParam) {
+override LRESULT WM_CLEAR (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_CLEAR (wParam, lParam);
     if (result !is null) return result;
     return wmClipboard (OS.WM_CLEAR, wParam, lParam);
 }
 
-override LRESULT WM_CUT (int wParam, int lParam) {
+override LRESULT WM_CUT (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_CUT (wParam, lParam);
     if (result !is null) return result;
     return wmClipboard (OS.WM_CUT, wParam, lParam);
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ERASEBKGND (wParam, lParam);
     if ((style & SWT.READ_ONLY) !is 0) {
         if ((style & (SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL)) is 0) {
@@ -2185,7 +2185,7 @@ override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
+override LRESULT WM_GETDLGCODE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETDLGCODE (wParam, lParam);
     if (result !is null) return result;
 
@@ -2211,19 +2211,19 @@ override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
     * so DLGC_WANTARROWS should not be cleared.
     */
     if ((style & SWT.READ_ONLY) !is 0) {
-        int /*long*/ code = callWindowProc (handle, OS.WM_GETDLGCODE, wParam, lParam);
+        auto code = callWindowProc (handle, OS.WM_GETDLGCODE, wParam, lParam);
         code &= ~(OS.DLGC_WANTALLKEYS | OS.DLGC_WANTTAB);
         return new LRESULT (code);
     }
     return null;
 }
 
-override LRESULT WM_IME_CHAR (int wParam, int lParam) {
+override LRESULT WM_IME_CHAR (WPARAM wParam, LPARAM lParam) {
 
     /* Process a DBCS character */
     Display display = this.display;
     display.lastKey = 0;
-    display.lastAscii = wParam;
+    display.lastAscii = cast(int)/*64bit*/wParam;
     display.lastVirtual = display.lastNull = display.lastDead = false;
     if (!sendKeyEvent (SWT.KeyDown, OS.WM_IME_CHAR, wParam, lParam)) {
         return LRESULT.ZERO;
@@ -2237,7 +2237,7 @@ override LRESULT WM_IME_CHAR (int wParam, int lParam) {
     * them to the application.
     */
     ignoreCharacter = true;
-    int /*long*/ result = callWindowProc (handle, OS.WM_IME_CHAR, wParam, lParam);
+    auto result = callWindowProc (handle, OS.WM_IME_CHAR, wParam, lParam);
     MSG msg;
     int flags = OS.PM_REMOVE | OS.PM_NOYIELD | OS.PM_QS_INPUT | OS.PM_QS_POSTMESSAGE;
     while (OS.PeekMessage (&msg, handle, OS.WM_CHAR, OS.WM_CHAR, flags)) {
@@ -2252,7 +2252,7 @@ override LRESULT WM_IME_CHAR (int wParam, int lParam) {
     return new LRESULT (result);
 }
 
-override LRESULT WM_LBUTTONDBLCLK (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDBLCLK (WPARAM wParam, LPARAM lParam) {
     /*
     * Prevent Windows from processing WM_LBUTTONDBLCLK
     * when double clicking behavior is disabled by not
@@ -2283,14 +2283,14 @@ override LRESULT WM_LBUTTONDBLCLK (int wParam, int lParam) {
     if (start  is end ) {
         int length = OS.GetWindowTextLength (handle);
         if (length is start) {
-            int code = OS.SendMessage (handle, OS.EM_LINELENGTH, length, 0);
+            auto code = OS.SendMessage (handle, OS.EM_LINELENGTH, length, 0);
             if (code is 0) return LRESULT.ZERO;
         }
     }
     return result;
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     static if( OS.IsWinCE )
     if (OS.IsPPC) {
         LRESULT result = null;
@@ -2335,19 +2335,19 @@ override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
     return super.WM_LBUTTONDOWN (wParam, lParam);
 }
 
-override LRESULT WM_PASTE (int wParam, int lParam) {
+override LRESULT WM_PASTE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_PASTE (wParam, lParam);
     if (result !is null) return result;
     return wmClipboard (OS.WM_PASTE, wParam, lParam);
 }
 
-override LRESULT WM_UNDO (int wParam, int lParam) {
+override LRESULT WM_UNDO (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_UNDO (wParam, lParam);
     if (result !is null) return result;
     return wmClipboard (OS.WM_UNDO, wParam, lParam);
 }
 
-LRESULT wmClipboard (int msg, int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmClipboard (int msg, WPARAM wParam, LPARAM lParam) {
     if ((style & SWT.READ_ONLY) !is 0) return null;
     if (!hooks (SWT.Verify) && !filters (SWT.Verify)) return null;
     bool call = false;
@@ -2424,7 +2424,7 @@ LRESULT wmClipboard (int msg, int /*long*/ wParam, int /*long*/ lParam) {
     return null;
 }
 
-override LRESULT wmColorChild (int wParam, int lParam) {
+override LRESULT wmColorChild (WPARAM wParam, LPARAM lParam) {
     if ((style & SWT.READ_ONLY) !is 0) {
         if ((style & (SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL)) is 0) {
             int bits = OS.GetWindowLong (handle, OS.GWL_STYLE);
@@ -2438,7 +2438,7 @@ override LRESULT wmColorChild (int wParam, int lParam) {
                                 OS.SetTextColor (cast(HANDLE) wParam, getForegroundPixel ());
                                 OS.SetBkColor (cast(HANDLE) wParam, getBackgroundPixel ());
                                 OS.SetBkMode (cast(HANDLE) wParam, OS.TRANSPARENT);
-                                return new LRESULT ( cast(int) OS.GetStockObject (OS.NULL_BRUSH));
+                                return new LRESULT (OS.GetStockObject (OS.NULL_BRUSH));
                             }
                         }
                     }
@@ -2449,7 +2449,7 @@ override LRESULT wmColorChild (int wParam, int lParam) {
     return super.wmColorChild (wParam, lParam);
 }
 
-override LRESULT wmCommandChild (int wParam, int lParam) {
+override LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
     int code = OS.HIWORD (wParam);
     switch (code) {
         case OS.EN_CHANGE:

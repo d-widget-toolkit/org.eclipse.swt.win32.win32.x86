@@ -104,11 +104,11 @@ public this (Shell parent, int style) {
     checkSubclass ();
 }
 
-private static extern(Windows) uint CCHookFunc (HWND hdlg, uint uiMsg, uint lParam, int lpData) {
+private static extern(Windows) UINT_PTR CCHookFunc (HWND hdlg, uint uiMsg, WPARAM lParam, LPARAM lpData) {
     return sThis.CCHookProc( hdlg, uiMsg, lParam );
 }
 
-int CCHookProc (HWND hdlg, uint uiMsg, uint lParam ) {
+int CCHookProc (HWND hdlg, WPARAM uiMsg, LPARAM lParam ) {
     switch (uiMsg) {
         case OS.WM_INITDIALOG: {
             RECT rect;
@@ -212,7 +212,7 @@ public RGB open () {
 
     /* Open the dialog */
     CHOOSECOLOR lpcc;
-    lpcc.lCustData = cast(int)cast(void*)this;
+    lpcc.lCustData = cast(ptrdiff_t)cast(void*)this;
     lpcc.lStructSize = CHOOSECOLOR.sizeof;
     lpcc.Flags = OS.CC_ANYCOLOR | OS.CC_ENABLEHOOK;
     //if (display.fullOpen) lpcc.Flags |= OS.CC_FULLOPEN;

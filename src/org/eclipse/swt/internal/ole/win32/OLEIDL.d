@@ -408,7 +408,7 @@ interface IContinue : IUnknown
 
 interface IViewObject : IUnknown
 {
-	HRESULT Draw( DWORD dwDrawAspect, LONG lindex, void * pvAspect, DVTARGETDEVICE *ptd, HDC hdcTargetDev, HDC hdcDraw, LPCRECTL lprcBounds, LPCRECTL lprcWBounds, BOOL function(DWORD dwContinue) pfnContinue, DWORD dwContinue );
+	HRESULT Draw( DWORD dwDrawAspect, LONG lindex, void * pvAspect, DVTARGETDEVICE *ptd, HDC hdcTargetDev, HDC hdcDraw, LPCRECTL lprcBounds, LPCRECTL lprcWBounds, BOOL function(ULONG_PTR dwContinue) pfnContinue, ULONG_PTR dwContinue );
 	HRESULT GetColorSet( DWORD dwDrawAspect, LONG lindex, void *pvAspect, DVTARGETDEVICE *ptd, HDC hicTargetDev, LOGPALETTE **ppColorSet );
 	HRESULT Freeze( DWORD dwDrawAspect, LONG lindex, void *pvAspect, DWORD *pdwFreeze );
 	HRESULT Unfreeze( DWORD dwFreeze );

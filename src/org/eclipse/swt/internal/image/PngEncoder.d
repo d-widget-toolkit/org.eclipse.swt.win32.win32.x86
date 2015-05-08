@@ -96,7 +96,7 @@ void writeInt(ByteArrayOutputStream baos, int theInt) {
 
 void writeChunk(in byte[] tag, in byte[] buffer) {
 
-    int bufferLength = (buffer !is null) ? buffer.length : 0;
+    int bufferLength = (buffer !is null) ? cast(int)/*64bit*/buffer.length : 0;
 
     chunk = new PngChunk(bufferLength);
 
@@ -142,7 +142,7 @@ void writePalette() {
 
     if (RGBs.length > 256) SWT.error(SWT.ERROR_INVALID_IMAGE);
 
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(RGBs.length);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(cast(int)/*64bit*/RGBs.length);
 
     for (int i = 0; i < RGBs.length; i++) {
 

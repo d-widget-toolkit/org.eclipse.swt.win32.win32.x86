@@ -50,7 +50,7 @@ private FORMATETC*[] getNextItems(int numItems){
     if (formats is null || numItems < 1) return null;
 
     int endIndex = index + numItems - 1;
-    if (endIndex > (formats.length - 1)) endIndex = formats.length - 1;
+    if (endIndex > (formats.length - 1)) endIndex = cast(int)/*64bit*/formats.length - 1;
     if (index > endIndex) return null;
 
     FORMATETC*[] items =  new FORMATETC*[endIndex - index + 1];
@@ -80,7 +80,7 @@ package HRESULT Next(ULONG celt, FORMATETC *rgelt, ULONG *pceltFetched) {
         }
 
         if (pceltFetched !is null)
-            *pceltFetched = nextItems.length;
+            *pceltFetched = cast(int)/*64bit*/nextItems.length;
 
         if (nextItems.length is celt) return COM.S_OK;
 
@@ -135,7 +135,7 @@ private int Skip(int celt) {
 
     index += celt;
     if (index > (formats.length - 1)){
-        index = formats.length - 1;
+        index = cast(int)/*64bit*/formats.length - 1;
         return COM.S_FALSE;
     }
     return COM.S_OK;

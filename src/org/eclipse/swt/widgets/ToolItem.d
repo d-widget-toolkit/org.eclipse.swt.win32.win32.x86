@@ -183,10 +183,10 @@ override protected void checkSubclass () {
 void click (bool dropDown) {
     auto hwnd = parent.handle;
     if (OS.GetKeyState (OS.VK_LBUTTON) < 0) return;
-    int index = OS.SendMessage (hwnd, OS.TB_COMMANDTOINDEX, id, 0);
+    auto index = OS.SendMessage (hwnd, OS.TB_COMMANDTOINDEX, id, 0);
     RECT rect;
     OS.SendMessage (hwnd, OS.TB_GETITEMRECT, index, &rect);
-    int hotIndex = OS.SendMessage (hwnd, OS.TB_GETHOTITEM, 0, 0);
+    auto hotIndex = OS.SendMessage (hwnd, OS.TB_GETHOTITEM, 0, 0);
 
     /*
     * In order to emulate all the processing that
@@ -196,7 +196,7 @@ void click (bool dropDown) {
     * properly.
     */
     int y = rect.top + (rect.bottom - rect.top) / 2;
-    int /*long*/ lParam = OS.MAKELPARAM (dropDown ? rect.right - 1 : rect.left, y);
+    auto lParam = OS.MAKELPARAM (dropDown ? rect.right - 1 : rect.left, y);
     parent.ignoreMouse = true;
     OS.SendMessage (hwnd, OS.WM_LBUTTONDOWN, 0, lParam);
     OS.SendMessage (hwnd, OS.WM_LBUTTONUP, 0, lParam);
@@ -226,7 +226,7 @@ override void destroyWidget () {
 public Rectangle getBounds () {
     checkWidget();
     auto hwnd = parent.handle;
-    int index = OS.SendMessage (hwnd, OS.TB_COMMANDTOINDEX, id, 0);
+    auto index = OS.SendMessage (hwnd, OS.TB_COMMANDTOINDEX, id, 0);
     RECT rect;
     OS.SendMessage (hwnd, OS.TB_GETITEMRECT, index, &rect);
     int width = rect.right - rect.left;
@@ -290,7 +290,7 @@ public bool getEnabled () {
         return (state & DISABLED) is 0;
     }
     auto hwnd = parent.handle;
-    int /*long*/ fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
+    auto fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
     return (fsState & OS.TBSTATE_ENABLED) !is 0;
 }
 
@@ -349,7 +349,7 @@ public bool getSelection () {
     checkWidget();
     if ((style & (SWT.CHECK | SWT.RADIO)) is 0) return false;
     auto hwnd = parent.handle;
-    int /*long*/ fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
+    auto fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
     return (fsState & OS.TBSTATE_CHECKED) !is 0;
 }
 
@@ -381,7 +381,7 @@ public String getToolTipText () {
 public int getWidth () {
     checkWidget();
     auto hwnd = parent.handle;
-    int index = OS.SendMessage (hwnd, OS.TB_COMMANDTOINDEX, id, 0);
+    auto index = OS.SendMessage (hwnd, OS.TB_COMMANDTOINDEX, id, 0);
     RECT rect;
     OS.SendMessage (hwnd, OS.TB_GETITEMRECT, index, &rect);
     return rect.right - rect.left;
@@ -607,7 +607,7 @@ public void setControl (Control control) {
 public void setEnabled (bool enabled) {
     checkWidget();
     auto hwnd = parent.handle;
-    int fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
+    auto fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
     /*
     * Feature in Windows.  When TB_SETSTATE is used to set the
     * state of a tool item, the item redraws even when the state
@@ -714,7 +714,7 @@ public void setSelection (bool selected) {
     checkWidget();
     if ((style & (SWT.CHECK | SWT.RADIO)) is 0) return;
     auto hwnd = parent.handle;
-    int fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
+    auto fsState = OS.SendMessage (hwnd, OS.TB_GETSTATE, id, 0);
     /*
     * Feature in Windows.  When TB_SETSTATE is used to set the
     * state of a tool item, the item redraws even when the state
@@ -785,7 +785,7 @@ override public void setText (String string) {
     if (string.length !is 0) {
         info.fsStyle |= OS.BTNS_SHOWTEXT;
         StringT buffer = StrToTCHARs (parent.getCodePage (), string, true );
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);
         info.pszText = pszText;
@@ -802,7 +802,7 @@ override public void setText (String string) {
     * the tool bar to redraw and layout.
     */
     parent.setDropDownItems (false);
-    int /*long*/ hFont = OS.SendMessage (hwnd, OS.WM_GETFONT, 0, 0);
+    auto hFont = OS.SendMessage (hwnd, OS.WM_GETFONT, 0, 0);
     OS.SendMessage (hwnd, OS.WM_SETFONT, hFont, 0);
     parent.setDropDownItems (true);
     parent.layoutItems ();
@@ -958,7 +958,7 @@ int widgetStyle () {
     return OS.BTNS_BUTTON;
 }
 
-LRESULT wmCommandChild (int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
     if ((style & SWT.RADIO) !is 0) {
         if ((parent.getStyle () & SWT.NO_RADIO_GROUP) is 0) {
             selectRadio ();

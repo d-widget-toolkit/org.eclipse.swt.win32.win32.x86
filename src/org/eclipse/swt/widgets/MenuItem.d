@@ -776,7 +776,7 @@ override public void setImage (Image image) {
     super.setImage (image);
     static if (OS.IsWinCE) {
         if ((OS.IsPPC || OS.IsSP) && parent.hwndCB !is null) {
-            int /*long*/ hwndCB = parent.hwndCB;
+            auto hwndCB = parent.hwndCB;
             TBBUTTONINFO info;
             info.cbSize = TBBUTTONINFO.sizeof;
             info.dwMask = OS.TBIF_IMAGE;
@@ -877,7 +877,7 @@ void setMenu (Menu menu, bool dispose) {
         if (info.dwItemData !is id) return;
         int cch = 128;
         auto hHeap = OS.GetProcessHeap ();
-        int byteCount = cch * TCHAR.sizeof;
+        auto byteCount = cch * TCHAR.sizeof;
         auto pszText = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         info.fMask = OS.MIIM_STATE | OS.MIIM_ID | OS.MIIM_DATA;
         /*
@@ -909,11 +909,11 @@ void setMenu (Menu menu, bool dispose) {
             * the item, SetMenuItemInfo() to set the string and EnableMenuItem()
             * and CheckMenuItem() to set the state.
             */
-            int /*long*/ uIDNewItem = id;
+            auto uIDNewItem = cast(ptrdiff_t)id;
             int uFlags = OS.MF_BYPOSITION;
             if (menu !is null) {
                 uFlags |= OS.MF_POPUP;
-                uIDNewItem = cast(int)menu.handle;
+                uIDNewItem = cast(ptrdiff_t)menu.handle;
             }
             StringT lpNewItem = StrToTCHARs (0, " ", true);
             success = OS.InsertMenu (hMenu, index, uFlags, uIDNewItem, lpNewItem.ptr) !is 0;
@@ -1059,7 +1059,7 @@ override public void setText (String string) {
         * the string.
         */
         if (string.indexOf ('&') !is -1) {
-            int length_ = string.length;
+            int length_ = cast(int)/*64bit*/string.length;
             char[] text = new char [length_];
             string.getChars( 0, length_, text, 0);
             int i = 0, j = 0;
@@ -1070,7 +1070,7 @@ override public void setText (String string) {
         }
         /* Use the character encoding for the default locale */
         StringT buffer = StrToTCHARs (0, string, true);
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);
         auto hwndCB = parent.hwndCB;
@@ -1086,7 +1086,7 @@ override public void setText (String string) {
 
         /* Use the character encoding for the default locale */
         StringT buffer = StrToTCHARs (0, string, true);
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         pszText = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (pszText, buffer.ptr, byteCount);
         /*
@@ -1125,7 +1125,7 @@ int widgetStyle () {
     return bits | OS.MFT_STRING;
 }
 
-LRESULT wmCommandChild (int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
     if ((style & SWT.CHECK) !is 0) {
         setSelection (!getSelection ());
     } else {
@@ -1143,7 +1143,7 @@ LRESULT wmCommandChild (int /*long*/ wParam, int /*long*/ lParam) {
     return null;
 }
 
-LRESULT wmDrawChild (int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmDrawChild (WPARAM wParam, LPARAM lParam) {
     DRAWITEMSTRUCT* struct_ = cast(DRAWITEMSTRUCT*)lParam;
     //OS.MoveMemory (struct_, lParam, DRAWITEMSTRUCT.sizeof);
     if (image !is null) {
@@ -1166,7 +1166,7 @@ LRESULT wmDrawChild (int /*long*/ wParam, int /*long*/ lParam) {
     return null;
 }
 
-LRESULT wmMeasureChild (int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmMeasureChild (WPARAM wParam, LPARAM lParam) {
     MEASUREITEMSTRUCT* struct_ = cast(MEASUREITEMSTRUCT*)lParam;
     //OS.MoveMemory (struct_, lParam, MEASUREITEMSTRUCT.sizeof);
     int width = 0, height = 0;

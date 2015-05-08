@@ -537,7 +537,7 @@ private void disposeCOMInterfaces() {
  * Ownership of ppenumFormatetc transfers from callee to caller so reference count on ppenumFormatetc
  * must be incremented before returning.  Caller is responsible for releasing ppenumFormatetc.
  */
-LRESULT EnumFormatEtc(int dwDirection, IEnumFORMATETC* ppenumFormatetc) {
+HRESULT EnumFormatEtc(int dwDirection, IEnumFORMATETC* ppenumFormatetc) {
     // only allow getting of data - SetData is not currently supported
     if (dwDirection is COM.DATADIR_SET) return COM.E_NOTIMPL;
     // what types have been registered?
@@ -573,7 +573,7 @@ private IDataObject getAddress(){
     return iDataObject;
 }
 
-LRESULT GetData(FORMATETC *pFormatetc, STGMEDIUM *pmedium) {
+HRESULT GetData(FORMATETC *pFormatetc, STGMEDIUM *pmedium) {
     /* Called by a data consumer to obtain data from a source data object.
        The GetData method renders the data described in the specified FORMATETC
        structure and transfers it through the specified STGMEDIUM structure.
@@ -616,7 +616,7 @@ LRESULT GetData(FORMATETC *pFormatetc, STGMEDIUM *pmedium) {
     return transferData.result;
 }
 
-LRESULT QueryGetData(FORMATETC * pFormatetc) {
+HRESULT QueryGetData(FORMATETC * pFormatetc) {
     if (transferAgents is null) return COM.E_FAIL;
     TransferData transferData = new TransferData();
     transferData.formatetc = new FORMATETC();
@@ -778,7 +778,7 @@ private FORMATETC*[] _getAvailableTypes() {
     dataObject.Release();
     if (rc !is COM.S_OK)return types;
     // Loop over enumerator and save any types that match what we are looking for
-    //int /*long*/ rgelt = OS.GlobalAlloc(OS.GMEM_FIXED | OS.GMEM_ZEROINIT, FORMATETC.sizeof);
+    //auto rgelt = OS.GlobalAlloc(OS.GMEM_FIXED | OS.GMEM_ZEROINIT, FORMATETC.sizeof);
     uint[1] pceltFetched;
     FORMATETC rgelt;
     enumFormatetc.Reset();
@@ -807,14 +807,14 @@ extern (Windows):
     ULONG Release() { return parent.Release(); }
 
     // interface IDataObject
-    LRESULT GetData( FORMATETC *pFormatetc, STGMEDIUM *pmedium) { return parent.GetData(pFormatetc, pmedium); }
-    LRESULT GetDataHere(FORMATETC * pFormatetc, STGMEDIUM * pmedium) { return COM.E_NOTIMPL; }
-    LRESULT QueryGetData(FORMATETC* pFormatetc) { return parent.QueryGetData(pFormatetc); }
-    LRESULT GetCanonicalFormatEtc(FORMATETC* pFormatetcIn, FORMATETC* pFormatetcOut) { return COM.E_NOTIMPL; }
-    LRESULT SetData(FORMATETC* pFormatetc, STGMEDIUM * pmedium, BOOL fRelease) { return COM.E_NOTIMPL; }
-    LRESULT EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC * ppenumFormatetc) { return parent.EnumFormatEtc(dwDirection, ppenumFormatetc); }
-    LRESULT DAdvise(FORMATETC* pFormatetc, DWORD advf, IAdviseSink pAdvSink, DWORD* pdwConnection) { return COM.E_NOTIMPL; }
-    LRESULT DUnadvise(DWORD dwConnection) { return COM.E_NOTIMPL; }
-    LRESULT EnumDAdvise(IEnumSTATDATA * ppenumAdvise) { return COM.E_NOTIMPL; }
+    HRESULT GetData( FORMATETC *pFormatetc, STGMEDIUM *pmedium) { return parent.GetData(pFormatetc, pmedium); }
+    HRESULT GetDataHere(FORMATETC * pFormatetc, STGMEDIUM * pmedium) { return COM.E_NOTIMPL; }
+    HRESULT QueryGetData(FORMATETC* pFormatetc) { return parent.QueryGetData(pFormatetc); }
+    HRESULT GetCanonicalFormatEtc(FORMATETC* pFormatetcIn, FORMATETC* pFormatetcOut) { return COM.E_NOTIMPL; }
+    HRESULT SetData(FORMATETC* pFormatetc, STGMEDIUM * pmedium, BOOL fRelease) { return COM.E_NOTIMPL; }
+    HRESULT EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC * ppenumFormatetc) { return parent.EnumFormatEtc(dwDirection, ppenumFormatetc); }
+    HRESULT DAdvise(FORMATETC* pFormatetc, DWORD advf, IAdviseSink pAdvSink, DWORD* pdwConnection) { return COM.E_NOTIMPL; }
+    HRESULT DUnadvise(DWORD dwConnection) { return COM.E_NOTIMPL; }
+    HRESULT EnumDAdvise(IEnumSTATDATA * ppenumAdvise) { return COM.E_NOTIMPL; }
 }
 

@@ -239,7 +239,7 @@ public bool getVisible () {
     return visible;
 }
 
-int messageProc (HWND hwnd, int msg, int wParam, int lParam) {
+.LRESULT messageProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  When the user clicks on the tray
     * icon, another application may be the foreground window.
@@ -479,7 +479,7 @@ public void setToolTipText (String value) {
     int length_ = OS.SHELL32_MAJOR < 5 ? 64 : 128;
     static if (OS.IsUnicode) {
         TCHAR [] szTip = iconData.szTip[];
-        length_ = Math.min (length_ - 1, buffer.length );
+        length_ = Math.min (length_ - 1, cast(int)/*64bit*/buffer.length );
         System.arraycopy!(TCHAR) (buffer, 0, szTip, 0, length_);
     } else {
         TCHAR [] szTip = iconData.szTip[];
