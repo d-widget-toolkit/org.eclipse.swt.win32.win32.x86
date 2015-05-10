@@ -171,7 +171,7 @@ public this (Composite parent, int style) {
     }
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     /*
     * Bug in Windows.  For some reason, during the processing
@@ -223,7 +223,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
     if ((style & SWT.VERTICAL) !is 0) {
         RECT rect;
         TBBUTTON lpButton;
-        int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+        auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
         for (int i=0; i<count; i++) {
             OS.SendMessage (handle, OS.TB_GETITEMRECT, i, &rect);
             height = Math.max (height, rect.bottom);
@@ -233,7 +233,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 info.cbSize = TBBUTTONINFO.sizeof;
                 info.dwMask = OS.TBIF_SIZE;
                 OS.SendMessage (handle, OS.TB_GETBUTTONINFO, lpButton.idCommand, &info);
-                width = Math.max (width, cast(int)info.cx);
+                width = Math.max (width, info.cx);
             } else {
                 width = Math.max (width, rect.right);
             }
@@ -251,7 +251,7 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
         if (redraw) OS.UpdateWindow (handle);
         int flags = OS.SWP_NOACTIVATE | OS.SWP_NOMOVE | OS.SWP_NOREDRAW | OS.SWP_NOZORDER;
         SetWindowPos (handle, null, 0, 0, newWidth, newHeight, flags);
-        int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+        auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
         if (count !is 0) {
             RECT rect;
             OS.SendMessage (handle, OS.TB_GETITEMRECT, count - 1, &rect);
@@ -321,7 +321,7 @@ override void createHandle () {
     * bar currently sets this value to 300 so it is not
     * necessary to set TTM_SETMAXTIPWIDTH.
     */
-//  int /*long*/ hwndToolTip = OS.SendMessage (handle, OS.TB_GETTOOLTIPS, 0, 0);
+//  auto hwndToolTip = OS.SendMessage (handle, OS.TB_GETTOOLTIPS, 0, 0);
 //  OS.SendMessage (hwndToolTip, OS.TTM_SETMAXTIPWIDTH, 0, 0x7FFF);
 
     /*
@@ -351,7 +351,7 @@ override void createHandle () {
 }
 
 void createItem (ToolItem item, int index) {
-    int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+    auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
     if (!(0 <= index && index <= count)) error (SWT.ERROR_INVALID_RANGE);
     int id = 0;
     while (id < items.length && items [id] !is null) id++;
@@ -383,7 +383,7 @@ void createItem (ToolItem item, int index) {
         error (SWT.ERROR_ITEM_NOT_ADDED);
     }
     items [item.id = id] = item;
-    if ((style & SWT.VERTICAL) !is 0) setRowCount (count + 1);
+    if ((style & SWT.VERTICAL) !is 0) setRowCount (cast(int)/*64bit*/count + 1);
     layoutItems ();
 }
 
@@ -402,7 +402,7 @@ void destroyItem (ToolItem item) {
     TBBUTTONINFO info;
     info.cbSize = TBBUTTONINFO.sizeof;
     info.dwMask = OS.TBIF_IMAGE | OS.TBIF_STYLE;
-    int index = OS.SendMessage (handle, OS.TB_GETBUTTONINFO, item.id, &info);
+    auto index = OS.SendMessage (handle, OS.TB_GETBUTTONINFO, item.id, &info);
     /*
     * Feature in Windows.  For some reason, a tool item that has
     * the style BTNS_SEP does not return I_IMAGENONE when queried
@@ -422,7 +422,7 @@ void destroyItem (ToolItem item) {
     if (item.id is lastFocusId) lastFocusId = -1;
     items [item.id] = null;
     item.id = -1;
-    int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+    auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
     if (count is 0) {
         if (imageList !is null) {
             OS.SendMessage (handle, OS.TB_SETIMAGELIST, 0, 0);
@@ -439,7 +439,7 @@ void destroyItem (ToolItem item) {
         imageList = hotImageList = disabledImageList = null;
         items = new ToolItem [4];
     }
-    if ((style & SWT.VERTICAL) !is 0) setRowCount (count - 1);
+    if ((style & SWT.VERTICAL) !is 0) setRowCount (cast(int)/*64bit*/count - 1);
     layoutItems ();
 }
 
@@ -496,10 +496,10 @@ ImageList getImageList () {
  */
 public ToolItem getItem (int index) {
     checkWidget ();
-    int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+    auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
     if (!(0 <= index && index < count)) error (SWT.ERROR_INVALID_RANGE);
     TBBUTTON lpButton;
-    int result = OS.SendMessage (handle, OS.TB_GETBUTTON, index, &lpButton);
+    auto result = OS.SendMessage (handle, OS.TB_GETBUTTON, index, &lpButton);
     if (result is 0) error (SWT.ERROR_CANNOT_GET_ITEM);
     return items [lpButton.idCommand];
 }
@@ -543,7 +543,7 @@ public ToolItem getItem (Point point) {
  */
 public int getItemCount () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
 }
 
 /**
@@ -564,7 +564,7 @@ public int getItemCount () {
  */
 public ToolItem [] getItems () {
     checkWidget ();
-    int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+    auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
     TBBUTTON lpButton;
     ToolItem [] result = new ToolItem [count];
     for (int i=0; i<count; i++) {
@@ -590,9 +590,9 @@ public ToolItem [] getItems () {
 public int getRowCount () {
     checkWidget ();
     if ((style & SWT.VERTICAL) !is 0) {
-        return OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+        return cast(int)/*64bit*/OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
     }
-    return OS.SendMessage (handle, OS.TB_GETROWS, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TB_GETROWS, 0, 0);
 }
 
 /**
@@ -617,7 +617,7 @@ public int indexOf (ToolItem item) {
     checkWidget ();
     if (item is null) error (SWT.ERROR_NULL_ARGUMENT);
     if (item.isDisposed()) error(SWT.ERROR_INVALID_ARGUMENT);
-    return OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, item.id, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, item.id, 0);
 }
 
 void layoutItems () {
@@ -680,7 +680,7 @@ void layoutItems () {
         TBBUTTONINFO info;
         info.cbSize = TBBUTTONINFO.sizeof;
         info.dwMask = OS.TBIF_SIZE;
-        int /*long*/ size = OS.SendMessage (handle, OS.TB_GETBUTTONSIZE, 0, 0);
+        auto size = OS.SendMessage (handle, OS.TB_GETBUTTONSIZE, 0, 0);
         info.cx = cast(short) OS.LOWORD (size);
         int index = 0;
         while (index < items.length) {
@@ -689,7 +689,7 @@ void layoutItems () {
             index++;
         }
         if (index < items.length) {
-            int /*long*/ padding = OS.SendMessage (handle, OS.TB_GETPADDING, 0, 0);
+            auto padding = OS.SendMessage (handle, OS.TB_GETPADDING, 0, 0);
             info.cx += OS.LOWORD (padding) * 2;
         }
         for (int i=0; i<items.length; i++) {
@@ -712,7 +712,7 @@ override bool mnemonicHit (wchar ch) {
         return false;
     }
     if ((style & SWT.FLAT) !is 0 && !setTabGroupFocus ()) return false;
-    int index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, id, 0);
+    auto index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, id, 0);
     if (index is -1) return false;
     OS.SendMessage (handle, OS.TB_SETHOTITEM, index, 0);
     items [id].click (false);
@@ -731,7 +731,7 @@ override bool mnemonicMatch (wchar ch) {
     * undocumented and unwanted.  The fix is to ensure that the tool item
     * contains a mnemonic when TB_MAPACCELERATOR returns true.
     */
-    int index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, id, 0);
+    auto index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, id, 0);
     if (index is -1) return false;
     return findMnemonic (items [id].text) !is '\0';
 }
@@ -1010,7 +1010,7 @@ override String toolTipText (NMTTDISPINFO* hdr) {
     * provide the string, causing no tool tip to be displayed.
     */
     if (!hasCursor ()) return ""; //$NON-NLS-1$
-    int index = hdr.hdr.idFrom;
+    auto index = hdr.hdr.idFrom;
     auto hwndToolTip = cast(HWND) OS.SendMessage (handle, OS.TB_GETTOOLTIPS, 0, 0);
     if (hwndToolTip is hdr.hdr.hwndFrom) {
         /*
@@ -1063,11 +1063,11 @@ override String windowClass () {
     return TCHARsToStr(ToolBarClass);
 }
 
-override int windowProc () {
-    return cast(int)ToolBarProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t)ToolBarProc;
 }
 
-override LRESULT WM_CAPTURECHANGED (int wParam, int lParam) {
+override LRESULT WM_CAPTURECHANGED (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_CAPTURECHANGED (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -1078,7 +1078,7 @@ override LRESULT WM_CAPTURECHANGED (int wParam, int lParam) {
     for (int i=0; i<items.length; i++) {
         ToolItem item = items [i];
         if (item !is null) {
-            int fsState = OS.SendMessage (handle, OS.TB_GETSTATE, item.id, 0);
+            auto fsState = OS.SendMessage (handle, OS.TB_GETSTATE, item.id, 0);
             if ((fsState & OS.TBSTATE_PRESSED) !is 0) {
                 fsState &= ~OS.TBSTATE_PRESSED;
                 OS.SendMessage (handle, OS.TB_SETSTATE, item.id, fsState);
@@ -1088,15 +1088,15 @@ override LRESULT WM_CAPTURECHANGED (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_CHAR (int wParam, int lParam) {
+override LRESULT WM_CHAR (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_CHAR (wParam, lParam);
     if (result !is null) return result;
     switch (wParam) {
         case ' ':
-            int index = OS.SendMessage (handle, OS.TB_GETHOTITEM, 0, 0);
+            auto index = OS.SendMessage (handle, OS.TB_GETHOTITEM, 0, 0);
             if (index !is -1) {
                 TBBUTTON lpButton;
-                int code = OS.SendMessage (handle, OS.TB_GETBUTTON, index, &lpButton);
+                auto code = OS.SendMessage (handle, OS.TB_GETBUTTON, index, &lpButton);
                 if (code !is 0) {
                     items [lpButton.idCommand].click (false);
                     return LRESULT.ZERO;
@@ -1107,7 +1107,7 @@ override LRESULT WM_CHAR (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_COMMAND (int wParam, int lParam) {
+override LRESULT WM_COMMAND (WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  When the toolbar window
     * proc processes WM_COMMAND, it forwards this
@@ -1131,7 +1131,7 @@ override LRESULT WM_COMMAND (int wParam, int lParam) {
     return LRESULT.ZERO;
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ERASEBKGND (wParam, lParam);
     /*
     * Bug in Windows.  For some reason, NM_CUSTOMDRAW with
@@ -1148,7 +1148,7 @@ override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
+override LRESULT WM_GETDLGCODE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETDLGCODE (wParam, lParam);
     /*
     * Return DLGC_BUTTON so that mnemonics will be
@@ -1159,7 +1159,7 @@ override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
     return new LRESULT (OS.DLGC_BUTTON);
 }
 
-override LRESULT WM_KEYDOWN (int wParam, int lParam) {
+override LRESULT WM_KEYDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KEYDOWN (wParam, lParam);
     if (result !is null) return result;
     switch (wParam) {
@@ -1175,25 +1175,25 @@ override LRESULT WM_KEYDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
-    int index = OS.SendMessage (handle, OS.TB_GETHOTITEM, 0, 0);
+override LRESULT WM_KILLFOCUS (WPARAM wParam, LPARAM lParam) {
+    auto index = OS.SendMessage (handle, OS.TB_GETHOTITEM, 0, 0);
     TBBUTTON lpButton;
-    int code = OS.SendMessage (handle, OS.TB_GETBUTTON, index, &lpButton);
+    auto code = OS.SendMessage (handle, OS.TB_GETBUTTON, index, &lpButton);
     if (code !is 0) lastFocusId = lpButton.idCommand;
     return super.WM_KILLFOCUS (wParam, lParam);
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     if (ignoreMouse) return null;
     return super.WM_LBUTTONDOWN (wParam, lParam);
 }
 
-override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
+override LRESULT WM_LBUTTONUP (WPARAM wParam, LPARAM lParam) {
     if (ignoreMouse) return null;
     return super.WM_LBUTTONUP (wParam, lParam);
 }
 
-override LRESULT WM_MOUSELEAVE (int wParam, int lParam) {
+override LRESULT WM_MOUSELEAVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSELEAVE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -1221,7 +1221,7 @@ override LRESULT WM_MOUSELEAVE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_NOTIFY (int wParam, int lParam) {
+override LRESULT WM_NOTIFY (WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  When the toolbar window
     * proc processes WM_NOTIFY, it forwards this
@@ -1245,18 +1245,18 @@ override LRESULT WM_NOTIFY (int wParam, int lParam) {
     return LRESULT.ZERO;
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETFOCUS (wParam, lParam);
     if (lastFocusId !is -1 && handle is OS.GetFocus ()) {
-        int index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, lastFocusId, 0);
+        auto index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, lastFocusId, 0);
         OS.SendMessage (handle, OS.TB_SETHOTITEM, index, 0);
     }
     return result;
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     if (ignoreResize) {
-        int /*long*/ code = callWindowProc (handle, OS.WM_SIZE, wParam, lParam);
+        auto code = callWindowProc (handle, OS.WM_SIZE, wParam, lParam);
         if (code is 0) return LRESULT.ZERO;
         return new LRESULT (code);
     }
@@ -1277,14 +1277,14 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
         OS.GetWindowRect (handle, &windowRect);
         int index = 0, border = getBorderWidth () * 2;
         RECT rect;
-        int count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
+        auto count = OS.SendMessage (handle, OS.TB_BUTTONCOUNT, 0, 0);
         while (index < count) {
             OS.SendMessage (handle, OS.TB_GETITEMRECT, index, &rect);
             OS.MapWindowPoints (handle, null, cast(POINT*) &rect, 2);
             if (rect.right > windowRect.right - border * 2) break;
             index++;
         }
-        int bits = OS.SendMessage (handle, OS.TB_GETEXTENDEDSTYLE, 0, 0);
+        auto bits = OS.SendMessage (handle, OS.TB_GETEXTENDEDSTYLE, 0, 0);
         if (index is count) {
             bits |= OS.TBSTYLE_EX_HIDECLIPPEDBUTTONS;
         } else {
@@ -1296,7 +1296,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_WINDOWPOSCHANGING (int wParam, int lParam) {
+override LRESULT WM_WINDOWPOSCHANGING (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_WINDOWPOSCHANGING (wParam, lParam);
     if (result !is null) return result;
     if (ignoreResize) return result;
@@ -1338,13 +1338,13 @@ override LRESULT WM_WINDOWPOSCHANGING (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmCommandChild (int wParam, int lParam) {
+override LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
     ToolItem child = items [OS.LOWORD (wParam)];
     if (child is null) return null;
     return child.wmCommandChild (wParam, lParam);
 }
 
-override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
+override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
     switch (hdr.code) {
         case OS.TBN_DROPDOWN:
             NMTOOLBAR* lpnmtb = cast(NMTOOLBAR*)lParam;
@@ -1353,7 +1353,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
             if (child !is null) {
                 Event event = new Event ();
                 event.detail = SWT.ARROW;
-                int index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, lpnmtb.iItem, 0);
+                auto index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, lpnmtb.iItem, 0);
                 RECT rect;
                 OS.SendMessage (handle, OS.TB_GETITEMRECT, index, &rect);
                 event.x = rect.left;
@@ -1402,7 +1402,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
                     case OS.HICF_ARROWKEYS:
                         RECT client;
                         OS.GetClientRect (handle, &client);
-                        int index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, lpnmhi.idNew, 0);
+                        auto index = OS.SendMessage (handle, OS.TB_COMMANDTOINDEX, lpnmhi.idNew, 0);
                         RECT rect;
                         OS.SendMessage (handle, OS.TB_GETITEMRECT, index, &rect);
                         if (rect.right > client.right || rect.bottom > client.bottom) {

@@ -101,7 +101,7 @@ public void javaToNative(Object object, TransferData transferData) {
     dropfiles.fWide = OS.IsUnicode ? 1 : 0;
     // Allocate the memory because the caller (DropTarget) has not handed it in
     // The caller of this method must release the data when it is done with it.
-    int byteCount = buffer.length * TCHAR.sizeof;
+    auto byteCount = buffer.length * TCHAR.sizeof;
     auto newPtr = OS.GlobalAlloc(COM.GMEM_FIXED | COM.GMEM_ZEROINIT, DROPFILES.sizeof + byteCount);
     OS.MoveMemory(newPtr, &dropfiles, DROPFILES.sizeof);
     OS.MoveMemory(newPtr + DROPFILES.sizeof, buffer.ptr, byteCount);
@@ -142,7 +142,7 @@ public Object nativeToJava(TransferData transferData) {
     dataObject.Release();
     if (transferData.result !is COM.S_OK) return null;
     // How many files are there?
-    int count = OS.DragQueryFile(stgmedium.unionField, 0xFFFFFFFF, null, 0);
+    int count = OS.DragQueryFile(stgmedium.unionField, cast(TCHAR*)-1, null, 0);
     String[] fileNames = new String[](count);
     for (int i = 0; i < count; i++) {
         // How long is the name ?

@@ -134,7 +134,7 @@ public this (Composite parent, int style) {
     super (parent, checkStyle (style));
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.CallWindowProc (ProgressBarProc, hwnd, msg, wParam, lParam);
 }
@@ -181,7 +181,7 @@ override int defaultForeground () {
  */
 public int getMaximum () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.PBM_GETRANGE, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.PBM_GETRANGE, 0, 0);
 }
 
 /**
@@ -196,7 +196,7 @@ public int getMaximum () {
  */
 public int getMinimum () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.PBM_GETRANGE, 1, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.PBM_GETRANGE, 1, 0);
 }
 
 /**
@@ -211,7 +211,7 @@ public int getMinimum () {
  */
 public int getSelection () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.PBM_GETPOS, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.PBM_GETPOS, 0, 0);
 }
 
 /**
@@ -234,7 +234,7 @@ public int getSelection () {
 public int getState () {
     checkWidget ();
     if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (6, 0)) {
-        int state = OS.SendMessage (handle, OS.PBM_GETSTATE, 0, 0);
+        auto state = OS.SendMessage (handle, OS.PBM_GETSTATE, 0, 0);
         switch (state) {
             case OS.PBST_NORMAL: return SWT.NORMAL;
             case OS.PBST_ERROR: return SWT.ERROR;
@@ -297,7 +297,7 @@ override void setForegroundPixel (int pixel) {
  */
 public void setMaximum (int value) {
     checkWidget ();
-    int minimum = OS.SendMessage (handle, OS.PBM_GETRANGE, 1, 0);
+    auto minimum = OS.SendMessage (handle, OS.PBM_GETRANGE, 1, 0);
     if (0 <= minimum && minimum < value) {
         OS.SendMessage (handle, OS.PBM_SETRANGE32, minimum, value);
     }
@@ -318,7 +318,7 @@ public void setMaximum (int value) {
  */
 public void setMinimum (int value) {
     checkWidget ();
-    int maximum = OS.SendMessage (handle, OS.PBM_GETRANGE, 0, 0);
+    auto maximum = OS.SendMessage (handle, OS.PBM_GETRANGE, 0, 0);
     if (0 <= value && value < maximum) {
         OS.SendMessage (handle, OS.PBM_SETRANGE32, value, maximum);
     }
@@ -346,11 +346,11 @@ public void setSelection (int value) {
     * set the state to PBST_NORMAL, set the position, then
     * reset the state.
     */
-    int /*long*/ state = 0;
+    .LRESULT state = 0;
     bool fixSelection = false;
     if (!OS.IsWinCE && OS.WIN32_VERSION >= OS.VERSION (6, 0)) {
-        int /*long*/ minumum = OS.SendMessage (handle, OS.PBM_GETRANGE, 1, 0);
-        int /*long*/ selection = OS.SendMessage (handle, OS.PBM_GETPOS, 0, 0);
+        auto minumum = OS.SendMessage (handle, OS.PBM_GETRANGE, 1, 0);
+        auto selection = OS.SendMessage (handle, OS.PBM_GETPOS, 0, 0);
         if (selection is minumum) {
             fixSelection = true;
             state = OS.SendMessage (handle, OS.PBM_GETSTATE, 0, 0);
@@ -410,11 +410,11 @@ override String windowClass () {
     return TCHARsToStr( ProgressBarClass );
 }
 
-override int windowProc () {
-    return cast(int) ProgressBarProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) ProgressBarProc;
 }
 
-override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
+override LRESULT WM_GETDLGCODE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETDLGCODE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -429,7 +429,7 @@ override LRESULT WM_GETDLGCODE (int wParam, int lParam) {
     return new LRESULT (OS.DLGC_STATIC);
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SIZE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -465,7 +465,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_TIMER (int wParam, int lParam) {
+override LRESULT WM_TIMER (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_TIMER (wParam, lParam);
     if (result !is null) return result;
     if ((style & SWT.INDETERMINATE) !is 0) {

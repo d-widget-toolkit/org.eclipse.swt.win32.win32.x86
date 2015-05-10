@@ -405,7 +405,7 @@ void createHandle () {
 
             /* Set first item */
             if (nToolBarId is ID_SPMM || nToolBarId is ID_SPMB) {
-                int /*long*/ hMenu = OS.SendMessage (hwndCB, OS.SHCMBM_GETSUBMENU, 0, ID_SPSOFTKEY0);
+                auto hMenu = OS.SendMessage (hwndCB, OS.SHCMBM_GETSUBMENU, 0, ID_SPSOFTKEY0);
                 /* Remove the item from the resource file */
                 OS.RemoveMenu (hMenu, 0, OS.MF_BYPOSITION);
                 Menu menu = new Menu (parent, SWT.DROP_DOWN, hMenu);
@@ -418,7 +418,7 @@ void createHandle () {
 
             /* Set second item */
             if (nToolBarId is ID_SPMM || nToolBarId is ID_SPBM) {
-                int /*long*/ hMenu = OS.SendMessage (hwndCB, OS.SHCMBM_GETSUBMENU, 0, ID_SPSOFTKEY1);
+                auto hMenu = OS.SendMessage (hwndCB, OS.SHCMBM_GETSUBMENU, 0, ID_SPSOFTKEY1);
                 OS.RemoveMenu (hMenu, 0, OS.MF_BYPOSITION);
                 Menu menu = new Menu (parent, SWT.DROP_DOWN, hMenu);
                 item = new MenuItem (this, menu, SWT.CASCADE, 1);
@@ -434,7 +434,7 @@ void createHandle () {
             * a result, Shell on WinCE SP must use the class Dialog.
             */
             int dwMask = OS.SHMBOF_NODEFAULT | OS.SHMBOF_NOTIFY;
-            int /*long*/ lParam = OS.MAKELPARAM (dwMask, dwMask);
+            auto lParam = OS.MAKELPARAM (dwMask, dwMask);
             OS.SendMessage (hwndCB, OS.SHCMBM_OVERRIDEKEY, OS.VK_ESCAPE, lParam);
             return;
         }
@@ -507,7 +507,7 @@ void createItem (MenuItem item, int index) {
             */
             auto hHeap = OS.GetProcessHeap ();
             StringT buffer = StrToTCHARs (0, " \0");
-            int byteCount = buffer.length * TCHAR.sizeof;
+            auto byteCount = buffer.length * TCHAR.sizeof;
             auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
             OS.MoveMemory (pszText, buffer.ptr, byteCount);
             MENUITEMINFO info;
@@ -567,11 +567,11 @@ void destroyItem (MenuItem item) {
                 redraw();
                 return;
             }
-            int index = OS.SendMessage (hwndCB, OS.TB_COMMANDTOINDEX, item.id, 0);
+            auto index = OS.SendMessage (hwndCB, OS.TB_COMMANDTOINDEX, item.id, 0);
             if (OS.SendMessage (hwndCB, OS.TB_DELETEBUTTON, index, 0) is 0) {
                 error (SWT.ERROR_ITEM_NOT_REMOVED);
             }
-            int count = OS.SendMessage (hwndCB, OS.TB_BUTTONCOUNT, 0, 0);
+            auto count = OS.SendMessage (hwndCB, OS.TB_BUTTONCOUNT, 0, 0);
             if (count is 0) {
                 if (imageList !is null) {
                     OS.SendMessage (handle, OS.TB_SETIMAGELIST, 0, 0);
@@ -800,7 +800,7 @@ public MenuItem getItem (int index) {
     if ((OS.IsPPC || OS.IsSP) && hwndCB !is null) {
         static if (OS.IsPPC) {
             TBBUTTON lpButton;
-            int result = OS.SendMessage (hwndCB, OS.TB_GETBUTTON, index, &lpButton);
+            auto result = OS.SendMessage (hwndCB, OS.TB_GETBUTTON, index, &lpButton);
             if (result is 0) error (SWT.ERROR_CANNOT_GET_ITEM);
             id = lpButton.idCommand;
         }
@@ -815,7 +815,7 @@ public MenuItem getItem (int index) {
         if (!OS.GetMenuItemInfo (handle, index, true, &info)) {
             error (SWT.ERROR_INVALID_RANGE);
         }
-        id = info.dwItemData;
+        id = cast(int)/*64bit*/info.dwItemData;
     }
     return display.getMenuItem (id);
 }
@@ -860,7 +860,7 @@ public MenuItem [] getItems () {
             result[1] = display.getMenuItem (id1);
             return result;
         }
-        int count = OS.SendMessage (hwndCB, OS.TB_BUTTONCOUNT, 0, 0);
+        auto count = OS.SendMessage (hwndCB, OS.TB_BUTTONCOUNT, 0, 0);
         TBBUTTON lpButton;
         MenuItem [] result = new MenuItem [count];
         for (int i=0; i<count; i++) {
@@ -881,7 +881,7 @@ public MenuItem [] getItems () {
             System.arraycopy (items, 0, newItems, 0, count);
             items = newItems;
         }
-        MenuItem item = display.getMenuItem (info.dwItemData);
+        MenuItem item = display.getMenuItem (cast(int)/*64bit*/info.dwItemData);
         if (item !is null) items [count++] = item;
         index++;
     }
@@ -908,7 +908,7 @@ int GetMenuItemCount (HANDLE handle) {
 override String getNameText () {
     String result = "";
     MenuItem [] items = getItems ();
-    int length_ = items.length;
+    int length_ = cast(int)/*64bit*/items.length;
     if (length_ > 0) {
         for (int i=0; i<length_-1; i++) {
             result = result ~ items [i].getNameText() ~ ", ";
@@ -1068,7 +1068,7 @@ public int indexOf (MenuItem item) {
     if (item.parent !is this) return -1;
     if ((OS.IsPPC || OS.IsSP) && hwndCB !is null) {
         if (OS.IsPPC) {
-            return OS.SendMessage (hwndCB, OS.TB_COMMANDTOINDEX, item.id, 0);
+            return cast(int)/*64bit*/OS.SendMessage (hwndCB, OS.TB_COMMANDTOINDEX, item.id, 0);
         }
         if (OS.IsSP) {
             if (item.id is id0) return 0;

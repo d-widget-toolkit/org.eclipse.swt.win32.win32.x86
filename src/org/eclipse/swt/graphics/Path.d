@@ -298,7 +298,7 @@ public void addString(String string, float x, float y, Font font) {
     if (font.isDisposed()) SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     String16 wstr = StrToWCHARs( string );
     LPCWSTR buffer = wstr.ptr;
-    int length = wstr.length;
+    int length = cast(int)/*64bit*/wstr.length;
     auto hDC = device.internal_new_GC(null);
     auto gdipFont = GC.createGdipFont(hDC, font.handle);
     Gdip.PointF point;

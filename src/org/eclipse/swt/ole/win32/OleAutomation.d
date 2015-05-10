@@ -352,7 +352,7 @@ public String[] getNames(int dispId, int maxSize) {
  */
 public int[] getIDsOfNames(String[] names) {
 
-    int count = names.length;
+    int count = cast(int)/*64bit*/names.length;
     LPCWSTR[] wcNames = new LPCWSTR[count];
     for(int i=0; i<count; ++i){
         wcNames[i] = StrToWCHARz(names[i]);
@@ -500,7 +500,7 @@ private int invoke(int dispIdMember, ushort wFlags, Variant[] rgvarg, int[] rgdi
         }
         // the reverse sequency
         tempArgs.reverse;
-        pDispParams.cArgs = tempArgs.length;
+        pDispParams.cArgs = cast(int)/*64bit*/tempArgs.length;
         pDispParams.rgvarg = tempArgs.ptr;
     }
 
@@ -509,7 +509,7 @@ private int invoke(int dispIdMember, ushort wFlags, Variant[] rgvarg, int[] rgdi
         DISPID[] tempArgs = rgdispidNamedArgs.dup;
         // the reverse sequency
         tempArgs.reverse;
-        pDispParams.cNamedArgs = tempArgs.length;
+        pDispParams.cNamedArgs = cast(int)/*64bit*/tempArgs.length;
         pDispParams.rgdispidNamedArgs = tempArgs.ptr;
     }
 
@@ -542,7 +542,7 @@ private int invoke(int dispIdMember, ushort wFlags, Variant[] rgvarg, int[] rgdi
 
     // free the Dispparams resources
     if (pDispParams.rgvarg !is null) {
-        for (int i = 0, length = rgvarg.length; i < length; i++){
+        for (int i = 0, length = cast(int)/*64bit*/rgvarg.length; i < length; i++){
             COM.VariantClear(&pDispParams.rgvarg[i]);
         }
         pDispParams.rgvarg = null;

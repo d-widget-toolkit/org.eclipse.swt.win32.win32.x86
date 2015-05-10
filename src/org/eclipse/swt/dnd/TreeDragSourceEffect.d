@@ -171,7 +171,7 @@ public class TreeDragSourceEffect : DragSourceEffect {
         if (selection.length is 0) return null;
         auto treeImageList = OS.SendMessage (tree.handle, OS.TVM_GETIMAGELIST, OS.TVSIL_NORMAL, 0);
         if (treeImageList !is 0) {
-            int count = Math.min(selection.length, 10);
+            int count = Math.min(cast(int)/*64bit*/selection.length, 10);
             Rectangle bounds = selection[0].getBounds(0);
             for (int i = 1; i < count; i++) {
                 bounds = bounds.makeUnion(selection[i].getBounds(0));

@@ -304,7 +304,7 @@ void compress(ImageData image, byte[] dataYComp, byte[] dataCbComp, byte[] dataC
 }
 void convert4BitRGBToYCbCr(ImageData image) {
     RGB[] rgbs = image.getRGBs();
-    int paletteSize = rgbs.length;
+    int paletteSize = cast(int)/*64bit*/rgbs.length;
     byte[] yComp = new byte[paletteSize];
     byte[] cbComp = new byte[paletteSize];
     byte[] crComp = new byte[paletteSize];
@@ -351,7 +351,7 @@ void convert4BitRGBToYCbCr(ImageData image) {
 }
 void convert8BitRGBToYCbCr(ImageData image) {
     RGB[] rgbs = image.getRGBs();
-    int paletteSize = rgbs.length;
+    int paletteSize = cast(int)/*64bit*/rgbs.length;
     byte[] yComp = new byte[paletteSize];
     byte[] cbComp = new byte[paletteSize];
     byte[] crComp = new byte[paletteSize];

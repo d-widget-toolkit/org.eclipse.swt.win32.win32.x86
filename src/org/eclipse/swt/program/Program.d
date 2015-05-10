@@ -43,7 +43,7 @@ this () {
 static String assocQueryString (int assocStr, StringT key, bool expand) {
     TCHAR[] pszOut = NewTCHARs(0, 1024);
     uint[1] pcchOut;
-    pcchOut[0] = pszOut.length;
+    pcchOut[0] = cast(uint)/*64bit*/pszOut.length;
     int flags = OS.ASSOCF_NOTRUNCATE | OS.ASSOCF_INIT_IGNOREUNKNOWN;
     int result = OS.AssocQueryString (flags, assocStr, key.ptr, null, pszOut.ptr, pcchOut.ptr);
     if (result is OS.E_POINTER) {
@@ -128,12 +128,12 @@ public static String [] getExtensions () {
     String [] extensions = new String [1024];
     /* Use the character encoding for the default locale */
     TCHAR[] lpName = NewTCHARs (0, 1024);
-    uint [1] lpcName; lpcName[0] = lpName.length;
+    uint [1] lpcName; lpcName[0] = cast(uint)/*64bit*/lpName.length;
     FILETIME ft;
     int dwIndex = 0, count = 0;
     while (OS.RegEnumKeyEx ( cast(void*)OS.HKEY_CLASSES_ROOT, dwIndex, lpName.ptr, lpcName.ptr, null, null, null, &ft) !is OS.ERROR_NO_MORE_ITEMS) {
         String extension = TCHARsToStr( lpName[0 .. lpcName[0] ]);
-        lpcName [0] = lpName.length;
+        lpcName [0] = cast(uint)/*64bit*/lpName.length;
         if (extension.length > 0 && extension.charAt (0) is '.') {
             if (count is extensions.length) {
                 String[] newExtensions = new String[]( extensions.length + 1024 );
@@ -176,7 +176,7 @@ static String getKeyValue (String string, bool expand) {
                         result = String_valueOf ( lpDst[0 .. Math.max (0, length_ - 1) ] );
                     }
                 } else {
-                    length_ = Math.max (0, lpData.length - 1);
+                    length_ = Math.max (0, cast(int)/*64bit*/lpData.length - 1);
                     result = String_valueOf ( lpData[0 .. length_]);
                 }
             }
@@ -227,12 +227,12 @@ public static Program [] getPrograms () {
     Program [] programs = new Program [1024];
     /* Use the character encoding for the default locale */
     TCHAR[] lpName = NewTCHARs (0, 1024);
-    uint [1] lpcName; lpcName[0] = lpName.length;
+    uint [1] lpcName; lpcName[0] = cast(uint)/*64bit*/lpName.length;
     FILETIME ft;
     int dwIndex = 0, count = 0;
     while (OS.RegEnumKeyEx (cast(void*)OS.HKEY_CLASSES_ROOT, dwIndex, lpName.ptr, lpcName.ptr, null, null, null, &ft) !is OS.ERROR_NO_MORE_ITEMS) {
         String path = String_valueOf ( lpName[0 .. lpcName [0]]);
-        lpcName [0] = lpName.length ;
+        lpcName [0] = cast(uint)/*64bit*/lpName.length ;
         Program program = getProgram (path, null);
         if (program !is null) {
             if (count is programs.length) {
@@ -271,7 +271,7 @@ public static bool launch (String fileName) {
     /* Use the character encoding for the default locale */
     auto hHeap = OS.GetProcessHeap ();
     StringT buffer = StrToTCHARs (0, fileName, true);
-    int byteCount = buffer.length * TCHAR.sizeof;
+    auto byteCount = buffer.length * TCHAR.sizeof;
     auto lpFile = cast(wchar*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (lpFile, buffer.ptr, byteCount);
     SHELLEXECUTEINFO info;
@@ -306,7 +306,7 @@ public bool execute (String fileName) {
         if (i !is -1) {
             append = false;
             prefix = command.substring (0, i);
-            suffix = command.substring (i + ARGUMENTS [index].length , command.length );
+            suffix = command.substring (i + cast(int)/*64bit*/ARGUMENTS [index].length , cast(int)/*64bit*/command.length );
             break;
         }
         index++;
@@ -316,7 +316,7 @@ public bool execute (String fileName) {
     auto hHeap = OS.GetProcessHeap ();
     /* Use the character encoding for the default locale */
     StringT buffer = StrToTCHARs (0, commandLine, true);
-    int byteCount = buffer.length  * TCHAR.sizeof;
+    auto byteCount = buffer.length  * TCHAR.sizeof;
     auto lpCommandLine = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (lpCommandLine, buffer.ptr, byteCount);
     STARTUPINFO lpStartupInfo;
@@ -354,12 +354,12 @@ public ImageData getImageData () {
     int index = iconName.indexOf (',');
     if (index !is -1) {
         fileName = iconName.substring (0, index);
-        String iconIndex = iconName.substring (index + 1, iconName.length ).trim ();
+        String iconIndex = iconName.substring (index + 1, cast(int)/*64bit*/iconName.length ).trim ();
         try {
             nIconIndex = Integer.parseInt (iconIndex);
         } catch (NumberFormatException e) {}
     }
-    int length = fileName.length;
+    int length = cast(int)/*64bit*/fileName.length;
     if (length !is 0 && fileName.charAt (0) is '\"') {
         if (fileName.charAt (length - 1) is '\"') {
             fileName = fileName.substring (1, length - 1);

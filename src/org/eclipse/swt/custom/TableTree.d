@@ -301,7 +301,7 @@ public override Font getFont () {
  */
 public int getItemCount () {
     //checkWidget();
-    return items.length;
+    return cast(int)/*64bit*/items.length;
 }
 
 /**
@@ -519,7 +519,7 @@ void onSelection(Event e) {
  */
 public TableTreeItem getItem (int index) {
     checkWidget();
-    int count = items.length;
+    int count = cast(int)/*64bit*/items.length;
     if (!(0 <= index && index < count)) SWT.error (SWT.ERROR_INVALID_RANGE);
     return items [index];
 }
@@ -646,7 +646,7 @@ void onMouseDown(Event event) {
 public void removeAll () {
     checkWidget();
     setRedraw(false);
-    for (int i = items.length - 1; i >= 0; i--) {
+    for (int i = cast(int)/*64bit*/items.length - 1; i >= 0; i--) {
         items[i].dispose();
     }
     items = EMPTY_ITEMS;
@@ -777,7 +777,7 @@ public void setSelection (TableTreeItem[] items) {
     checkWidget ();
     // SWT extension: allow null for zero length string
     //if (items is null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
-    int length = items.length;
+    int length = cast(int)/*64bit*/items.length;
     if (length is 0 || ((table.getStyle() & SWT.SINGLE) !is 0 && length > 1)) {
         deselectAll();
         return;

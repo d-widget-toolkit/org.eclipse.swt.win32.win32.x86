@@ -72,10 +72,10 @@ alias IMarshal LPMARSHAL;
 
 interface IMalloc : IUnknown
 {
-	void * Alloc( ULONG cb );
-	void * Realloc( void * pv, ULONG cb );
+	void * Alloc( SIZE_T cb );
+	void * Realloc( void * pv, SIZE_T cb );
 	void   Free( void * pv );
-	ULONG  GetSize( void * pv );
+	SIZE_T  GetSize( void * pv );
 	int    DidAlloc( void * pv );
 	void   HeapMinimize();
 }
@@ -83,14 +83,14 @@ alias IMalloc LPMALLOC;
 
 interface IMallocSpy : IUnknown
 {
-	ULONG   PreAlloc( ULONG cbRequest );
+	SIZE_T   PreAlloc( SIZE_T cbRequest );
 	void  * PostAlloc( void * pActual );
 	void  * PreFree( void *pRequest, BOOL  fSpyed );
 	void    PostFree( BOOL  fSpyed );
-	ULONG   PreRealloc( void   *pRequest, ULONG   cbRequest, void **ppNewRequest, BOOL    fSpyed );
+	SIZE_T   PreRealloc( void   *pRequest, SIZE_T   cbRequest, void **ppNewRequest, BOOL    fSpyed );
 	void  * PostRealloc( void *pActual, BOOL  fSpyed );
 	void  * PreGetSize( void *pRequest, BOOL  fSpyed );
-	ULONG   PostGetSize( ULONG cbActual, BOOL  fSpyed );
+	SIZE_T   PostGetSize( SIZE_T cbActual, BOOL  fSpyed );
 	void  * PreDidAlloc( void * pRequest, BOOL  fSpyed );
 	int    PostDidAlloc( void *pRequest, BOOL  fSpyed, int   fActual );
 	void  PreHeapMinimize();
@@ -1907,11 +1907,11 @@ interface IRpcOptions : IUnknown
 {
     HRESULT Set([in] IUnknown * pPrx,
                 [in] DWORD dwProperty,
-                [in] DWORD dwValue);
+                [in] ULONG_PTR dwValue);
 
     HRESULT Query([in] IUnknown * pPrx,
                   [in] DWORD dwProperty,
-                  [out] DWORD * pdwValue);
+                  [out] ULONG_PTR * pdwValue);
 
     HRESULT CopyProxy([in] IUnknown * punkProxy,
                       [out] IUnknown ** ppunkCopy);

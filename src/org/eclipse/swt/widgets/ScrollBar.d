@@ -932,7 +932,7 @@ public void setVisible (bool visible) {
     }
 }
 
-LRESULT wmScrollChild (int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT wmScrollChild (WPARAM wParam, LPARAM lParam) {
 
     /* Do nothing when scrolling is ending */
     int code = OS.LOWORD (wParam);

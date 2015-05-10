@@ -415,7 +415,7 @@ static String getKeyValue (StringT key) {
             /* Use the character encoding for the default locale */
             TCHAR[] lpData = NewTCHARs (0, length_);
             if (OS.RegQueryValueEx (phkResult [0], null, null, null, cast(ubyte*)lpData.ptr, lpcbData.ptr) is 0) {
-                length_ = Math.max(0, lpData.length - 1);
+                length_ = Math.max(0, cast(int)/*64bit*/lpData.length - 1);
                 result = TCHARsToStr( lpData[ 0 .. length_ ] );
             }
         }

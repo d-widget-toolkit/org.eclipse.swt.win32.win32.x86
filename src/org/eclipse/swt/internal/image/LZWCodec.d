@@ -463,7 +463,7 @@ int readBlock() {
             SWT.error(SWT.ERROR_INVALID_IMAGE);
         }
         block[0] = cast(byte)size;
-        size = inputStream.read(block, 1, size);
+        size = cast(int)/*64bit*/inputStream.read(block, 1, size);
         if (size is -1) {
             SWT.error(SWT.ERROR_INVALID_IMAGE);
         }

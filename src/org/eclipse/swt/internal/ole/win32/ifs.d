@@ -204,7 +204,7 @@ interface IDocHostUIHandler : IUnknown
 
 interface IDocHostShowUI : IUnknown
 {
-	int ShowMessage( HWND hwnd, wchar* lpstrText, int lpstrCaption, int dwType, int lpstrHelpFile, int dwHelpContext, int plResult);
+	int ShowMessage( HWND hwnd, wchar* lpstrText, int lpstrCaption, int dwType, int lpstrHelpFile, int dwHelpContext, LRESULT* plResult);
 	int ShowHelp( HWND hwnd, int pszHelpFile, int uCommand, int dwData, long ptMouse, ComObj pDispatchObjectHit );
 }
 */

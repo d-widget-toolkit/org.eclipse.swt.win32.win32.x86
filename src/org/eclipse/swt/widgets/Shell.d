@@ -501,7 +501,7 @@ HANDLE balloonTipHandle () {
     return balloonTipHandle_;
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     if (hwnd is toolTipHandle_ || hwnd is balloonTipHandle_) {
         return OS.CallWindowProc (ToolTipProc, hwnd, msg, wParam, lParam);
@@ -551,7 +551,7 @@ public void close () {
 void createBalloonTipHandle () {
     balloonTipHandle_ = OS.CreateWindowEx (
         0,
-        OS.TOOLTIPS_CLASS.ptr,
+        OS.TOOLTIPS_CLASS,
         null,
         OS.TTS_ALWAYSTIP | OS.TTS_NOPREFIX | OS.TTS_BALLOON,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,
@@ -597,7 +597,7 @@ override void createHandle () {
         if ((style & (SWT.H_SCROLL | SWT.V_SCROLL)) is 0) {
             state |= THEME_BACKGROUND;
         }
-        windowProc_ = cast(WNDPROC) OS.GetWindowLong (handle, OS.GWL_WNDPROC);
+        windowProc_ = cast(WNDPROC) OS.GetWindowLongPtr (handle, OS.GWL_WNDPROC);
     }
 
     /*
@@ -659,7 +659,7 @@ void createToolTip (ToolTip toolTip) {
 void createToolTipHandle () {
     toolTipHandle_ = OS.CreateWindowEx (
         0,
-        OS.TOOLTIPS_CLASS.ptr,
+        OS.TOOLTIPS_CLASS,
         null,
         OS.TTS_ALWAYSTIP | OS.TTS_NOPREFIX,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,
@@ -740,7 +740,7 @@ override void enableWidget (bool enabled) {
     }
 }
 
-override HBRUSH findBrush (int value, int lbStyle) {
+override HBRUSH findBrush (ptrdiff_t value, int lbStyle) {
     if (lbStyle is OS.BS_SOLID) {
         for (int i=0; i<SYSTEM_COLORS.length; i++) {
             if (value is OS.GetSysColor (SYSTEM_COLORS [i])) {
@@ -768,13 +768,13 @@ override HBRUSH findBrush (int value, int lbStyle) {
             default:
         }
     }
-    int length_ = brushes.length;
+    int length_ = cast(int)/*64bit*/brushes.length;
     HBRUSH hBrush = brushes [--length_];
     if (hBrush !is null) OS.DeleteObject (hBrush);
     System.arraycopy (brushes, 0, brushes, 1, length_);
     switch (lbStyle) {
         case OS.BS_SOLID:
-            hBrush = OS.CreateSolidBrush (value);
+            hBrush = OS.CreateSolidBrush ( cast(COLORREF) value);
             break;
         case OS.BS_PATTERN:
             hBrush = OS.CreatePatternBrush ( cast(HBITMAP) value);
@@ -796,7 +796,7 @@ override Control findThemeControl () {
     return null;
 }
 
-ToolTip findToolTip (int id) {
+ToolTip findToolTip (UINT_PTR id) {
     if (toolTips is null) return null;
     id = id - Display.ID_START;
     return 0 <= id && id < toolTips.length ? toolTips [id] : null;
@@ -1342,7 +1342,7 @@ LRESULT selectPalette (HPALETTE hPalette) {
 }
 
 override
-bool sendKeyEvent (int type, int msg, int /*long*/ wParam, int /*long*/ lParam, Event event) {
+bool sendKeyEvent (int type, int msg, WPARAM wParam, LPARAM lParam, Event event) {
     if (!isEnabled () || !isActive ()) return false;
     return super.sendKeyEvent (type, msg, wParam, lParam, event);
 }
@@ -1388,7 +1388,7 @@ void setActiveControl (Control control) {
     Control [] activate = (control is null) ? new Control [0] : control.getPath ();
     Control [] deactivate = (lastActive is null) ? new Control [0] : lastActive.getPath ();
     lastActive = control;
-    int index = 0, length = Math.min (activate.length, deactivate.length);
+    int index = 0, length = Math.min (cast(int)/*64bit*/activate.length, cast(int)/*64bit*/deactivate.length);
     while (index < length) {
         if (activate [index] !is deactivate [index]) break;
         index++;
@@ -1400,12 +1400,12 @@ void setActiveControl (Control control) {
     * this happens, keep processing those widgets that
     * are not disposed.
     */
-    for (int i=deactivate.length-1; i>=index; --i) {
+    for (int i=cast(int)/*64bit*/deactivate.length-1; i>=index; --i) {
         if (!deactivate [i].isDisposed ()) {
             deactivate [i].sendEvent (SWT.Deactivate);
         }
     }
-    for (int i=activate.length-1; i>=index; --i) {
+    for (int i=cast(int)/*64bit*/activate.length-1; i>=index; --i) {
         if (!activate [i].isDisposed ()) {
             activate [i].sendEvent (SWT.Activate);
         }
@@ -1681,17 +1681,17 @@ void setToolTipText (HWND hwnd, String text) {
     TOOLINFO lpti;
     lpti.cbSize = OS.TOOLINFO_sizeof;
     lpti.hwnd = handle;
-    lpti.uId = cast(uint) hwnd;
+    lpti.uId = cast(ptrdiff_t)hwnd;
     auto hwndToolTip = toolTipHandle ();
     if (text is null) {
-        OS.SendMessage (hwndToolTip, OS.TTM_DELTOOL, 0, cast(int)&lpti);
+        OS.SendMessage (hwndToolTip, OS.TTM_DELTOOL, 0, &lpti);
     } else {
-        if (OS.SendMessage (hwndToolTip, OS.TTM_GETTOOLINFO, 0, cast(int)&lpti) !is 0) {
+        if (OS.SendMessage (hwndToolTip, OS.TTM_GETTOOLINFO, 0, &lpti) !is 0) {
             OS.SendMessage (hwndToolTip, OS.TTM_UPDATE, 0, 0);
         } else {
             lpti.uFlags = OS.TTF_IDISHWND | OS.TTF_SUBCLASS;
             lpti.lpszText = OS.LPSTR_TEXTCALLBACK;
-            OS.SendMessage (hwndToolTip, OS.TTM_ADDTOOL, 0, cast(int)&lpti);
+            OS.SendMessage (hwndToolTip, OS.TTM_ADDTOOL, 0, &lpti);
         }
     }
 }
@@ -1706,7 +1706,7 @@ void setToolTipText (NMTTDISPINFO* lpnmtdi, CCHAR [] buffer) {
     if (!hasCursor ()) return;
     auto hHeap = OS.GetProcessHeap ();
     if (lpstrTip !is null) OS.HeapFree (hHeap, 0, lpstrTip);
-    int byteCount = buffer.length;
+    int byteCount = cast(int)/*64bit*/buffer.length;
     lpstrTip = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (lpstrTip, buffer.ptr, byteCount);
     lpnmtdi.lpszText = lpstrTip;
@@ -1722,7 +1722,7 @@ void setToolTipText (NMTTDISPINFO* lpnmtdi, CWCHAR [] buffer) {
     if (!hasCursor ()) return;
     auto hHeap = OS.GetProcessHeap ();
     if (lpstrTip !is null) OS.HeapFree (hHeap, 0, lpstrTip);
-    int byteCount = buffer.length * 2;
+    int byteCount = cast(int)/*64bit*/buffer.length * 2;
     lpstrTip = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (lpstrTip, buffer.ptr, byteCount);
     lpnmtdi.lpszText = lpstrTip;
@@ -1770,7 +1770,7 @@ void setToolTipTitle (HWND hwndToolTip, String text, HICON icon) {
         else {
             LPCTSTR pszTitle = StrToTCHARz( text, getCodePage ());
         }
-        OS.SendMessage (hwndToolTip, OS.TTM_SETTITLE, icon, cast(int)pszTitle);
+        OS.SendMessage (hwndToolTip, OS.TTM_SETTITLE, icon, cast(LPARAM)pszTitle);
     } else {
         OS.SendMessage (hwndToolTip, OS.TTM_SETTITLE, 0, 0);
     }
@@ -1855,7 +1855,7 @@ override public void setVisible (bool visible) {
 override void subclass () {
     super.subclass ();
     if (ToolTipProc !is null) {
-        int /*long*/ newProc = display.windowProc;
+        auto newProc = display.windowProc;
         if (toolTipHandle_ !is null) {
             OS.SetWindowLongPtr (toolTipHandle_, OS.GWLP_WNDPROC, newProc);
         }
@@ -1887,10 +1887,10 @@ override void unsubclass () {
     super.unsubclass ();
     if (ToolTipProc !is null) {
         if (toolTipHandle_ !is null) {
-            OS.SetWindowLongPtr (toolTipHandle_, OS.GWLP_WNDPROC, cast(int)ToolTipProc);
+            OS.SetWindowLongPtr (toolTipHandle_, OS.GWLP_WNDPROC, cast(ptrdiff_t)ToolTipProc);
         }
         if (toolTipHandle_ !is null) {
-            OS.SetWindowLongPtr (toolTipHandle_, OS.GWLP_WNDPROC, cast(int)ToolTipProc);
+            OS.SetWindowLongPtr (toolTipHandle_, OS.GWLP_WNDPROC, cast(ptrdiff_t)ToolTipProc);
         }
     }
 }
@@ -1964,17 +1964,17 @@ override String windowClass () {
     return parent !is null ? TCHARzToStr(DialogClass.ptr) : super.windowClass ();
 }
 
-override int windowProc () {
-    if (windowProc_ !is null) return cast(int) windowProc_;
-    static if (OS.IsSP) return cast(int) DialogProc;
+override ptrdiff_t windowProc () {
+    if (windowProc_ !is null) return cast(ptrdiff_t) windowProc_;
+    static if (OS.IsSP) return cast(ptrdiff_t) DialogProc;
     if ((style & SWT.TOOL) !is 0) {
         int trim = SWT.TITLE | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.BORDER | SWT.RESIZE;
         if ((style & trim) is 0) return super.windowProc ();
     }
-    return parent !is null ? cast(int) DialogProc : super.windowProc ();
+    return parent !is null ? cast(ptrdiff_t) DialogProc : super.windowProc ();
 }
 
-override int windowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT windowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     if (hwnd is toolTipHandle_ || hwnd is balloonTipHandle_) {
         switch (msg) {
@@ -2040,7 +2040,7 @@ override int widgetStyle () {
     return bits | OS.WS_OVERLAPPED | OS.WS_CAPTION;
 }
 
-override LRESULT WM_ACTIVATE (int wParam, int lParam) {
+override LRESULT WM_ACTIVATE (WPARAM wParam, LPARAM lParam) {
     static if (OS.IsPPC) {
         /*
         * Note: this does not work when we get WM_ACTIVATE prior
@@ -2048,7 +2048,7 @@ override LRESULT WM_ACTIVATE (int wParam, int lParam) {
         */
         if (hooks (SWT.HardKeyDown) || hooks (SWT.HardKeyUp)) {
             int fActive = OS.LOWORD (wParam);
-            int /*long*/ hwnd = fActive !is 0 ? handle : 0;
+            auto hwnd = fActive !is 0 ? handle : 0;
             for (int bVk=OS.VK_APP1; bVk<=OS.VK_APP6; bVk++) {
                 OS.SHSetAppKeyWndAssoc (cast(byte) bVk, hwnd);
             }
@@ -2084,7 +2084,7 @@ override LRESULT WM_ACTIVATE (int wParam, int lParam) {
     return parent !is null ? LRESULT.ZERO : result;
 }
 
-override LRESULT WM_COMMAND (int wParam, int lParam) {
+override LRESULT WM_COMMAND (WPARAM wParam, LPARAM lParam) {
     static if (OS.IsPPC) {
         /*
         * Note in WinCE PPC:  Close the Shell when the "Done Button" has
@@ -2114,7 +2114,7 @@ override LRESULT WM_COMMAND (int wParam, int lParam) {
                 if (lParam is hwndCB) {
                     return super.WM_COMMAND (wParam, 0);
                 } else {
-                    int /*long*/ hwndChild = OS.GetWindow (hwndCB, OS.GW_CHILD);
+                    auto hwndChild = OS.GetWindow (hwndCB, OS.GW_CHILD);
                     if (lParam is hwndChild) return super.WM_COMMAND (wParam, 0);
                 }
             }
@@ -2123,7 +2123,7 @@ override LRESULT WM_COMMAND (int wParam, int lParam) {
     return super.WM_COMMAND (wParam, lParam);
 }
 
-override LRESULT WM_DESTROY (int wParam, int lParam) {
+override LRESULT WM_DESTROY (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_DESTROY (wParam, lParam);
     /*
     * When the shell is a WS_CHILD window of a non-SWT
@@ -2139,7 +2139,7 @@ override LRESULT WM_DESTROY (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ERASEBKGND (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -2157,7 +2157,7 @@ override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_ENTERIDLE (int wParam, int lParam) {
+override LRESULT WM_ENTERIDLE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ENTERIDLE (wParam, lParam);
     if (result !is null) return result;
     if (display.runMessages) {
@@ -2166,7 +2166,7 @@ override LRESULT WM_ENTERIDLE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_GETMINMAXINFO (int wParam, int lParam) {
+override LRESULT WM_GETMINMAXINFO (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_GETMINMAXINFO (wParam, lParam);
     if (result !is null) return result;
     if (minWidth !is SWT.DEFAULT || minHeight !is SWT.DEFAULT) {
@@ -2180,7 +2180,7 @@ override LRESULT WM_GETMINMAXINFO (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_MOUSEACTIVATE (int wParam, int lParam) {
+override LRESULT WM_MOUSEACTIVATE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSEACTIVATE (wParam, lParam);
     if (result !is null) return result;
 
@@ -2255,12 +2255,12 @@ override LRESULT WM_MOUSEACTIVATE (int wParam, int lParam) {
         }
     }
 
-    int /*long*/ code = callWindowProc (handle, OS.WM_MOUSEACTIVATE, wParam, lParam);
+    auto code = callWindowProc (handle, OS.WM_MOUSEACTIVATE, wParam, lParam);
     setActiveControl (control);
     return new LRESULT (code);
 }
 
-override LRESULT WM_MOVE (int wParam, int lParam) {
+override LRESULT WM_MOVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOVE (wParam, lParam);
     if (result !is null) return result;
     ToolTip tip = getCurrentToolTip ();
@@ -2268,23 +2268,23 @@ override LRESULT WM_MOVE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_NCHITTEST (int wParam, int lParam) {
+override LRESULT WM_NCHITTEST (WPARAM wParam, LPARAM lParam) {
     if (!OS.IsWindowEnabled (handle)) return null;
     if (!isEnabled () || !isActive ()) {
         if (!Display.TrimEnabled) return new LRESULT (OS.HTNOWHERE);
-        int /*long*/ hittest = callWindowProc (handle, OS.WM_NCHITTEST, wParam, lParam);
+        auto hittest = callWindowProc (handle, OS.WM_NCHITTEST, wParam, lParam);
         if (hittest is OS.HTCLIENT || hittest is OS.HTMENU) hittest = OS.HTBORDER;
         return new LRESULT (hittest);
     }
     if (menuBar !is null && !menuBar.getEnabled ()) {
-        int /*long*/ hittest = callWindowProc (handle, OS.WM_NCHITTEST, wParam, lParam);
+        auto hittest = callWindowProc (handle, OS.WM_NCHITTEST, wParam, lParam);
         if (hittest is OS.HTMENU) hittest = OS.HTBORDER;
         return new LRESULT (hittest);
     }
     return null;
 }
 
-override LRESULT WM_NCLBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_NCLBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_NCLBUTTONDOWN (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -2300,7 +2300,7 @@ override LRESULT WM_NCLBUTTONDOWN (int wParam, int lParam) {
     bool fixActive = OS.IsWin95 && display.lastHittest is OS.HTCAPTION;
     if (fixActive) hwndActive = OS.SetActiveWindow (handle);
     display.lockActiveWindow = true;
-    int /*long*/ code = callWindowProc (handle, OS.WM_NCLBUTTONDOWN, wParam, lParam);
+    auto code = callWindowProc (handle, OS.WM_NCLBUTTONDOWN, wParam, lParam);
     display.lockActiveWindow = false;
     if (fixActive) OS.SetActiveWindow (hwndActive);
     Control focusControl = display.lastHittestControl;
@@ -2312,7 +2312,7 @@ override LRESULT WM_NCLBUTTONDOWN (int wParam, int lParam) {
     return new LRESULT (code);
 }
 
-override LRESULT WM_PALETTECHANGED (int wParam, int lParam) {
+override LRESULT WM_PALETTECHANGED (WPARAM wParam, LPARAM lParam) {
     if ( cast(HANDLE)wParam !is handle) {
         auto hPalette = display.hPalette;
         if (hPalette !is null) return selectPalette (hPalette);
@@ -2320,13 +2320,13 @@ override LRESULT WM_PALETTECHANGED (int wParam, int lParam) {
     return super.WM_PALETTECHANGED (wParam, lParam);
 }
 
-override LRESULT WM_QUERYNEWPALETTE (int wParam, int lParam) {
+override LRESULT WM_QUERYNEWPALETTE (WPARAM wParam, LPARAM lParam) {
     auto hPalette = display.hPalette;
     if (hPalette !is null) return selectPalette (hPalette);
     return super.WM_QUERYNEWPALETTE (wParam, lParam);
 }
 
-override LRESULT WM_SETCURSOR (int wParam, int lParam) {
+override LRESULT WM_SETCURSOR (WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  When the shell is disabled
     * by a Windows standard dialog (like a MessageBox
@@ -2399,7 +2399,7 @@ override LRESULT WM_SETCURSOR (int wParam, int lParam) {
     return super.WM_SETCURSOR (wParam, lParam);
 }
 
-override LRESULT WM_SETTINGCHANGE (int wParam, int lParam) {
+override LRESULT WM_SETTINGCHANGE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETTINGCHANGE (wParam, lParam);
     if (result !is null) return result;
     static if (OS.IsPPC) {
@@ -2424,7 +2424,7 @@ override LRESULT WM_SETTINGCHANGE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SHOWWINDOW (int wParam, int lParam) {
+override LRESULT WM_SHOWWINDOW (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SHOWWINDOW (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -2446,7 +2446,7 @@ override LRESULT WM_SHOWWINDOW (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SYSCOMMAND (int wParam, int lParam) {
+override LRESULT WM_SYSCOMMAND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SYSCOMMAND (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -2481,7 +2481,7 @@ override LRESULT WM_SYSCOMMAND (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_WINDOWPOSCHANGING (int wParam, int lParam) {
+override LRESULT WM_WINDOWPOSCHANGING (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_WINDOWPOSCHANGING (wParam,lParam);
     if (result !is null) return result;
     auto lpwp = cast(WINDOWPOS*)lParam;

@@ -323,7 +323,7 @@ public int getWidth () {
     int index = parent.indexOf (this);
     if (index is -1) return 0;
     auto hwnd = parent.handle;
-    return OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
+    return cast(int)/*64bit*/OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
 }
 
 /**
@@ -342,9 +342,9 @@ public void pack () {
     int index = parent.indexOf (this);
     if (index is -1) return;
     auto hwnd = parent.handle;
-    int oldWidth = OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
+    auto oldWidth = OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
     LPCTSTR buffer = StrToTCHARz (parent.getCodePage (), text);
-    int headerWidth = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, cast(void*)buffer) + Table.HEADER_MARGIN;
+    auto headerWidth = OS.SendMessage (hwnd, OS.LVM_GETSTRINGWIDTH, 0, cast(void*)buffer) + Table.HEADER_MARGIN;
     if (OS.COMCTL32_MAJOR >= 6 && OS.IsAppThemed ()) headerWidth += Table.HEADER_EXTRA;
     bool hasHeaderImage = false;
     if (image !is null || parent.sortColumn is this) {
@@ -366,7 +366,7 @@ public void pack () {
         int margin = 0;
         if (OS.COMCTL32_VERSION >= OS.VERSION (5, 80)) {
             auto hwndHeader = cast(HWND) OS.SendMessage (hwnd, OS.LVM_GETHEADER, 0, 0);
-            margin = OS.SendMessage (hwndHeader, OS.HDM_GETBITMAPMARGIN, 0, 0);
+            margin = cast(int)/*64bit*/OS.SendMessage (hwndHeader, OS.HDM_GETBITMAPMARGIN, 0, 0);
         } else {
             margin = OS.GetSystemMetrics (OS.SM_CXEDGE) * 3;
         }
@@ -389,7 +389,7 @@ public void pack () {
         auto hDC = OS.GetDC (hwnd);
         HFONT oldFont, newFont = cast(HFONT) OS.SendMessage (hwnd, OS.WM_GETFONT, 0, 0);
         if (newFont !is null) oldFont = OS.SelectObject (hDC, newFont);
-        int count = OS.SendMessage (hwnd, OS.LVM_GETITEMCOUNT, 0, 0);
+        auto count = OS.SendMessage (hwnd, OS.LVM_GETITEMCOUNT, 0, 0);
         for (int i=0; i<count; i++) {
             TableItem item = parent.items [i];
             if (item !is null) {
@@ -406,7 +406,7 @@ public void pack () {
         OS.SendMessage (hwnd, OS.LVM_SETCOLUMNWIDTH, index, columnWidth);
     } else {
         OS.SendMessage (hwnd, OS.LVM_SETCOLUMNWIDTH, index, OS.LVSCW_AUTOSIZE);
-        columnWidth = OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
+        columnWidth = cast(int)/*64bit*/OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
         if (index is 0) {
             /*
             * Bug in Windows.  When LVM_SETCOLUMNWIDTH is used with LVSCW_AUTOSIZE
@@ -464,7 +464,7 @@ public void pack () {
         }
     }
     parent.ignoreColumnResize = false;
-    int newWidth = OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
+    auto newWidth = OS.SendMessage (hwnd, OS.LVM_GETCOLUMNWIDTH, index, 0);
     if (oldWidth !is newWidth) {
         updateToolTip (index);
         sendEvent (SWT.Resize);
@@ -616,7 +616,7 @@ void setImage (Image image, bool sort, bool right) {
         auto hwndHeader = cast(HWND) OS.SendMessage (hwnd, OS.LVM_GETHEADER, 0, 0);
         HDITEM hdItem;
         hdItem.mask = OS.HDI_FORMAT | OS.HDI_IMAGE | OS.HDI_BITMAP;
-        OS.SendMessage (hwndHeader, OS.HDM_GETITEM, index, cast(int) &hdItem);
+        OS.SendMessage (hwndHeader, OS.HDM_GETITEM, index, &hdItem);
         hdItem.fmt &= ~OS.HDF_BITMAP_ON_RIGHT;
         if (image !is null) {
             if (sort) {
@@ -634,7 +634,7 @@ void setImage (Image image, bool sort, bool right) {
         } else {
             hdItem.fmt &= ~(OS.HDF_IMAGE | OS.HDF_BITMAP);
         }
-        OS.SendMessage (hwndHeader, OS.HDM_SETITEM, index, cast(int) &hdItem);
+        OS.SendMessage (hwndHeader, OS.HDM_SETITEM, index, &hdItem);
     } else {
         LVCOLUMN lvColumn;
         lvColumn.mask = OS.LVCF_FMT | OS.LVCF_IMAGE;
@@ -747,7 +747,7 @@ void setSortDirection (int direction) {
         RECT rect;
         OS.GetClientRect (hwnd, &rect);
         if (OS.SendMessage (hwnd, OS.LVM_GETBKCOLOR, 0, 0) !is OS.CLR_NONE) {
-            int oldColumn = OS.SendMessage (hwnd, OS.LVM_GETSELECTEDCOLUMN, 0, 0);
+            auto oldColumn = OS.SendMessage (hwnd, OS.LVM_GETSELECTEDCOLUMN, 0, 0);
             int newColumn = direction is SWT.NONE ? -1 : index;
             OS.SendMessage (hwnd, OS.LVM_SETSELECTEDCOLUMN, newColumn, 0);
             RECT headerRect;
@@ -800,7 +800,7 @@ override public void setText (String string) {
     auto hwnd = parent.handle;
     LVCOLUMN lvColumn;
     lvColumn.mask = OS.LVCF_FMT;
-    OS.SendMessage (hwnd, OS.LVM_GETCOLUMN, index, cast(int) &lvColumn);
+    OS.SendMessage (hwnd, OS.LVM_GETCOLUMN, index, &lvColumn);
 
     /*
     * Bug in Windows.  When a column header contains a
@@ -812,12 +812,12 @@ override public void setText (String string) {
     */
     auto hHeap = OS.GetProcessHeap ();
     StringT buffer = StrToTCHARs (parent.getCodePage (), fixMnemonic (string, true), true);
-    int byteCount = buffer.length * TCHAR.sizeof;
+    auto byteCount = buffer.length * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (pszText, buffer.ptr, byteCount);
     lvColumn.mask |= OS.LVCF_TEXT;
     lvColumn.pszText = pszText;
-    int result = OS.SendMessage (hwnd, OS.LVM_SETCOLUMN, index, cast(int) &lvColumn);
+    auto result = OS.SendMessage (hwnd, OS.LVM_SETCOLUMN, index, &lvColumn);
     if (pszText !is null) OS.HeapFree (hHeap, 0, pszText);
     if (result is 0) error (SWT.ERROR_CANNOT_SET_TEXT);
 }

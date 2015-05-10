@@ -30,7 +30,11 @@ version(build){
     pragma(link, "shell32");
     pragma(link, "ole32");
     pragma(link, "oleaut32");
-    pragma(link, "olepro32");
+    version (Win32) {
+        // The olepro32.dll is not existed in 64-bit system.
+        // It has been merged into the oleaut32.dll.
+        pragma(link, "olepro32");
+    }
     pragma(link, "oleacc");
     pragma(link, "user32");
     pragma(link, "usp10");
@@ -50,7 +54,11 @@ pragma(lib, "kernel32.lib");
 pragma(lib, "shell32.lib");
 pragma(lib, "ole32.lib");
 pragma(lib, "oleaut32.lib");
-pragma(lib, "olepro32.lib");
+version (Win32) {
+    // The olepro32.dll is not existed in 64-bit system.
+    // It has been merged into the oleaut32.dll.
+    pragma(lib, "olepro32.lib");
+}
 pragma(lib, "oleacc.lib");
 pragma(lib, "user32.lib");
 pragma(lib, "usp10.lib");

@@ -106,7 +106,7 @@ public class DateTime : Composite {
             lpWndClass.hInstance = hInstance;
             lpWndClass.style &= ~OS.CS_GLOBALCLASS;
             lpWndClass.style |= OS.CS_DBLCLKS;
-            int byteCount = DateTimeClass.length * TCHAR.sizeof;
+            auto byteCount = DateTimeClass.length * TCHAR.sizeof;
             auto lpszClassName = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
             OS.MoveMemory (lpszClassName, DateTimeClass.ptr, byteCount);
             lpWndClass.lpszClassName = lpszClassName;
@@ -238,7 +238,7 @@ public void addSelectionListener (SelectionListener listener) {
     addListener (SWT.DefaultSelection, typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.CallWindowProc ( cast(WNDPROC)windowProc(), hwnd, msg, wParam, lParam);
 }
@@ -285,10 +285,10 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 int widest = 0, secondWidest = 0, thirdWidest = 0;
                 for (int i = 0; i <= MAX_DIGIT; i++) {
                     systime.wYear = cast(short) (2000 + i); // year 2000 + i is guaranteed to exist
-                    int size = OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, OS.DATE_SHORTDATE, &systime, null, buffer.ptr, buffer.length);
+                    int size = OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, OS.DATE_SHORTDATE, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     if (size is 0) {
                         buffer = new TCHAR[size];
-                        OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, OS.DATE_SHORTDATE, &systime, null, buffer.ptr, buffer.length);
+                        OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, OS.DATE_SHORTDATE, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     }
                     rect.left = rect.top = rect.right = rect.bottom = 0;
                     OS.DrawText (hDC, buffer.ptr, size, &rect, flags);
@@ -309,10 +309,10 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 width = widest = 0;
                 for (short i = 0; i < MONTH_NAMES.length; i++) {
                     int name = MONTH_NAMES [i];
-                    int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, name, buffer.ptr, buffer.length);
+                    int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, name, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     if (size is 0) {
                         buffer = new TCHAR[size];
-                        OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, name, buffer.ptr, buffer.length);
+                        OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, name, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     }
                     rect.left = rect.top = rect.right = rect.bottom = 0;
                     OS.DrawText (hDC, buffer.ptr, size, &rect, flags);
@@ -329,10 +329,10 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 width = 0;
                 for (short i = 1; i <= MAX_DAY; i++) {
                     systime.wDay = i;
-                    int size = OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                    int size = OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     if (size is 0) {
                         buffer = new TCHAR[size];
-                        OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                        OS.GetDateFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     }
                     rect.left = rect.top = rect.right = rect.bottom = 0;
                     OS.DrawText (hDC, buffer.ptr, size, &rect, flags);
@@ -347,10 +347,10 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 int max = is24HourTime () ? MAX_24HOUR : MAX_12HOUR;
                 for (short i = 0; i < max; i++) {
                     systime.wHour = i;
-                    int size = OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                    int size = OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     if (size is 0) {
                         buffer = new TCHAR[size];
-                        OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                        OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     }
                     rect.left = rect.top = rect.right = rect.bottom = 0;
                     OS.DrawText (hDC, buffer.ptr, size, &rect, flags);
@@ -366,10 +366,10 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 width = widest = 0;
                 for (short i = 0; i < MAX_MINUTE; i++) {
                     systime.wMinute = i;
-                    int size = OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                    int size = OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     if (size is 0) {
                         buffer = new TCHAR[size];
-                        OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                        OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                     }
                     rect.left = rect.top = rect.right = rect.bottom = 0;
                     OS.DrawText (hDC, buffer.ptr, size, &rect, flags);
@@ -383,10 +383,10 @@ override public Point computeSize (int wHint, int hHint, bool changed) {
                 systime.wSecond = widest;
 
                 /* Determine the widest/tallest time string for the widest hour, widest minute, and if applicable, widest second. */
-                int size = OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                int size = OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                 if (size is 0) {
                     buffer = new TCHAR[size];
-                    OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, buffer.length);
+                    OS.GetTimeFormat(OS.LOCALE_USER_DEFAULT, dwFlags, &systime, null, buffer.ptr, cast(int)/*64bit*/buffer.length);
                 }
                 rect.left = rect.top = rect.right = rect.bottom = 0;
                 OS.DrawText (hDC, buffer.ptr, size, &rect, flags);
@@ -451,7 +451,7 @@ String getCustomShortDateFormat () {
 
     //TODO: Not currently used, but may need for WinCE (or if numeric short date is required)
     String buffer = getShortDateFormat ();
-    int length = buffer.length;
+    int length = cast(int)/*64bit*/buffer.length;
     bool inQuotes = false;
     int start = 0, end = 0;
     while (start < length) {
@@ -486,7 +486,7 @@ String getCustomShortDateFormat () {
 
 String getCustomShortTimeFormat () {
     String buffer = getTimeFormat ();
-    int length = buffer.length;
+    int length = cast(int)/*64bit*/buffer.length;
     bool inQuotes = false;
     int start = 0, end = 0;
     while (start < length) {
@@ -940,11 +940,11 @@ override String windowClass () {
     return (style & SWT.CALENDAR) !is 0 ? TCHARsToStr(CalendarClass) : TCHARsToStr(DateTimeClass);
 }
 
-override int windowProc () {
-    return (style & SWT.CALENDAR) !is 0 ? cast(int)CalendarProc : cast(int)DateTimeProc;
+override ptrdiff_t windowProc () {
+    return (style & SWT.CALENDAR) !is 0 ? cast(ptrdiff_t)CalendarProc : cast(ptrdiff_t)DateTimeProc;
 }
 
-override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
+override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
     switch (hdr.code) {
         case OS.MCN_SELCHANGE:
         case OS.DTN_DATETIMECHANGE:
@@ -966,7 +966,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, int wParam, int lParam) {
 }
 
 override
-LRESULT WM_TIMER (int /*long*/ wParam, int /*long*/ lParam) {
+LRESULT WM_TIMER (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_TIMER (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -975,7 +975,7 @@ LRESULT WM_TIMER (int /*long*/ wParam, int /*long*/ lParam) {
     * to ignore MCN_SELCHANGE during WM_TIMER.
     */
     ignoreSelection = true;
-    int /*long*/ code = callWindowProc(handle, OS.WM_TIMER, wParam, lParam);
+    auto code = callWindowProc(handle, OS.WM_TIMER, wParam, lParam);
     ignoreSelection = false;
     return code is 0 ? LRESULT.ZERO : new LRESULT(code);
 }

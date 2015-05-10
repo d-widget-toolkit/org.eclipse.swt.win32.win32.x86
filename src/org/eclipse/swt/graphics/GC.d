@@ -268,7 +268,7 @@ void checkGC(int mask) {
                 default:
             }
             if (dashes !is null) {
-                Gdip.Pen_SetDashPattern(pen, dashes.ptr, dashes.length);
+                Gdip.Pen_SetDashPattern(pen, dashes.ptr, cast(int)/*64bit*/dashes.length);
                 Gdip.Pen_SetDashStyle(pen, Gdip.DashStyleCustom);
                 Gdip.Pen_SetDashOffset(pen, dashOffset);
             } else {
@@ -410,7 +410,7 @@ void checkGC(int mask) {
             logBrush.lbStyle = OS.BS_SOLID;
             logBrush.lbColor = color;
             /* Feature in Windows. PS_GEOMETRIC pens cannot have zero width. */
-            newPen = OS.ExtCreatePen (style | OS.PS_GEOMETRIC, Math.max(1, width), &logBrush, dashes !is null ? dashes.length : 0, dashes.ptr);
+            newPen = OS.ExtCreatePen (style | OS.PS_GEOMETRIC, Math.max(1, width), &logBrush, dashes !is null ? cast(int)/*64bit*/dashes.length : 0, dashes.ptr);
         }
         OS.SelectObject(handle, newPen);
         data.state |= PEN;
@@ -943,7 +943,7 @@ public void drawImage(Image image, int srcX, int srcY, int srcWidth, int srcHeig
 void drawImage(Image srcImage, int srcX, int srcY, int srcWidth, int srcHeight, int destX, int destY, int destWidth, int destHeight, bool simple) {
     if (data.gdipGraphics !is null) {
         //TODO - cache bitmap
-        int /*long*/ [] gdipImage = srcImage.createGdipImage();
+        ptrdiff_t [] gdipImage = srcImage.createGdipImage();
         auto img = cast(Gdip.Image) gdipImage[0];
         int imgWidth = Gdip.Image_GetWidth(img);
         int imgHeight = Gdip.Image_GetHeight(img);
@@ -1549,7 +1549,7 @@ void drawBitmapTransparent(Image srcImage, int srcX, int srcY, int srcWidth, int
                 bmi[] = (cast(byte*)&bmiHeader)[ 0 .. BITMAPINFOHEADER.sizeof ];
                 static if (OS.IsWinCE) SWT.error(SWT.ERROR_NOT_IMPLEMENTED);
                 OS.GetDIBits(srcHdc, srcImage.handle, 0, 0, null, cast(BITMAPINFO*)bmi.ptr, OS.DIB_RGB_COLORS);
-                int offset = BITMAPINFOHEADER.sizeof + 4 * srcImage.transparentPixel;
+                int offset = cast(int)/*64bit*/BITMAPINFOHEADER.sizeof + 4 * srcImage.transparentPixel;
                 transRed = bmi[offset + 2] & 0xFF;
                 transGreen = bmi[offset + 1] & 0xFF;
                 transBlue = bmi[offset] & 0xFF;
@@ -1818,7 +1818,7 @@ public void drawPolygon( int[] pointArray) {
     auto gdipGraphics = data.gdipGraphics;
     if (gdipGraphics !is null) {
         Gdip.Graphics_TranslateTransform(gdipGraphics, data.gdipXOffset, data.gdipYOffset, Gdip.MatrixOrderPrepend);
-        Gdip.Graphics_DrawPolygon(gdipGraphics, data.gdipPen, cast(Gdip.Point*)pointArray.ptr, pointArray.length/2);
+        Gdip.Graphics_DrawPolygon(gdipGraphics, data.gdipPen, cast(Gdip.Point*)pointArray.ptr, cast(int)/*64bit*/pointArray.length/2);
         Gdip.Graphics_TranslateTransform(gdipGraphics, -data.gdipXOffset, -data.gdipYOffset, Gdip.MatrixOrderPrepend);
         return;
     }
@@ -1829,7 +1829,7 @@ public void drawPolygon( int[] pointArray) {
             }
         }
     }
-    OS.Polygon(handle, cast(POINT*)pointArray.ptr, pointArray.length/2);
+    OS.Polygon(handle, cast(POINT*)pointArray.ptr, cast(int)/*64bit*/pointArray.length/2);
     if ((data.style & SWT.MIRRORED) !is 0) {
         if (data.lineWidth !is 0 && data.lineWidth % 2 is 0) {
             for (int i = 0; i < pointArray.length; i+=2) {
@@ -1861,7 +1861,7 @@ public void drawPolyline(int[] pointArray) {
     auto gdipGraphics = data.gdipGraphics;
     if (gdipGraphics !is null) {
         Gdip.Graphics_TranslateTransform(gdipGraphics, data.gdipXOffset, data.gdipYOffset, Gdip.MatrixOrderPrepend);
-        Gdip.Graphics_DrawLines(gdipGraphics, data.gdipPen, cast(Gdip.Point*)pointArray.ptr, pointArray.length / 2);
+        Gdip.Graphics_DrawLines(gdipGraphics, data.gdipPen, cast(Gdip.Point*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2);
         Gdip.Graphics_TranslateTransform(gdipGraphics, -data.gdipXOffset, -data.gdipYOffset, Gdip.MatrixOrderPrepend);
         return;
     }
@@ -1872,8 +1872,8 @@ public void drawPolyline(int[] pointArray) {
             }
         }
     }
-    OS.Polyline(handle, cast(POINT*)pointArray.ptr, pointArray.length / 2);
-    int length_ = pointArray.length;
+    OS.Polyline(handle, cast(POINT*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2);
+    int length_ = cast(int)/*64bit*/pointArray.length;
     if (length_ >= 2) {
         if (data.lineWidth <= 1) {
             OS.SetPixel (handle, pointArray[length_ - 2], pointArray[length_ - 1], data.foreground);
@@ -2126,7 +2126,7 @@ public void drawString (String string, int x, int y, bool isTransparent) {
     //if (string is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
 //  TCHAR buffer = new TCHAR (getCodePage(), string, false);
     String16 wstr = StrToWCHARs( string );
-    int length_ = wstr.length;
+    int length_ = cast(int)/*64bit*/wstr.length;
     if (length_ is 0) return;
     auto buffer = wstr.ptr;
     auto gdipGraphics = data.gdipGraphics;
@@ -2317,7 +2317,7 @@ public void drawText (String string, int x, int y, int flags) {
     if (gdipGraphics !is null) {
         checkGC(FONT | FOREGROUND | ((flags & SWT.DRAW_TRANSPARENT) !is 0 ? 0 : BACKGROUND));
         String16 wstr = StrToWCHARs( string );
-        int length_ = wstr.length;
+        int length_ = cast(int)/*64bit*/wstr.length;
         auto buffer = wstr.ptr;
         Gdip.PointF pt;
         auto format = Gdip.StringFormat_Clone(Gdip.StringFormat_GenericTypographic());
@@ -2325,7 +2325,7 @@ public void drawText (String string, int x, int y, int flags) {
         if ((data.style & SWT.MIRRORED) !is 0) formatFlags |= Gdip.StringFormatFlagsDirectionRightToLeft;
         Gdip.StringFormat_SetFormatFlags(format, formatFlags);
         float[] tabs = (flags & SWT.DRAW_TAB) !is 0 ? [ cast(float) measureSpace(data.gdipFont, format) * 8] : new float[1];
-        Gdip.StringFormat_SetTabStops(format, 0, tabs.length, tabs.ptr);
+        Gdip.StringFormat_SetTabStops(format, 0, cast(int)/*64bit*/tabs.length, tabs.ptr);
         int hotkeyPrefix = (flags & SWT.DRAW_MNEMONIC) !is 0 ? Gdip.HotkeyPrefixShow : Gdip.HotkeyPrefixNone;
         if ((flags & SWT.DRAW_MNEMONIC) !is 0 && (data.uiState & OS.UISF_HIDEACCEL) !is 0) hotkeyPrefix = Gdip.HotkeyPrefixHide;
         Gdip.StringFormat_SetHotkeyPrefix(format, hotkeyPrefix);
@@ -2372,7 +2372,7 @@ public void drawText (String string, int x, int y, int flags) {
     }
     StringT wstr = StrToTCHARs( string );
     auto buffer = wstr.ptr;
-    int length_ = wstr.length;
+    int length_ = cast(int)/*64bit*/wstr.length;
     if (length_ is 0) return;
     RECT rect;
     /*
@@ -2775,7 +2775,7 @@ public void fillPolygon(int[] pointArray) {
     checkGC(FILL);
     if (data.gdipGraphics !is null) {
         int mode = OS.GetPolyFillMode(handle) is OS.WINDING ? Gdip.FillModeWinding : Gdip.FillModeAlternate;
-        Gdip.Graphics_FillPolygon(data.gdipGraphics, data.gdipBrush, cast(Gdip.Point*)pointArray.ptr, pointArray.length / 2, mode);
+        Gdip.Graphics_FillPolygon(data.gdipGraphics, data.gdipBrush, cast(Gdip.Point*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2, mode);
         return;
     }
     if ((data.style & SWT.MIRRORED) !is 0) {
@@ -2783,7 +2783,7 @@ public void fillPolygon(int[] pointArray) {
             pointArray[i]--;
         }
     }
-    OS.Polygon(handle, cast(POINT*)pointArray.ptr, pointArray.length / 2);
+    OS.Polygon(handle, cast(POINT*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2);
     if ((data.style & SWT.MIRRORED) !is 0) {
         for (int i = 0; i < pointArray.length; i+=2) {
             pointArray[i]++;
@@ -4733,7 +4733,7 @@ public Point stringExtent(String string) {
     // SWT externsion: allow null string
     //if (string is null) SWT.error (SWT.ERROR_NULL_ARGUMENT);
     checkGC(FONT);
-    int length_ = string.length;
+    int length_ = cast(int)/*64bit*/string.length;
     if (data.gdipGraphics !is null) {
         Gdip.PointF pt;
         Gdip.RectF bounds;
@@ -4741,7 +4741,7 @@ public Point stringExtent(String string) {
         if (length_ !is 0) {
             String16 wstr = StrToWCHARs( string );
             buffer = wstr.ptr;
-            length_ = wstr.length;
+            length_ = cast(int)/*64bit*/wstr.length;
         } else {
             buffer = (" "w).ptr;
         }
@@ -4762,7 +4762,7 @@ public Point stringExtent(String string) {
 //      TCHAR buffer = new TCHAR (getCodePage(), string, false);
         String16 wstr = StrToWCHARs( string );
         LPCWSTR buffer = wstr.ptr;
-        length_ = wstr.length;
+        length_ = cast(int)/*64bit*/wstr.length;
         OS.GetTextExtentPoint32W(handle, buffer, length_, &size);
         return new Point(size.cx, size.cy);
     }
@@ -4825,11 +4825,11 @@ public Point textExtent(String string, int flags) {
         Gdip.PointF pt;
         Gdip.RectF bounds;
         LPCWSTR buffer;
-        int length_ = string.length;
+        int length_ = cast(int)/*64bit*/string.length;
         if (length_ !is 0) {
             String16 wstr = StrToWCHARs( string );
             buffer = wstr.ptr;
-            length_ = wstr.length;
+            length_ = cast(int)/*64bit*/wstr.length;
         } else {
             buffer = (" "w).ptr;
         }
@@ -4838,7 +4838,7 @@ public Point textExtent(String string, int flags) {
         if ((data.style & SWT.MIRRORED) !is 0) formatFlags |= Gdip.StringFormatFlagsDirectionRightToLeft;
         Gdip.StringFormat_SetFormatFlags(format, formatFlags);
         float[] tabs = (flags & SWT.DRAW_TAB) !is 0 ? [measureSpace(data.gdipFont, format) * 8] : new float[1];
-        Gdip.StringFormat_SetTabStops(format, 0, tabs.length, tabs.ptr);
+        Gdip.StringFormat_SetTabStops(format, 0, cast(int)/*64bit*/tabs.length, tabs.ptr);
         Gdip.StringFormat_SetHotkeyPrefix(format, (flags & SWT.DRAW_MNEMONIC) !is 0 ? Gdip.HotkeyPrefixShow : Gdip.HotkeyPrefixNone);
         Gdip.Graphics_MeasureString(data.gdipGraphics, buffer, length_, data.gdipFont, pt, format, bounds);
         Gdip.StringFormat_delete(format);
@@ -4853,7 +4853,7 @@ public Point textExtent(String string, int flags) {
     RECT rect;
     auto wstr = StrToTCHARs( string );
     LPCWSTR buffer = wstr.ptr;
-    int length_ = wstr.length;
+    int length_ = cast(int)/*64bit*/wstr.length;
     int uFormat = OS.DT_LEFT | OS.DT_CALCRECT;
     if ((flags & SWT.DRAW_DELIMITER) is 0) uFormat |= OS.DT_SINGLELINE;
     if ((flags & SWT.DRAW_TAB) !is 0) uFormat |= OS.DT_EXPANDTABS;

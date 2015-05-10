@@ -60,7 +60,7 @@ public override int read()  {
     return b;
 }
 
-public override int read(byte[] b, int off, int len)  {
+public override ptrdiff_t read(byte[] b, ptrdiff_t off, ptrdiff_t len)  {
     if (chunk is null) throw new IOException("");
     if (offset is length && !checkChunk()) return -1;
     len = Math.min(len, length - offset);

@@ -475,7 +475,7 @@ RECT* getBounds (int index, bool getText, bool getImage, bool fullText, bool ful
             if (hwndHeader !is null) {
                 RECT* headerRect = new RECT();
                 if (columnCount !is 0) {
-                    if (OS.SendMessage (hwndHeader, OS.HDM_GETITEMRECT, index, cast(int) headerRect) is 0) {
+                    if (OS.SendMessage (hwndHeader, OS.HDM_GETITEMRECT, index, headerRect) is 0) {
                         return new RECT();
                     }
                 } else {
@@ -492,7 +492,7 @@ RECT* getBounds (int index, bool getText, bool getImage, bool fullText, bool ful
     } else {
         if (!(0 <= index && index < columnCount)) return new RECT();
         RECT* headerRect = new RECT();
-        if (OS.SendMessage (hwndHeader, OS.HDM_GETITEMRECT, index, cast(int) headerRect) is 0) {
+        if (OS.SendMessage (hwndHeader, OS.HDM_GETITEMRECT, index, headerRect) is 0) {
             return new RECT();
         }
         if (!OS.TreeView_GetItemRect (hwnd, cast(HTREEITEM)handle, rect, false)) {
@@ -531,7 +531,7 @@ RECT* getBounds (int index, bool getText, bool getImage, bool fullText, bool ful
                             if (hFont is cast(HFONT)-1) hFont = cast(HFONT) OS.SendMessage (hwnd, OS.WM_GETFONT, 0, 0);
                             hFont = OS.SelectObject (hNewDC, hFont);
                         }
-                        OS.DrawText (hNewDC, buffer.ptr, buffer.length, textRect, flags);
+                        OS.DrawText (hNewDC, buffer.ptr, cast(int)/*64bit*/buffer.length, textRect, flags);
                         if (hDC is null) {
                             OS.SelectObject (hNewDC, hFont);
                             OS.ReleaseDC (hwnd, hNewDC);
@@ -580,7 +580,7 @@ public bool getChecked () {
     tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_STATE;
     tvItem.stateMask = OS.TVIS_STATEIMAGEMASK;
     tvItem.hItem = cast(HTREEITEM)handle;
-    int result = OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, &tvItem);
+    auto result = OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, &tvItem);
     return (result !is 0) && (((tvItem.state >> 12) & 1) is 0);
 }
 
@@ -599,7 +599,7 @@ public bool getChecked () {
 public bool getExpanded () {
     checkWidget ();
     auto hwnd = parent.handle;
-    int state = 0;
+    .LRESULT state = 0;
     static if (OS.IsWinCE) {
         TVITEM tvItem;
         tvItem.hItem = handle;
@@ -724,7 +724,7 @@ public bool getGrayed () {
     tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_STATE;
     tvItem.stateMask = OS.TVIS_STATEIMAGEMASK;
     tvItem.hItem = cast(HTREEITEM)handle;
-    int result = OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, &tvItem);
+    auto result = OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, &tvItem);
     return (result !is 0) && ((tvItem.state >> 12) > 2);
 }
 
@@ -1049,9 +1049,9 @@ public void removeAll () {
     auto hwnd = parent.handle;
     TVITEM tvItem;
     tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_PARAM;
-    tvItem.hItem = cast(HTREEITEM) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, cast(int)handle);
+    tvItem.hItem = cast(HTREEITEM) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, handle);
     while (tvItem.hItem !is null) {
-        OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, cast(int)&tvItem);
+        OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, &tvItem);
         TreeItem item = tvItem.lParam !is -1 ? parent.items [tvItem.lParam] : null;
         if (item !is null && !item.isDisposed ()) {
             item.dispose ();
@@ -1059,7 +1059,7 @@ public void removeAll () {
             parent.releaseItem (tvItem.hItem, &tvItem, false);
             parent.destroyItem (null, tvItem.hItem);
         }
-        tvItem.hItem = cast(HTREEITEM) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, cast(int)handle);
+        tvItem.hItem = cast(HTREEITEM) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, handle);
     }
 }
 
@@ -1206,7 +1206,7 @@ public void setExpanded (bool expanded) {
     if (OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_CHILD, handle) is 0) {
         return;
     }
-    int state = 0;
+    .LRESULT state = 0;
     static if (OS.IsWinCE) {
         TVITEM tvItem;
         tvItem.hItem = handle;
@@ -1240,7 +1240,7 @@ public void setExpanded (bool expanded) {
     RECT oldRect;
     RECT [] rects = null;
     SCROLLINFO* oldInfo;
-    int count = 0;
+    .LRESULT count = 0;
     HANDLE hBottomItem;
     bool redraw = false, noScroll = true;
     HANDLE hTopItem = cast(HANDLE) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_FIRSTVISIBLE, 0);
@@ -1262,7 +1262,7 @@ public void setExpanded (bool expanded) {
                 if (OS.TreeView_GetItemRect (hwnd, cast(HTREEITEM)hItem, &rect, true)) {
                     rects [index++] = rect;
                 }
-                hItem = cast(HANDLE) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_NEXTVISIBLE, cast(int) &hItem);
+                hItem = cast(HANDLE) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_NEXTVISIBLE, &hItem);
             }
             if (noAnimate || hItem !is handle) {
                 redraw = true;
@@ -1325,7 +1325,7 @@ public void setExpanded (bool expanded) {
             newInfo.fMask = OS.SIF_ALL;
             if (OS.GetScrollInfo (hwnd, OS.SB_HORZ, &newInfo)) {
                 if (oldInfo.nPos !is newInfo.nPos) {
-                    int /*long*/ lParam = OS.MAKELPARAM (OS.SB_THUMBPOSITION, oldInfo.nPos);
+                    auto lParam = OS.MAKELPARAM (OS.SB_THUMBPOSITION, oldInfo.nPos);
                     OS.SendMessage (hwnd, OS.WM_HSCROLL, lParam, 0);
                 }
             }

@@ -199,13 +199,13 @@ public bool getOverwrite () {
     return overwrite;
 }
 
-private static extern(Windows) uint OFNHookProc (HWND hdlg, uint uiMsg, uint wParam, int lParam) {
+private static extern(Windows) UINT_PTR OFNHookProc (HWND hdlg, uint uiMsg, WPARAM wParam, LPARAM lParam) {
     switch (uiMsg) {
         case OS.WM_NOTIFY:
             OFNOTIFY* ofn = cast(OFNOTIFY*)lParam;
             //OS.MoveMemory (ofn, lParam, OFNOTIFY.sizeof);
             if (ofn.hdr.code is OS.CDN_SELCHANGE) {
-                int lResult = OS.SendMessage (ofn.hdr.hwndFrom, OS.CDM_GETSPEC, 0, 0);
+                auto lResult = OS.SendMessage (ofn.hdr.hwndFrom, OS.CDM_GETSPEC, 0, 0);
                 if (lResult > 0) {
                     lResult += OS.MAX_PATH;
                     OPENFILENAME* lpofn = ofn.lpOFN;
@@ -216,7 +216,7 @@ private static extern(Windows) uint OFNHookProc (HWND hdlg, uint uiMsg, uint wPa
                         if (lpstrFile !is null) {
                             if (lpofn.lpstrFile !is null) OS.HeapFree (hHeap, 0, lpofn.lpstrFile);
                             lpofn.lpstrFile = lpstrFile;
-                            lpofn.nMaxFile = lResult;
+                            lpofn.nMaxFile = cast(int)/*64bit*/lResult;
                             //OS.MoveMemory (ofn.lpOFN, lpofn, OS.OPENFILENAME_sizeof);
                         }
                     }
@@ -279,7 +279,7 @@ public String open () {
     if (title is null) title = "";
     /* Use the character encoding for the default locale */
     auto buffer3 = StrToTCHARs (0, title, true);
-    int byteCount3 = buffer3.length * TCHAR.sizeof;
+    auto byteCount3 = buffer3.length * TCHAR.sizeof;
     auto lpstrTitle = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount3);
     OS.MoveMemory (lpstrTitle, buffer3.ptr, byteCount3);
 
@@ -297,7 +297,7 @@ public String open () {
     }
     /* Use the character encoding for the default locale */
     auto buffer4 = StrToTCHARs (0, strFilter, true);
-    int byteCount4 = buffer4.length * TCHAR.sizeof;
+    auto byteCount4 = buffer4.length * TCHAR.sizeof;
     auto lpstrFilter = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount4);
     OS.MoveMemory (lpstrFilter, buffer4.ptr, byteCount4);
 
@@ -312,9 +312,9 @@ public String open () {
     */
     int nMaxFile = OS.MAX_PATH;
     if ((style & SWT.MULTI) !is 0) nMaxFile = Math.max (nMaxFile, BUFFER_SIZE);
-    int byteCount = nMaxFile * TCHAR.sizeof;
+    auto byteCount = nMaxFile * TCHAR.sizeof;
     auto lpstrFile = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
-    int byteCountFile = Math.min (name.length * TCHAR.sizeof, byteCount - TCHAR.sizeof);
+    auto byteCountFile = Math.min (name.length * TCHAR.sizeof, byteCount - TCHAR.sizeof);
     OS.MoveMemory (lpstrFile, name.ptr, byteCountFile);
 
     /*
@@ -326,7 +326,7 @@ public String open () {
     auto path = StrToTCHARs (0, filterPath.replace ('/', '\\'), true);
     int byteCount5 = OS.MAX_PATH * TCHAR.sizeof;
     auto lpstrInitialDir = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount5);
-    int byteCountDir = Math.min (path.length * TCHAR.sizeof, byteCount5 - TCHAR.sizeof);
+    auto byteCountDir = Math.min (path.length * TCHAR.sizeof, byteCount5 - TCHAR.sizeof);
     OS.MoveMemory (lpstrInitialDir, path.ptr, byteCountDir);
 
     /* Create the file dialog struct */
@@ -341,7 +341,7 @@ public String open () {
             //callback = new Callback (this, "OFNHookProc", 4); //$NON-NLS-1$
             //int lpfnHook = callback.getAddress ();
             //if (lpfnHook is 0) SWT.error (SWT.ERROR_NO_MORE_CALLBACKS);
-            struct_.lCustData = cast(uint) cast(void*) this;
+            struct_.lCustData = cast(ptrdiff_t)cast(void*) this;
             struct_.lpfnHook = &OFNHookProc;
             struct_.Flags |= OS.OFN_ENABLEHOOK;
         }
@@ -421,7 +421,7 @@ public String open () {
 
         /* Use the character encoding for the default locale */
         TCHAR[] buffer = NewTCHARs (0, struct_.nMaxFile);
-        int byteCount1 = buffer.length * TCHAR.sizeof;
+        auto byteCount1 = buffer.length * TCHAR.sizeof;
         OS.MoveMemory (buffer.ptr, lpstrFile, byteCount1);
 
         /*
@@ -449,7 +449,7 @@ public String open () {
 
             /* Use the character encoding for the default locale */
             TCHAR[] prefix = NewTCHARs (0, nFileOffset - 1);
-            int byteCount2 = prefix.length * TCHAR.sizeof;
+            auto byteCount2 = prefix.length * TCHAR.sizeof;
             OS.MoveMemory (prefix.ptr, lpstrFile, byteCount2);
             filterPath = TCHARsToStr( prefix );
 
@@ -477,7 +477,7 @@ public String open () {
 
             if (fileNames.length > 0) fileName = fileNames  [0];
             String separator = "";
-            int length_ = filterPath.length;
+            int length_ = cast(int)/*64bit*/filterPath.length;
             if (length_ > 0 && filterPath[length_ - 1] !is '\\') {
                 separator = "\\";
             }

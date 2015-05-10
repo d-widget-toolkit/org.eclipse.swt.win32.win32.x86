@@ -80,7 +80,7 @@ public void javaToNative(Object object, TransferData transferData) {
     ImageData imgData = cast(ImageData)object;
     if (imgData is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
 
-    int imageSize = imgData.data.length;
+    int imageSize = cast(int)/*64bit*/imgData.data.length;
     int imageHeight = imgData.height;
     int bytesPerLine = imgData.bytesPerLine;
 

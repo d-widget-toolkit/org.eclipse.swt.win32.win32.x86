@@ -178,7 +178,7 @@ public void addSelectionListener (SelectionListener listener) {
     addListener (SWT.DefaultSelection,typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     /*
     * Feature in Windows.  Windows runs a modal message
@@ -650,11 +650,11 @@ override String windowClass () {
     return TCHARsToStr(ScrollBarClass);
 }
 
-override int windowProc () {
-    return cast(int) ScrollBarProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) ScrollBarProc;
 }
 
-override LRESULT WM_KEYDOWN (int wParam, int lParam) {
+override LRESULT WM_KEYDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KEYDOWN (wParam, lParam);
     if (result !is null) return result;
     if ((style & SWT.VERTICAL) !is 0) return result;
@@ -672,7 +672,7 @@ override LRESULT WM_KEYDOWN (int wParam, int lParam) {
             case OS.VK_LEFT:
             case OS.VK_RIGHT: {
                 int key = wParam is OS.VK_LEFT ? OS.VK_RIGHT : OS.VK_LEFT;
-                int /*long*/ code = callWindowProc (handle, OS.WM_KEYDOWN, key, lParam);
+                auto code = callWindowProc (handle, OS.WM_KEYDOWN, key, lParam);
                 return new LRESULT (code);
             }
             default:
@@ -681,7 +681,7 @@ override LRESULT WM_KEYDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_LBUTTONDBLCLK (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDBLCLK (WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  Windows uses the WS_TABSTOP
     * style for the scroll bar to decide that focus
@@ -714,7 +714,7 @@ override LRESULT WM_LBUTTONDBLCLK (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     /*
     * Feature in Windows.  Windows uses the WS_TABSTOP
     * style for the scroll bar to decide that focus
@@ -747,12 +747,12 @@ override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     if (ignoreFocus) return null;
     return super.WM_SETFOCUS (wParam, lParam);
 }
 
-override LRESULT wmScrollChild (int wParam, int lParam) {
+override LRESULT wmScrollChild (WPARAM wParam, LPARAM lParam) {
 
     /* Do nothing when scrolling is ending */
     int code = OS.LOWORD (wParam);

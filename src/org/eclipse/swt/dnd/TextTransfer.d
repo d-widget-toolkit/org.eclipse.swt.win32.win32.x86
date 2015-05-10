@@ -82,8 +82,8 @@ public void javaToNative (Object object, TransferData transferData){
     switch (transferData.type) {
         case COM.CF_UNICODETEXT: {
             String16 chars = StrToWCHARs(0,string, true);
-            int charCount = chars.length;
-            int byteCount = chars.length * 2;
+            int charCount = cast(int)/*64bit*/chars.length;
+            int byteCount = cast(int)/*64bit*/chars.length * 2;
             auto newPtr = OS.GlobalAlloc(COM.GMEM_FIXED | COM.GMEM_ZEROINIT, byteCount);
             OS.MoveMemory(newPtr, chars.ptr, byteCount);
             transferData.stgmedium = new STGMEDIUM();
@@ -95,7 +95,7 @@ public void javaToNative (Object object, TransferData transferData){
         }
         case COM.CF_TEXT: {
             String16 chars = StrToWCHARs(0,string, true);
-            int count = chars.length;
+            int count = cast(int)/*64bit*/chars.length;
             int codePage = OS.GetACP();
             int cchMultiByte = OS.WideCharToMultiByte(codePage, 0, chars.ptr, -1, null, 0, null, null);
             if (cchMultiByte is 0) {
@@ -143,14 +143,14 @@ public Object nativeToJava(TransferData transferData){
         switch (transferData.type) {
             case CF_UNICODETEXTID: {
                 /* Ensure byteCount is a multiple of 2 bytes */
-                int size = OS.GlobalSize(hMem) / 2 * 2;
+                auto size = OS.GlobalSize(hMem) / 2 * 2;
                 if (size is 0) return null;
                 wchar[] chars = new wchar[size/2];
                 auto ptr = OS.GlobalLock(hMem);
                 if (ptr is null) return null;
                 try {
                     OS.MoveMemory(chars.ptr, ptr, size);
-                    int length_ = chars.length;
+                    int length_ = cast(int)/*64bit*/chars.length;
                     for (int i=0; i<chars.length; i++) {
                         if (chars [i] is '\0') {
                             length_ = i;
@@ -170,7 +170,7 @@ public Object nativeToJava(TransferData transferData){
                     int cchWideChar = OS.MultiByteToWideChar (codePage, OS.MB_PRECOMPOSED, lpMultiByteStr, -1, null, 0);
                     if (cchWideChar is 0) return null;
                     wchar[] lpWideCharStr = new wchar [cchWideChar - 1];
-                    OS.MultiByteToWideChar (codePage, OS.MB_PRECOMPOSED, lpMultiByteStr, -1, lpWideCharStr.ptr, lpWideCharStr.length);
+                    OS.MultiByteToWideChar (codePage, OS.MB_PRECOMPOSED, lpMultiByteStr, -1, lpWideCharStr.ptr, cast(int)/*64bit*/lpWideCharStr.length);
                     return new ArrayWrapperString( WCHARzToStr(lpWideCharStr.ptr));
                 } finally {
                     OS.GlobalUnlock(hMem);

@@ -562,7 +562,7 @@ const USHORT PARAMFLAG_FHASDEFAULT  = 0x20;
 const USHORT PARAMFLAG_FHASCUSTDATA = 0x40;
 
 struct IDLDESC {
-    ULONG dwReserved;
+    ULONG_PTR dwReserved;
     USHORT wIDLFlags;           /* IN, OUT, etc */
 }
 alias IDLDESC * LPIDLDESC;

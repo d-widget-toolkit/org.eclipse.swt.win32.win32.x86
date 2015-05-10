@@ -93,13 +93,13 @@ public void javaToNative (Object object, TransferData transferData){
         transferData.result = COM.DV_E_STGMEDIUM;
         return;
     }
-    int startHTML = HEADER.length;
-    int startFragment = startHTML + PREFIX.length;
+    int startHTML = cast(int)/*64bit*/HEADER.length;
+    int startFragment = startHTML + cast(int)/*64bit*/PREFIX.length;
     int endFragment = startFragment + cchMultiByte - 1;
-    int endHTML = endFragment + SUFFIX.length;
+    int endHTML = endFragment + cast(int)/*64bit*/SUFFIX.length;
 
     StringBuffer buffer = new StringBuffer(HEADER);
-    int maxLength = NUMBER.length;
+    int maxLength = cast(int)/*64bit*/NUMBER.length;
     //startHTML
     int start = buffer.toString().indexOf(NUMBER);
     String temp = Integer.toString(startHTML);
@@ -168,10 +168,10 @@ public Object nativeToJava(TransferData transferData){
             auto cchWideChar  = OS.MultiByteToWideChar (OS.CP_UTF8, 0, lpMultiByteStr, -1, null, 0);
             if (cchWideChar is 0) return null;
             wchar[] lpWideCharStr = new wchar [cchWideChar - 1];
-            OS.MultiByteToWideChar (OS.CP_UTF8, 0, lpMultiByteStr, -1, lpWideCharStr.ptr, lpWideCharStr.length);
+            OS.MultiByteToWideChar (OS.CP_UTF8, 0, lpMultiByteStr, -1, lpWideCharStr.ptr, cast(int)/*64bit*/lpWideCharStr.length);
             String string = WCHARzToStr(lpWideCharStr.ptr);
             int fragmentStart = 0, fragmentEnd = 0;
-            int start = string.indexOf(StartFragment) + StartFragment.length;
+            int start = string.indexOf(StartFragment) + cast(int)/*64bit*/StartFragment.length;
             int end = start + 1;
             while (end < string.length) {
                 String s = string.substring(start, end);
@@ -182,7 +182,7 @@ public Object nativeToJava(TransferData transferData){
                     break;
                 }
             }
-            start = string.indexOf(EndFragment) + EndFragment.length;
+            start = string.indexOf(EndFragment) + cast(int)/*64bit*/EndFragment.length;
             end = start + 1;
             while (end < string.length) {
                 String s = string.substring(start, end);
@@ -194,7 +194,7 @@ public Object nativeToJava(TransferData transferData){
                 }
             }
             if (fragmentEnd <= fragmentStart || fragmentEnd > OS.strlen(lpMultiByteStr)) return null;
-            cchWideChar = OS.MultiByteToWideChar (OS.CP_UTF8, 0, lpMultiByteStr+fragmentStart, fragmentEnd - fragmentStart, lpWideCharStr.ptr, lpWideCharStr.length);
+            cchWideChar = OS.MultiByteToWideChar (OS.CP_UTF8, 0, lpMultiByteStr+fragmentStart, fragmentEnd - fragmentStart, lpWideCharStr.ptr, cast(int)/*64bit*/lpWideCharStr.length);
             if (cchWideChar is 0) return null;
             String s = TCHARsToStr( lpWideCharStr[ 0 .. cchWideChar ] );
             /*

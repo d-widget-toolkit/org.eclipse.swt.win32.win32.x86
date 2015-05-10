@@ -200,7 +200,7 @@ this(Device device) {
  */
 public this(Device device, int style) {
     super(device);
-    int /*long*/ lpCursorName = 0;
+    ptrdiff_t lpCursorName = 0;
     switch (style) {
         case SWT.CURSOR_HAND:       lpCursorName = OS.IDC_HAND; break;
         case SWT.CURSOR_ARROW:      lpCursorName = OS.IDC_ARROW; break;
@@ -347,7 +347,7 @@ public this(Device device, ImageData source, int hotspotX, int hotspotY) {
         SWT.error(SWT.ERROR_INVALID_ARGUMENT);
     }
     ImageData mask = source.getTransparencyMask();
-    int[] result = Image.init__(this.device, null, source, mask);
+    ptrdiff_t[] result = Image.init__(this.device, null, source, mask);
     auto hBitmap = cast(HBITMAP)result[0];
     auto hMask = cast(HBITMAP)result[1];
     /* Create the icon */

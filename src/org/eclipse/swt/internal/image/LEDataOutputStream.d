@@ -28,7 +28,7 @@ public this(OutputStream output) {
  * Write the specified number of bytes of the given byte array,
  * starting at the specified offset, to the output stream.
  */
-public override void write(in byte b[], int off, int len) {
+public override void write(in byte b[], ptrdiff_t off, ptrdiff_t len) {
     ostr.write(b, off, len);
 }
 /**

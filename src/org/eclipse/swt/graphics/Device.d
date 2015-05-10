@@ -312,7 +312,7 @@ void dispose_Object (Object object) {
     }
 }
 
-static extern(Windows) int EnumFontFamFunc (ENUMLOGFONT* lpelfe, NEWTEXTMETRIC* lpntme, int FontType, int lParam) {
+static extern(Windows) int EnumFontFamFunc (ENUMLOGFONT* lpelfe, NEWTEXTMETRIC* lpntme, int FontType, LPARAM lParam) {
     auto cbdata = cast(CallbackData*)lParam;
     return cbdata.device.EnumFontFamProc( lpelfe, lpntme, FontType, cbdata.scalable );
 }
@@ -390,7 +390,7 @@ public DeviceData getDeviceData () {
     data.tracking = tracking;
     if (tracking) {
         synchronized (trackingLock) {
-            int count = 0, length = objects.length;
+            int count = 0, length = cast(int)/*64bit*/objects.length;
             for (int i=0; i<length; i++) {
                 if (objects [i] !is null) count++;
             }
@@ -504,7 +504,7 @@ public FontData [] getFontList (String faceName, bool scalable) {
     if (faceName is null) {
         /* The user did not specify a face name, so they want all versions of all available face names */
         cbdata.scalable = scalable;
-        OS.EnumFontFamilies (hDC, null, &EnumFontFamFunc, cast(int)&cbdata );
+        OS.EnumFontFamilies (hDC, null, &EnumFontFamFunc, cast(LPARAM)&cbdata );
 
         /**
          * For bitmapped fonts, EnumFontFamilies only enumerates once for each font, regardless
@@ -521,9 +521,9 @@ public FontData [] getFontList (String faceName, bool scalable) {
              */
             cbdata.scalable = scalable;
             static if (OS.IsUnicode) {
-                OS.EnumFontFamiliesW (hDC, (cast(LOGFONTW*)lf).lfFaceName.ptr, &EnumFontFamFunc, cast(int)&cbdata);
+                OS.EnumFontFamiliesW (hDC, (cast(LOGFONTW*)lf).lfFaceName.ptr, &EnumFontFamFunc, cast(LPARAM)&cbdata);
             } else {
-                OS.EnumFontFamiliesA (hDC, (cast(LOGFONTA*)lf).lfFaceName.ptr, &EnumFontFamFunc, cast(int)&cbdata);
+                OS.EnumFontFamiliesA (hDC, (cast(LOGFONTA*)lf).lfFaceName.ptr, &EnumFontFamFunc, cast(LPARAM)&cbdata);
             }
         }
     } else {
@@ -534,7 +534,7 @@ public FontData [] getFontList (String faceName, bool scalable) {
          * once. The fix is to call EnumFontFamilies, which works as expected.
          */
         cbdata.scalable = scalable;
-        OS.EnumFontFamilies (hDC, .StrToTCHARz(faceName), &EnumFontFamFunc, cast(int)&cbdata);
+        OS.EnumFontFamilies (hDC, .StrToTCHARz(faceName), &EnumFontFamFunc, cast(LPARAM)&cbdata);
     }
     int logPixelsY = OS.GetDeviceCaps(hDC, OS.LOGPIXELSY);
     internal_dispose_GC (hDC, null);
@@ -888,7 +888,7 @@ void printErrors () {
                 if (textLayouts !is 0) string ~= String_valueOf(textLayouts) ~ " TextLayout(s), ";
                 if (transforms !is 0) string ~= String_valueOf(transforms) ~ " Transforms(s), ";
                 if (string.length !is 0) {
-                    string = string.substring (0, string.length - 2);
+                    string = string.substring (0, cast(int)/*64bit*/string.length - 2);
                     getDwtLogger().error (  __FILE__, __LINE__, "{}", string);
                 }
                 for (int i=0; i<errors.length; i++) {

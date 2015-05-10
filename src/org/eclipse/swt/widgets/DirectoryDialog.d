@@ -20,6 +20,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.internal.C;
+import org.eclipse.swt.internal.ole.win32.COMAPI;
+
+private alias org.eclipse.swt.internal.ole.win32.COMAPI COMAPI;
 
 import java.lang.all;
 
@@ -93,7 +96,7 @@ public this (Shell parent, int style) {
     checkSubclass ();
 }
 
-extern(Windows)static int BrowseCallbackProc (HWND hwnd, uint uMsg, int lParam, int lpData) {
+extern(Windows)static int BrowseCallbackProc (HWND hwnd, uint uMsg, LPARAM lParam, LPARAM lpData) {
     DirectoryDialog pThis = cast(DirectoryDialog)cast(void*)lpData;
     switch (uMsg) {
         case OS.BFFM_INITIALIZED:
@@ -172,7 +175,7 @@ public String open () {
     if (message.length !is 0) {
         String string = message;
         if (string.indexOf ('&') !is -1) {
-            int length = string.length;
+            int length = cast(int)/*64bit*/string.length;
             char [] buffer = new char [length * 2];
             int index = 0;
             for (int i=0; i<length; i++) {
@@ -184,7 +187,7 @@ public String open () {
         }
         /* Use the character encoding for the default locale */
         StringT buffer = StrToTCHARs (0, string, true);
-        int byteCount = buffer.length * TCHAR.sizeof;
+        auto byteCount = buffer.length * TCHAR.sizeof;
         lpszTitle = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
         OS.MoveMemory (lpszTitle, buffer.ptr, byteCount);
     }
@@ -209,7 +212,7 @@ public String open () {
     lpbi.lpszTitle = lpszTitle;
     lpbi.ulFlags = OS.BIF_NEWDIALOGSTYLE | OS.BIF_RETURNONLYFSDIRS | OS.BIF_EDITBOX | OS.BIF_VALIDATE;
     lpbi.lpfn = lpfn;
-    lpbi.lParam = cast(int)cast(void*)this;
+    lpbi.lParam = cast(ptrdiff_t)cast(void*)this;
     /*
     * Bug in Windows.  On some hardware configurations, SHBrowseForFolder()
     * causes warning dialogs with the message "There is no disk in the drive
@@ -268,11 +271,14 @@ public String open () {
     if (lpszTitle !is null) OS.HeapFree (hHeap, 0, lpszTitle);
 
     /* Free the pointer to the ITEMIDLIST */
+    COMAPI.CoTaskMemFree (cast(void*)lpItemIdList);
+/+  BUG: OS.SHGetMalloc() returns invalid pointer on 64-bit system.
     LPVOID ppMalloc;
     if (OS.SHGetMalloc (&ppMalloc) is OS.S_OK) {
         /* void Free (struct IMalloc *this, void *pv); */
         OS.VtblCall (5, ppMalloc , cast(int)lpItemIdList);
     }
++/
 
     /*
     * This code is intentionally commented.  On some

@@ -306,7 +306,7 @@ void addEventListener(IUnknown iunknown, GUID* guid, int eventID, OleListener li
     if (index !is -1) {
         oleEventSink[index].addListener(eventID, listener);
     } else {
-        int oldLength = oleEventSink.length;
+        int oldLength = cast(int)/*64bit*/oleEventSink.length;
 
         oleEventSink ~= new OleEventSink(this, iunknown, guid);
         oleEventSinkGUID ~= guid;
@@ -739,7 +739,7 @@ void removeEventListener(IUnknown iunknown, GUID* guid, int eventID, OleListener
                     //free resources associated with event sink
                     oleEventSink[i].disconnect();
                     oleEventSink[i].Release();
-                    int oldLength = oleEventSink.length;
+                    int oldLength = cast(int)/*64bit*/oleEventSink.length;
                     if (oldLength is 1) {
                         oleEventSink = null;
                         oleEventSinkGUID = null;
@@ -788,7 +788,7 @@ public void setBackground (Color color) {
     //set the background of the ActiveX Control
     if (objIUnknown !is null) {
         OleAutomation oleObject= new OleAutomation(this);
-        oleObject.setProperty(COM.DISPID_BACKCOLOR, new Variant(cast(int)color.handle));
+        oleObject.setProperty(COM.DISPID_BACKCOLOR, new Variant(color.handle));
         oleObject.dispose();
     }
 }
@@ -826,7 +826,7 @@ public void setForeground (Color color) {
     //set the foreground of the ActiveX Control
     if (objIUnknown !is null) {
         OleAutomation oleObject= new OleAutomation(this);
-        oleObject.setProperty(COM.DISPID_FORECOLOR, new Variant(cast(int)color.handle));
+        oleObject.setProperty(COM.DISPID_FORECOLOR, new Variant(color.handle));
         oleObject.dispose();
     }
 }
@@ -849,7 +849,7 @@ public void setSiteProperty(int dispId, Variant value){
             if (value !is null) {
                 sitePropertyValues[i] = value;
             } else {
-                int oldLength = sitePropertyIds.length;
+                int oldLength = cast(int)/*64bit*/sitePropertyIds.length;
                 int[] newSitePropertyIds = new int[oldLength - 1];
                 Variant[] newSitePropertyValues = new Variant[oldLength - 1];
                 System.arraycopy(sitePropertyIds, 0, newSitePropertyIds, 0, i);
@@ -862,7 +862,7 @@ public void setSiteProperty(int dispId, Variant value){
             return;
         }
     }
-    int oldLength = sitePropertyIds.length;
+    int oldLength = cast(int)/*64bit*/sitePropertyIds.length;
     int[] newSitePropertyIds = new int[oldLength + 1];
     Variant[] newSitePropertyValues = new Variant[oldLength + 1];
     System.arraycopy(sitePropertyIds, 0, newSitePropertyIds, 0, oldLength);

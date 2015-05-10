@@ -358,7 +358,7 @@ public void pack () {
     tvItem.mask = OS.TVIF_HANDLE | OS.TVIF_PARAM;
     tvItem.hItem = cast(HTREEITEM) OS.SendMessage (hwnd, OS.TVM_GETNEXTITEM, OS.TVGN_ROOT, 0);
     while (tvItem.hItem !is null) {
-        OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, cast(int) &tvItem);
+        OS.SendMessage (hwnd, OS.TVM_GETITEM, 0, &tvItem);
         TreeItem item = tvItem.lParam !is -1 ? parent.items [tvItem.lParam] : null;
         if (item !is null) {
             int itemRight = 0;
@@ -380,7 +380,7 @@ public void pack () {
     RECT rect;
     int flags = OS.DT_CALCRECT | OS.DT_NOPREFIX;
     StringT buffer = StrToTCHARs (parent.getCodePage (), text, false);
-    OS.DrawText (hDC, buffer.ptr, buffer.length, &rect, flags);
+    OS.DrawText (hDC, buffer.ptr, cast(int)/*64bit*/buffer.length, &rect, flags);
     int headerWidth = rect.right - rect.left + Tree.HEADER_MARGIN;
     if (OS.COMCTL32_MAJOR >= 6 && OS.IsAppThemed ()) headerWidth += Tree.HEADER_EXTRA;
     if (image !is null || parent.sortColumn is this) {
@@ -400,7 +400,7 @@ public void pack () {
         }
         int margin = 0;
         if (hwndHeader !is null && OS.COMCTL32_VERSION >= OS.VERSION (5, 80)) {
-            margin = OS.SendMessage (hwndHeader, OS.HDM_GETBITMAPMARGIN, 0, 0);
+            margin = cast(int)/*64bit*/OS.SendMessage (hwndHeader, OS.HDM_GETBITMAPMARGIN, 0, 0);
         } else {
             margin = OS.GetSystemMetrics (OS.SM_CXEDGE) * 3;
         }
@@ -677,7 +677,7 @@ override public void setText (String string) {
     */
     auto hHeap = OS.GetProcessHeap ();
     StringT buffer = StrToTCHARs (parent.getCodePage (), fixMnemonic (string, true), true);
-    int byteCount = buffer.length * TCHAR.sizeof;
+    auto byteCount = buffer.length * TCHAR.sizeof;
     auto pszText = cast(TCHAR*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
     OS.MoveMemory (pszText, buffer.ptr, byteCount);
     auto hwndHeader = parent.hwndHeader;
@@ -685,7 +685,7 @@ override public void setText (String string) {
     HDITEM hdItem;
     hdItem.mask = OS.HDI_TEXT;
     hdItem.pszText = pszText;
-    int result = OS.SendMessage (hwndHeader, OS.HDM_SETITEM, index, &hdItem);
+    auto result = OS.SendMessage (hwndHeader, OS.HDM_SETITEM, index, &hdItem);
     if (pszText !is null) OS.HeapFree (hHeap, 0, pszText);
     if (result is 0) error (SWT.ERROR_CANNOT_SET_TEXT);
 }
@@ -759,7 +759,7 @@ void updateToolTip (int index) {
             lpti.rect.top = rect.top;
             lpti.rect.right = rect.right;
             lpti.rect.bottom = rect.bottom;
-            OS.SendMessage (hwndHeaderToolTip, OS.TTM_NEWTOOLRECT, 0, cast(int) &lpti);
+            OS.SendMessage (hwndHeaderToolTip, OS.TTM_NEWTOOLRECT, 0, &lpti);
         }
     }
 }

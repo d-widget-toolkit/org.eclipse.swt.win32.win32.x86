@@ -13,9 +13,9 @@ module org.eclipse.swt.internal.LONG;
 import java.lang.all;
 
 public class LONG {
-    public int /*long*/ value;
-    
-    public this (int /*long*/ value) {
+    public int value;
+
+    public this (int value) {
         this.value = value;
     }
 
@@ -28,7 +28,28 @@ public class LONG {
         return false;
     }
 
-    public int hashCode () {
-        return cast(int)/*64*/value;
+    public hash_t hashCode () {
+        return cast(hash_t)value;
+    }
+}
+
+public class LONG_PTR {
+    public ptrdiff_t value;
+
+    public this (ptrdiff_t value) {
+        this.value = value;
+    }
+
+    override
+    public equals_t opEquals (Object object) {
+        if (object is this) return true;
+        if( auto obj = cast(LONG_PTR)object ){
+            return obj.value is this.value;
+        }
+        return false;
+    }
+
+    public hash_t hashCode () {
+        return cast(hash_t)value;
     }
 }

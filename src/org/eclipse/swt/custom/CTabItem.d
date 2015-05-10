@@ -168,7 +168,7 @@ String shortenText(GC gc, String text, int width) {
 String shortenText(GC gc, String text, int width, String ellipses) {
     if (gc.textExtent(text, FLAGS).x <= width) return text;
     int ellipseWidth = gc.textExtent(ellipses, FLAGS).x;
-    int length = text.length;
+    int length = cast(int)/*64bit*/text.length;
     TextLayout layout = new TextLayout(getDisplay());
     layout.setText(text);
     int end = layout.getPreviousOffset(length, SWT.MOVEMENT_CLUSTER);
@@ -469,7 +469,7 @@ void drawHighlight(GC gc, int rightEdge) {
     Color[] gradients = parent.selectionHighlightGradientColorsCache;
     if(gradients is null)
         return;
-    int gradientsSize = gradients.length;
+    int gradientsSize = cast(int)/*64bit*/gradients.length;
     if(gradientsSize is 0)
         return;     //shouldn't happen but just to be tidy
 
@@ -484,7 +484,7 @@ void drawHighlight(GC gc, int rightEdge) {
 
     const int[] leftHighlightCurve = CTabFolder.TOP_LEFT_CORNER_HILITE;
 
-    int d = parent.tabHeight - parent.topCurveHighlightEnd.length /2;
+    int d = parent.tabHeight - cast(int)/*64bit*/parent.topCurveHighlightEnd.length /2;
 
     int lastX = 0;
     int lastY = 0;
@@ -869,7 +869,7 @@ int preferredWidth(GC gc, bool isSelected, bool minimum) {
         text = minChars is 0 ? null : getText();
         if (text !is null && toString32(text).length > minChars) {
             if (useEllipses()) {
-                int end = minChars < ELLIPSIS.length + 1 ? minChars : minChars - ELLIPSIS.length;
+                int end = minChars < cast(int)/*64bit*/ELLIPSIS.length + 1 ? minChars : minChars - cast(int)/*64bit*/ELLIPSIS.length;
                 text = .toString(toString32(text)[ 0 .. end ]);
                 if (minChars > ELLIPSIS.length + 1) text ~= ELLIPSIS;
             } else {

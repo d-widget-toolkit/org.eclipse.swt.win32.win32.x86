@@ -134,7 +134,7 @@ public void addExpandListener (ExpandListener listener) {
     addListener (SWT.Collapse, typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.DefWindowProc (hwnd, msg, wParam, lParam);
 }
@@ -281,7 +281,7 @@ void drawWidget (GC gc, RECT* clipRect) {
     }
     bool drawFocus = false;
     if (handle is OS.GetFocus ()) {
-        int uiState = OS.SendMessage (handle, OS.WM_QUERYUISTATE, 0, 0);
+        auto uiState = OS.SendMessage (handle, OS.WM_QUERYUISTATE, 0, 0);
         drawFocus = (uiState & OS.UISF_HIDEFOCUS) is 0;
     }
     HFONT hCurrentFont, oldFont;
@@ -630,11 +630,11 @@ override String windowClass () {
     return display.windowClass;
 }
 
-override int windowProc () {
-    return cast(int) display.windowProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) display.windowProc;
 }
 
-override LRESULT WM_KEYDOWN (int wParam, int lParam) {
+override LRESULT WM_KEYDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KEYDOWN (wParam, lParam);
     if (result !is null) return result;
     if (focusItem is null) return result;
@@ -674,13 +674,13 @@ override LRESULT WM_KEYDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_KILLFOCUS (int wParam, int lParam) {
+override LRESULT WM_KILLFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_KILLFOCUS (wParam, lParam);
     if (focusItem !is null) focusItem.redraw (true);
     return result;
 }
 
-override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
+override LRESULT WM_LBUTTONDOWN (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_LBUTTONDOWN (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
     int x = OS.GET_X_LPARAM (lParam);
@@ -699,7 +699,7 @@ override LRESULT WM_LBUTTONDOWN (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
+override LRESULT WM_LBUTTONUP (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_LBUTTONUP (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
     if (focusItem is null) return result;
@@ -716,7 +716,7 @@ override LRESULT WM_LBUTTONUP (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_MOUSELEAVE (int wParam, int lParam) {
+override LRESULT WM_MOUSELEAVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSELEAVE (wParam, lParam);
     if (result !is null) return result;
     for (int i = 0; i < itemCount; i++) {
@@ -730,7 +730,7 @@ override LRESULT WM_MOUSELEAVE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
+override LRESULT WM_MOUSEMOVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSEMOVE (wParam, lParam);
     if (result is LRESULT.ZERO) return result;
     int x = OS.GET_X_LPARAM (lParam);
@@ -746,7 +746,7 @@ override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_PAINT (int wParam, int lParam) {
+override LRESULT WM_PAINT (WPARAM wParam, LPARAM lParam) {
     PAINTSTRUCT ps;
     GCData data = new GCData ();
     data.ps = &ps;
@@ -775,7 +775,7 @@ override LRESULT WM_PAINT (int wParam, int lParam) {
     return LRESULT.ZERO;
 }
 
-override LRESULT WM_PRINTCLIENT (int wParam, int lParam) {
+override LRESULT WM_PRINTCLIENT (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_PRINTCLIENT (wParam, lParam);
     RECT rect;
     OS.GetClientRect (handle, &rect);
@@ -788,7 +788,7 @@ override LRESULT WM_PRINTCLIENT (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SETCURSOR (int wParam, int lParam) {
+override LRESULT WM_SETCURSOR (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETCURSOR (wParam, lParam);
     if (result !is null) return result;
     int hitTest = cast(short) OS.LOWORD (lParam);
@@ -796,7 +796,7 @@ override LRESULT WM_SETCURSOR (int wParam, int lParam) {
         for (int i = 0; i < itemCount; i++) {
             ExpandItem item = items [i];
             if (item.hover) {
-                auto hCursor = OS.LoadCursor (null, OS.IDC_HAND);
+                auto hCursor = OS.LoadCursor (null, cast(LPCTSTR)OS.IDC_HAND);
                 OS.SetCursor (hCursor);
                 return LRESULT.ONE;
             }
@@ -805,13 +805,13 @@ override LRESULT WM_SETCURSOR (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT WM_SETFOCUS (int wParam, int lParam) {
+override LRESULT WM_SETFOCUS (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SETFOCUS (wParam, lParam);
     if (focusItem !is null) focusItem.redraw (true);
     return result;
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_SIZE (wParam, lParam);
     RECT rect;
     OS.GetClientRect (handle, &rect);
@@ -825,7 +825,7 @@ override LRESULT WM_SIZE (int wParam, int lParam) {
     return result;
 }
 
-override LRESULT wmScroll (ScrollBar bar, bool update, HWND hwnd, int msg, int wParam, int lParam) {
+override LRESULT wmScroll (ScrollBar bar, bool update, HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.wmScroll (bar, true, hwnd, msg, wParam, lParam);
     SCROLLINFO info;
     info.cbSize = SCROLLINFO.sizeof;

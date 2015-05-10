@@ -218,7 +218,7 @@ byte[] getData() {
  *    value of the data array given.
  */
 void setData(in byte[] data) {
-    setLength(data.length);
+    setLength(cast(int)/*64bit*/data.length);
     System.arraycopy!(byte)(data, 0, reference, DATA_OFFSET, data.length);
     setCRC(computeCRC());
 }
@@ -306,7 +306,7 @@ static PngChunk readNextFromStream(LEDataInputStream stream) {
     try {
         int headerLength = LENGTH_FIELD_LENGTH + TYPE_FIELD_LENGTH;
         byte[] headerBytes = new byte[headerLength];
-        int result = stream.read(headerBytes, 0, headerLength);
+        int result = cast(int)/*64bit*/stream.read(headerBytes, 0, headerLength);
         stream.unread(headerBytes);
         if (result !is headerLength) return null;
 
@@ -315,7 +315,7 @@ static PngChunk readNextFromStream(LEDataInputStream stream) {
         int chunkLength = tempChunk.getSize();
         byte[] chunk = new byte[chunkLength];
 
-        result = stream.read(chunk, 0, chunkLength);
+        result = cast(int)/*64bit*/stream.read(chunk, 0, chunkLength);
         if (result !is chunkLength) return null;
 
         switch (tempChunk.getChunkType()) {

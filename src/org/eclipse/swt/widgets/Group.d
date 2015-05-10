@@ -99,7 +99,7 @@ public class Group : Composite {
                     auto hHeap = OS.GetProcessHeap ();
                     lpWndClass.hInstance = hInstance;
                     lpWndClass.style &= ~(OS.CS_HREDRAW | OS.CS_VREDRAW);
-                    int byteCount = GroupClass.length * TCHAR.sizeof;
+                    auto byteCount = GroupClass.length * TCHAR.sizeof;
                     auto lpszClassName = cast(TCHAR*)OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, byteCount);
                     OS.MoveMemory (lpszClassName, GroupClass.ptr, byteCount);
                     lpWndClass.lpszClassName = lpszClassName;
@@ -148,7 +148,7 @@ public this (Composite parent, int style) {
     super (parent, checkStyle (style));
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     /*
     * Feature in Windows.  When the user clicks on the group
@@ -183,7 +183,7 @@ override protected void checkSubclass () {
 override public Point computeSize (int wHint, int hHint, bool changed) {
     checkWidget ();
     Point size = super.computeSize (wHint, hHint, changed);
-    int length = text.length;
+    int length = cast(int)/*64bit*/text.length;
     if (length !is 0) {
         /*
         * Bug in Windows.  When a group control is right-to-left and
@@ -345,7 +345,7 @@ void printWidget (HWND hwnd, GC gc) {
         Control [] children = _getChildren ();
         Rectangle rect = getBounds ();
         OS.IntersectClipRect (hDC, 0, 0, rect.width, rect.height);
-        for (int i=children.length - 1; i>=0; --i) {
+        for (int i=cast(int)/*64bit*/children.length - 1; i>=0; --i) {
             Point location = children [i].getLocation ();
             OS.SetWindowOrgEx (hDC, -location.x, -location.y, null);
             children [i].print (gc);
@@ -428,11 +428,11 @@ override String windowClass () {
     return TCHARsToStr( GroupClass );
 }
 
-override int windowProc () {
-    return cast(int) GroupProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) GroupProc;
 }
 
-override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
+override LRESULT WM_ERASEBKGND (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_ERASEBKGND (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -444,7 +444,7 @@ override LRESULT WM_ERASEBKGND (int wParam, int lParam) {
     return LRESULT.ONE;
 }
 
-override LRESULT WM_NCHITTEST (int wParam, int lParam) {
+override LRESULT WM_NCHITTEST (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_NCHITTEST (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -456,12 +456,12 @@ override LRESULT WM_NCHITTEST (int wParam, int lParam) {
     * allow children, answer HTCLIENT to allow mouse messages
     * to be delivered to the children.
     */
-    int /*long*/ code = callWindowProc (handle, OS.WM_NCHITTEST, wParam, lParam);
+    auto code = callWindowProc (handle, OS.WM_NCHITTEST, wParam, lParam);
     if (code is OS.HTTRANSPARENT) code = OS.HTCLIENT;
     return new LRESULT (code);
 }
 
-override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
+override LRESULT WM_MOUSEMOVE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSEMOVE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -473,7 +473,7 @@ override LRESULT WM_MOUSEMOVE (int wParam, int lParam) {
     return LRESULT.ZERO;
 }
 
-override LRESULT WM_PRINTCLIENT (int wParam, int lParam) {
+override LRESULT WM_PRINTCLIENT (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_PRINTCLIENT (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -488,14 +488,14 @@ override LRESULT WM_PRINTCLIENT (int wParam, int lParam) {
     */
     if (OS.COMCTL32_MAJOR >= 6 && OS.IsAppThemed ()) {
         auto nSavedDC = OS.SaveDC (cast(HDC)wParam);
-        int /*long*/ code = callWindowProc (handle, OS.WM_PRINTCLIENT, wParam, lParam);
+        auto code = callWindowProc (handle, OS.WM_PRINTCLIENT, wParam, lParam);
         OS.RestoreDC (cast(HDC)wParam, nSavedDC);
         return new LRESULT (code);
     }
     return result;
 }
 
-override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
+override LRESULT WM_UPDATEUISTATE (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_UPDATEUISTATE (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -517,13 +517,13 @@ override LRESULT WM_UPDATEUISTATE (int wParam, int lParam) {
     }
     if (redraw) {
         OS.InvalidateRect (handle, null, false);
-        int /*long*/ code = OS.DefWindowProc (handle, OS.WM_UPDATEUISTATE, wParam, lParam);
+        auto code = OS.DefWindowProc (handle, OS.WM_UPDATEUISTATE, wParam, lParam);
         return new LRESULT (code);
     }
     return result;
 }
 
-override LRESULT WM_WINDOWPOSCHANGING (int wParam, int lParam) {
+override LRESULT WM_WINDOWPOSCHANGING (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_WINDOWPOSCHANGING (wParam, lParam);
     if (result !is null) return result;
     /*

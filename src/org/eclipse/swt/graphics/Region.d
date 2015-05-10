@@ -122,7 +122,7 @@ public void add (int[] pointArray) {
     if (isDisposed()) SWT.error(SWT.ERROR_GRAPHIC_DISPOSED);
     if (pointArray is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     static if (OS.IsWinCE) SWT.error(SWT.ERROR_NOT_IMPLEMENTED);
-    auto polyRgn = OS.CreatePolygonRgn(cast(POINT*)pointArray.ptr, pointArray.length / 2, OS.ALTERNATE);
+    auto polyRgn = OS.CreatePolygonRgn(cast(POINT*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2, OS.ALTERNATE);
     OS.CombineRgn (handle, handle, polyRgn, OS.RGN_OR);
     OS.DeleteObject (polyRgn);
 }
@@ -462,7 +462,7 @@ public void subtract (int[] pointArray) {
     if (isDisposed()) SWT.error(SWT.ERROR_GRAPHIC_DISPOSED);
     if (pointArray is null) SWT.error(SWT.ERROR_NULL_ARGUMENT);
     static if (OS.IsWinCE) SWT.error(SWT.ERROR_NOT_IMPLEMENTED);
-    auto polyRgn = OS.CreatePolygonRgn(cast(POINT*)pointArray.ptr, pointArray.length / 2, OS.ALTERNATE);
+    auto polyRgn = OS.CreatePolygonRgn(cast(POINT*)pointArray.ptr, cast(int)/*64bit*/pointArray.length / 2, OS.ALTERNATE);
     OS.CombineRgn (handle, handle, polyRgn, OS.RGN_DIFF);
     OS.DeleteObject (polyRgn);
 }

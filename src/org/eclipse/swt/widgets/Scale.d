@@ -167,7 +167,7 @@ public void addSelectionListener(SelectionListener listener) {
     addListener (SWT.DefaultSelection,typedListener);
 }
 
-override int callWindowProc (HWND hwnd, int msg, int wParam, int lParam) {
+override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     return OS.CallWindowProc (TrackBarProc, hwnd, msg, wParam, lParam);
 }
@@ -222,7 +222,7 @@ override int defaultForeground () {
  */
 public int getIncrement () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.TBM_GETLINESIZE, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TBM_GETLINESIZE, 0, 0);
 }
 
 /**
@@ -237,7 +237,7 @@ public int getIncrement () {
  */
 public int getMaximum () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
 }
 
 /**
@@ -252,7 +252,7 @@ public int getMaximum () {
  */
 public int getMinimum () {
     checkWidget ();
-    return cast(int)OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
 }
 
 /**
@@ -269,7 +269,7 @@ public int getMinimum () {
  */
 public int getPageIncrement () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.TBM_GETPAGESIZE, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TBM_GETPAGESIZE, 0, 0);
 }
 
 /**
@@ -284,7 +284,7 @@ public int getPageIncrement () {
  */
 public int getSelection () {
     checkWidget ();
-    return OS.SendMessage (handle, OS.TBM_GETPOS, 0, 0);
+    return cast(int)/*64bit*/OS.SendMessage (handle, OS.TBM_GETPOS, 0, 0);
 }
 
 /**
@@ -382,8 +382,8 @@ void setBounds (int x, int y, int width, int height, int flags, bool defer) {
 public void setIncrement (int increment) {
     checkWidget ();
     if (increment < 1) return;
-    int minimum = OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
-    int maximum = OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
+    auto minimum = OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
+    auto maximum = OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
     if (increment > maximum - minimum) return;
     OS.SendMessage (handle, OS.TBM_SETLINESIZE, 0, increment);
 }
@@ -403,7 +403,7 @@ public void setIncrement (int increment) {
  */
 public void setMaximum (int value) {
     checkWidget ();
-    int minimum = OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
+    auto minimum = OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
     if (0 <= minimum && minimum < value) {
         OS.SendMessage (handle, OS.TBM_SETRANGEMAX, 1, value);
     }
@@ -424,7 +424,7 @@ public void setMaximum (int value) {
  */
 public void setMinimum (int value) {
     checkWidget ();
-    int maximum = OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
+    auto maximum = OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
     if (0 <= value && value < maximum) {
         OS.SendMessage (handle, OS.TBM_SETRANGEMIN, 1, value);
     }
@@ -446,8 +446,8 @@ public void setMinimum (int value) {
 public void setPageIncrement (int pageIncrement) {
     checkWidget ();
     if (pageIncrement < 1) return;
-    int minimum = OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
-    int maximum = OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
+    auto minimum = OS.SendMessage (handle, OS.TBM_GETRANGEMIN, 0, 0);
+    auto maximum = OS.SendMessage (handle, OS.TBM_GETRANGEMAX, 0, 0);
     if (pageIncrement > maximum - minimum) return;
     OS.SendMessage (handle, OS.TBM_SETPAGESIZE, 0, pageIncrement);
     OS.SendMessage (handle, OS.TBM_SETTICFREQ, pageIncrement, 0);
@@ -479,11 +479,11 @@ override String windowClass () {
     return TCHARsToStr(TrackBarClass);
 }
 
-override int windowProc () {
-    return cast(int) TrackBarProc;
+override ptrdiff_t windowProc () {
+    return cast(ptrdiff_t) TrackBarProc;
 }
 
-override LRESULT WM_MOUSEWHEEL (int wParam, int lParam) {
+override LRESULT WM_MOUSEWHEEL (WPARAM wParam, LPARAM lParam) {
     LRESULT result = super.WM_MOUSEWHEEL (wParam, lParam);
     if (result !is null) return result;
     /*
@@ -494,11 +494,11 @@ override LRESULT WM_MOUSEWHEEL (int wParam, int lParam) {
     * has changed and that notification has not been issued
     * and send the selection event.
     */
-    int oldPosition = OS.SendMessage (handle, OS.TBM_GETPOS, 0, 0);
+    auto oldPosition = OS.SendMessage (handle, OS.TBM_GETPOS, 0, 0);
     ignoreSelection = true;
-    int /*long*/ code = callWindowProc (handle, OS.WM_MOUSEWHEEL, wParam, lParam);
+    auto code = callWindowProc (handle, OS.WM_MOUSEWHEEL, wParam, lParam);
     ignoreSelection = false;
-    int newPosition = OS.SendMessage (handle, OS.TBM_GETPOS, 0, 0);
+    auto newPosition = OS.SendMessage (handle, OS.TBM_GETPOS, 0, 0);
     if (oldPosition !is newPosition) {
         /*
         * Send the event because WM_HSCROLL and WM_VSCROLL
@@ -511,7 +511,7 @@ override LRESULT WM_MOUSEWHEEL (int wParam, int lParam) {
     return new LRESULT (code);
 }
 
-override LRESULT WM_PAINT (int wParam, int lParam) {
+override LRESULT WM_PAINT (WPARAM wParam, LPARAM lParam) {
     /*
     * Bug in Windows.  For some reason, when WM_CTLCOLORSTATIC
     * is used to implement transparency and returns a NULL brush,
@@ -543,12 +543,12 @@ override LRESULT WM_PAINT (int wParam, int lParam) {
     return super.WM_PAINT (wParam, lParam);
 }
 
-override LRESULT WM_SIZE (int wParam, int lParam) {
+override LRESULT WM_SIZE (WPARAM wParam, LPARAM lParam) {
     if (ignoreResize) return null;
     return super.WM_SIZE (wParam, lParam);
 }
 
-override LRESULT wmScrollChild (int wParam, int lParam) {
+override LRESULT wmScrollChild (WPARAM wParam, LPARAM lParam) {
 
     /* Do nothing when scrolling is ending */
     int code = OS.LOWORD (wParam);
