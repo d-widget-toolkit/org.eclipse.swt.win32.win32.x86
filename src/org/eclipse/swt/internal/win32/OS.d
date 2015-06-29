@@ -753,7 +753,7 @@ BOOL function(
     public static const int CS_HREDRAW = 0x2;
     public static const int CS_VREDRAW = 0x1;
     public static const int CW_USEDEFAULT = 0x80000000;
-    public static const TCHAR* DATETIMEPICK_CLASS = ("SysDateTimePick32"); //$NON-NLS-1$
+    public static const TCHAR[] DATETIMEPICK_CLASS = "SysDateTimePick32\0"; //$NON-NLS-1$
     public static const int DATE_LONGDATE = 0x00000002;
     public static const int DATE_SHORTDATE = 0x00000001;
     public static const int DATE_YEARMONTH = 0x00000008; //#if(WINVER >= 0x0500)
@@ -1383,7 +1383,7 @@ BOOL function(
     public static const int MNS_CHECKORBMP = 0x4000000;
     public static const int MONITOR_DEFAULTTONEAREST = 0x2;
     public static const int MONITORINFOF_PRIMARY = 0x1;
-    public static const TCHAR* MONTHCAL_CLASS = ("SysMonthCal32"); //$NON-NLS-1$
+    public static const TCHAR[] MONTHCAL_CLASS = "SysMonthCal32\0"; //$NON-NLS-1$
     public static const int MOUSEEVENTF_ABSOLUTE = 0x8000;
     public static const int MOUSEEVENTF_LEFTDOWN = 0x0002;
     public static const int MOUSEEVENTF_LEFTUP = 0x0004;
@@ -1528,7 +1528,7 @@ BOOL function(
     public static const int PM_QS_PAINT = QS_PAINT << 16;
     public static const int PM_QS_SENDMESSAGE = QS_SENDMESSAGE << 16;
     public static const int PM_REMOVE = 0x1;
-    public static const TCHAR* PROGRESS_CLASS = ("msctls_progress32"); //$NON-NLS-1$
+    public static const TCHAR[] PROGRESS_CLASS = "msctls_progress32\0"; //$NON-NLS-1$
     public static const int PP_BAR = 1;
     public static const int PP_BARVERT = 2;
     public static const int PP_CHUNK = 3;
@@ -1605,7 +1605,7 @@ BOOL function(
     public static const int RDW_INVALIDATE = 0x1;
     public static const int RDW_UPDATENOW = 0x100;
     public static const int READ_CONTROL = 0x20000;
-    public static const TCHAR* REBARCLASSNAME = ("ReBarWindow32"); //$NON-NLS-1$
+    public static const TCHAR[] REBARCLASSNAME = "ReBarWindow32\0"; //$NON-NLS-1$
     public static const int RGN_AND = 0x1;
     public static const int RGN_COPY = 5;
     public static const int RGN_DIFF = 0x4;
@@ -1923,8 +1923,8 @@ BOOL function(
     public static const int TME_QUERY = 0x40000000;
     public static const int TMPF_VECTOR = 0x2;
     public static const int TMT_CONTENTMARGINS = 3602;
-    public static const TCHAR* TOOLBARCLASSNAME = ("ToolbarWindow32"); //$NON-NLS-1$
-    public static const TCHAR* TOOLTIPS_CLASS = ("tooltips_class32"); //$NON-NLS-1$
+    public static const TCHAR[] TOOLBARCLASSNAME = "ToolbarWindow32\0"; //$NON-NLS-1$
+    public static const TCHAR[] TOOLTIPS_CLASS = "tooltips_class32\0"; //$NON-NLS-1$
     public static const int TP_BUTTON = 1;
     public static const int TP_DROPDOWNBUTTON = 2;
     public static const int TP_SPLITBUTTON = 3;
@@ -1935,7 +1935,7 @@ BOOL function(
     public static const int TPM_LEFTBUTTON = 0x0;
     public static const int TPM_RIGHTBUTTON = 0x2;
     public static const int TPM_RIGHTALIGN = 0x8;
-    public static const TCHAR* TRACKBAR_CLASS = ("msctls_trackbar32"); //$NON-NLS-1$
+    public static const TCHAR[] TRACKBAR_CLASS = "msctls_trackbar32\0"; //$NON-NLS-1$
     public static const int TRANSPARENT = 0x1;
     public static const int TREIS_DISABLED = 4;
     public static const int TREIS_HOT = 2;
@@ -2123,7 +2123,7 @@ BOOL function(
     public static const int UIS_SET = 1;
     public static const int UISF_HIDEACCEL = 0x2;
     public static const int UISF_HIDEFOCUS = 0x1;
-    public static const TCHAR* UPDOWN_CLASS = ("msctls_updown32"); //$NON-NLS-1$
+    public static const TCHAR[] UPDOWN_CLASS = "msctls_updown32\0"; //$NON-NLS-1$
     public static const int USP_E_SCRIPT_NOT_IN_FONT = 0x80040200;
     public static const int VERTRES = 0xa;
     public static const int VK_BACK = 0x8;
@@ -2193,11 +2193,11 @@ BOOL function(
     public static const int VK_APP4 = 0xc4;
     public static const int VK_APP5 = 0xc5;
     public static const int VK_APP6 = 0xc6;
-    public static const TCHAR* WC_HEADER = ("SysHeader32"); //$NON-NLS-1$
-    public static const TCHAR* WC_LINK = ("SysLink"); //$NON-NLS-1$
-    public static const TCHAR* WC_LISTVIEW = ("SysListView32"); //$NON-NLS-1$
-    public static const TCHAR* WC_TABCONTROL = ("SysTabControl32"); //$NON-NLS-1$
-    public static const TCHAR* WC_TREEVIEW = ("SysTreeView32"); //$NON-NLS-1$
+    public static const TCHAR[] WC_HEADER = "SysHeader32\0"; //$NON-NLS-1$
+    public static const TCHAR[] WC_LINK = "SysLink\0"; //$NON-NLS-1$
+    public static const TCHAR[] WC_LISTVIEW = "SysListView32\0"; //$NON-NLS-1$
+    public static const TCHAR[] WC_TABCONTROL = "SysTabControl32\0"; //$NON-NLS-1$
+    public static const TCHAR[] WC_TREEVIEW = "SysTreeView32\0"; //$NON-NLS-1$
     public static const int WINDING = 2;
     public static const int WH_CBT = 5;
     public static const int WH_GETMESSAGE = 0x3;

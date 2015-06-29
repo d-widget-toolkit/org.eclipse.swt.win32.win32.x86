@@ -551,7 +551,7 @@ public void close () {
 void createBalloonTipHandle () {
     balloonTipHandle_ = OS.CreateWindowEx (
         0,
-        OS.TOOLTIPS_CLASS,
+        OS.TOOLTIPS_CLASS.dup.ptr,
         null,
         OS.TTS_ALWAYSTIP | OS.TTS_NOPREFIX | OS.TTS_BALLOON,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,
@@ -659,7 +659,7 @@ void createToolTip (ToolTip toolTip) {
 void createToolTipHandle () {
     toolTipHandle_ = OS.CreateWindowEx (
         0,
-        OS.TOOLTIPS_CLASS,
+        OS.TOOLTIPS_CLASS.dup.ptr,
         null,
         OS.TTS_ALWAYSTIP | OS.TTS_NOPREFIX,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,
