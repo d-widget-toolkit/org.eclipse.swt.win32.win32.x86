@@ -1428,7 +1428,7 @@ void createHeaderToolTips () {
     }
     headerToolTipHandle = OS.CreateWindowEx (
         bits,
-        OS.TOOLTIPS_CLASS,
+        OS.TOOLTIPS_CLASS.dup.ptr,
         null,
         OS.TTS_NOPREFIX,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,

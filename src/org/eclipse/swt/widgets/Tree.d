@@ -1940,7 +1940,7 @@ void createHeaderToolTips () {
     }
     headerToolTipHandle = OS.CreateWindowEx (
         bits,
-        OS.TOOLTIPS_CLASS,
+        OS.TOOLTIPS_CLASS.dup.ptr,
         null,
         OS.TTS_NOPREFIX,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,
@@ -2238,7 +2238,7 @@ void createItemToolTips () {
     if (OS.COMCTL32_MAJOR >= 6) bits2 |= OS.WS_EX_TRANSPARENT;
     itemToolTipHandle = OS.CreateWindowEx (
         bits2,
-        OS.TOOLTIPS_CLASS,
+        OS.TOOLTIPS_CLASS.dup.ptr,
         null,
         OS.TTS_NOPREFIX | OS.TTS_NOANIMATE | OS.TTS_NOFADE,
         OS.CW_USEDEFAULT, 0, OS.CW_USEDEFAULT, 0,
