@@ -30,7 +30,7 @@ version(Tango){
 } else { // Phobos
     static import core.stdc.string; //for strlen
     static import std.windows.charset; //for toMBSz
-    static import std.c.windows.windows; //for GetLastError
+    static import core.sys.windows.windows; //for GetLastError
     static import std.windows.syserror; //for sysErrorString
 }
 
@@ -261,7 +261,7 @@ BOOL function(
             version(Tango){
                 tango.stdc.stdlib.exit(-1);
             } else { // Phobos
-                std.c.stdlib.exit(-1);
+                core.stdc.stdlib.exit(-1);
             }
         }
         //OSVERSIONINFO info = new OSVERSIONINFOW ();
@@ -391,7 +391,7 @@ BOOL function(
                 char[2000] buf;
                 getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, CodePage.from( winMsg, buf ) );
             } else { // Phobos
-                auto err = std.c.windows.windows.GetLastError();
+                auto err = core.sys.windows.windows.GetLastError();
                 getDwtLogger.error( __FILE__, __LINE__, "{}: {}", msg, std.windows.syserror.sysErrorString(err) );
             }
         }

@@ -15,14 +15,14 @@ import org.eclipse.swt.internal.Platform;
 version(Tango){
     static import tango.stdc.string;
 } else { // Phobos
-    static import std.c.string;
+    static import core.stdc.string;
 }
 
 public class C : Platform {
     version(Tango){
         alias tango.stdc.string.memmove MoveMemory;
     } else { // Phobos
-        alias std.c.string.memmove MoveMemory;
+        alias core.stdc.string.memmove MoveMemory;
     }
 //public static final native void free (ptrdiff_t ptr);
 //public static final native ptrdiff_t getenv (byte[] wcsToMbcs);
