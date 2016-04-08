@@ -88,6 +88,7 @@ import java.nonstandard.UnsafeUtf;
 version(Tango){
     static import tango.io.model.IFile;
 } else { // Phobos
+    static import std.ascii;
     static import std.string;
 }
 

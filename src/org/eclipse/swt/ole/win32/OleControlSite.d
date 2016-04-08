@@ -86,6 +86,8 @@ public class OleControlSite : OleClientSite
     // work around for IE destroying the caret
     static int SWT_RESTORECARET;
 
+    alias OleClientSite.AddRef AddRef;
+
 /**
  * Create an OleControlSite child widget using style bits
  * to select a particular look or set of properties.
