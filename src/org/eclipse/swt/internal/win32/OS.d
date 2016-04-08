@@ -28,6 +28,7 @@ version(Tango){
     import tango.sys.win32.CodePage : CodePage;
     private import tango.stdc.stringz;
 } else { // Phobos
+    static import core.stdc.stdlib;
     static import core.stdc.string; //for strlen
     static import std.windows.charset; //for toMBSz
     static import core.sys.windows.windows; //for GetLastError
