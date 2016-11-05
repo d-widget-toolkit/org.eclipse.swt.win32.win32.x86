@@ -72,11 +72,11 @@ private:
         Status  lastError;
     }
 
-    static ubyte GenericTypographicStringFormatBuffer[StringFormat_T.sizeof] = 0;
-    static ubyte GenericDefaultStringFormatBuffer [StringFormat_T.sizeof] = 0;
-    static ubyte GenericSansSerifFontFamilyBuffer [FontFamily_T.sizeof] = 0;
-    static ubyte GenericSerifFontFamilyBuffer     [FontFamily_T.sizeof] = 0;
-    static ubyte GenericMonospaceFontFamilyBuffer [FontFamily_T.sizeof] = 0;
+    static ubyte[StringFormat_T.sizeof] GenericTypographicStringFormatBuffer = 0;
+    static ubyte[StringFormat_T.sizeof] GenericDefaultStringFormatBuffer = 0;
+    static ubyte[FontFamily_T.sizeof] GenericSansSerifFontFamilyBuffer = 0;
+    static ubyte[FontFamily_T.sizeof] GenericSerifFontFamilyBuffer = 0;
+    static ubyte[FontFamily_T.sizeof] GenericMonospaceFontFamilyBuffer = 0;
 
     /**************************************************************************
 

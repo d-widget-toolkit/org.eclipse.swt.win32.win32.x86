@@ -55,7 +55,7 @@ void seek(int pos) {
     }
 }
 
-void read(byte b[]) {
+void read(byte[] b) {
     int size = cast(int)/*64bit*/b.length;
     int nCached = Math.min(size, next - current);
     int nMissing = size - next + current;

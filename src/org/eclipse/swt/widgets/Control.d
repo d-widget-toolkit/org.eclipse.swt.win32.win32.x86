@@ -4587,7 +4587,7 @@ LRESULT WM_SYSCOMMAND (WPARAM wParam, LPARAM lParam) {
                     }
                 }
             }
-            // FALL THROUGH
+            goto case OS.SC_HSCROLL;
         case OS.SC_HSCROLL:
         case OS.SC_VSCROLL:
             /*

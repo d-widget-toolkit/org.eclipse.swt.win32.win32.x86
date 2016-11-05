@@ -202,13 +202,13 @@ public class JPEGDecoder {
     static const int INPUT_CONSUME_INPUT = 0;
     static const int COEF_CONSUME_INPUT = 1;
 
-    static int extend_test[] =   /* entry n is 2**(n-1) */
+    static int[] extend_test =   /* entry n is 2**(n-1) */
     [
         0, 0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080,
         0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000
     ];
 
-    static int extend_offset[] = /* entry n is (-1 << n) + 1 */
+    static int[] extend_offset = /* entry n is (-1 << n) + 1 */
     [
         0, ((-1)<<1) + 1, ((-1)<<2) + 1, ((-1)<<3) + 1, ((-1)<<4) + 1,
         ((-1)<<5) + 1, ((-1)<<6) + 1, ((-1)<<7) + 1, ((-1)<<8) + 1,
@@ -216,7 +216,7 @@ public class JPEGDecoder {
         ((-1)<<13) + 1, ((-1)<<14) + 1, ((-1)<<15) + 1
     ];
 
-    static int jpeg_natural_order[] = [
+    static int[] jpeg_natural_order = [
         0,  1,  8, 16,  9,  2,  3, 10,
         17, 24, 32, 25, 18, 11, 4,  5,
         12, 19, 26, 33, 40, 48, 41, 34,
@@ -2485,7 +2485,7 @@ static void jpeg_calc_output_dimensions (jpeg_decompress_struct cinfo)
                 cinfo.out_color_components = RGB_PIXELSIZE;
                 break;
             }
-            //FALLTHROUGH
+            goto case JCS_YCbCr;
         case JCS_YCbCr:
             cinfo.out_color_components = 3;
             break;
@@ -4242,7 +4242,7 @@ static void process_data_context_main (jpeg_decompress_struct cinfo,
             main.context_state = CTX_PREPARE_FOR_IMCU;
             if (out_row_ctr[0] >= out_rows_avail)
                 return;         /* Postprocessor exactly filled output buf */
-            /*FALLTHROUGH*/
+            goto case CTX_PREPARE_FOR_IMCU;
         case CTX_PREPARE_FOR_IMCU:
             /* Prepare to process first M-1 row groups of this iMCU row */
             main.rowgroup_ctr[0] = 0;
@@ -4253,7 +4253,7 @@ static void process_data_context_main (jpeg_decompress_struct cinfo,
             if (main.iMCU_row_ctr is cinfo.total_iMCU_rows)
                 set_bottom_pointers(cinfo);
             main.context_state = CTX_PROCESS_IMCU;
-            /*FALLTHROUGH*/
+            goto case CTX_PROCESS_IMCU;
         case CTX_PROCESS_IMCU:
             /* Call postprocessor using previously set pointers */
             post_process_data (cinfo, main.xbuffer[main.whichptr], main.xbuffer_offset[main.whichptr], main.rowgroup_ctr, main.rowgroups_avail, output_buf, out_row_ctr, out_rows_avail);
@@ -4270,7 +4270,9 @@ static void process_data_context_main (jpeg_decompress_struct cinfo,
             main.rowgroup_ctr[0] = (cinfo.min_DCT_scaled_size + 1);
             main.rowgroups_avail =  (cinfo.min_DCT_scaled_size + 2);
             main.context_state = CTX_POSTPONED_ROW;
+            break;
         default:
+            break;
     }
 }
 
@@ -6270,7 +6272,7 @@ static int jpeg_consume_input (jpeg_decompress_struct cinfo) {
         /* Initialize application's data source module */
         init_source (cinfo);
         cinfo.global_state = DSTATE_INHEADER;
-        /*FALLTHROUGH*/
+        goto case DSTATE_INHEADER;
     case DSTATE_INHEADER:
         retcode = consume_input(cinfo);
         if (retcode is JPEG_REACHED_SOS) { /* Found SOS, prepare to decompress */

@@ -2389,7 +2389,9 @@ override LRESULT WM_SETCURSOR (WPARAM wParam, LPARAM lParam) {
                         case OS.WM_MBUTTONDOWN:
                         case OS.WM_XBUTTONDOWN:
                             OS.MessageBeep (OS.MB_OK);
+                            break;
                         default:
+                            break;
                     }
                     return LRESULT.ONE;
                 }
@@ -2475,7 +2477,9 @@ override LRESULT WM_SYSCOMMAND (WPARAM wParam, LPARAM lParam) {
                     OS.ShowWindow (handle, OS.SW_SHOWMINIMIZED);
                     return LRESULT.ZERO;
                 }
+                break;
             default:
+                break;
         }
     }
     return result;

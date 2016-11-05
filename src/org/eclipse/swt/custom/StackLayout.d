@@ -96,7 +96,7 @@ public class StackLayout : Layout {
     public Control topControl;
 
 protected override Point computeSize(Composite composite, int wHint, int hHint, bool flushCache) {
-    Control children[] = composite.getChildren();
+    Control[] children = composite.getChildren();
     int maxWidth = 0;
     int maxHeight = 0;
     for (int i = 0; i < children.length; i++) {
@@ -116,7 +116,7 @@ protected override bool flushCache(Control control) {
 }
 
 protected override void layout(Composite composite, bool flushCache) {
-    Control children[] = composite.getChildren();
+    Control[] children = composite.getChildren();
     Rectangle rect = composite.getClientArea();
     rect.x += marginWidth;
     rect.y += marginHeight;

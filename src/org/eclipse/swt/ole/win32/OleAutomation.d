@@ -35,6 +35,11 @@ import org.eclipse.swt.ole.win32.OLE;
 
 import java.lang.all;
 
+version(Tango){
+} else { // Phobos
+    static import std.algorithm;
+}
+
 /**
  * OleAutomation provides a generic mechanism for accessing functionality that is
  * specific to a particular ActiveX Control or OLE Document.
@@ -499,7 +504,11 @@ private int invoke(int dispIdMember, ushort wFlags, Variant[] rgvarg, int[] rgdi
             rgvarg[i].getData(&tempArgs[i]);
         }
         // the reverse sequency
-        tempArgs.reverse;
+        version(Tango){
+            tempArgs.reverse;
+        } else { // Phobos
+            std.algorithm.reverse(tempArgs);
+        }
         pDispParams.cArgs = cast(int)/*64bit*/tempArgs.length;
         pDispParams.rgvarg = tempArgs.ptr;
     }
@@ -508,7 +517,11 @@ private int invoke(int dispIdMember, ushort wFlags, Variant[] rgvarg, int[] rgdi
     if (rgdispidNamedArgs !is null && rgdispidNamedArgs.length > 0) {
         DISPID[] tempArgs = rgdispidNamedArgs.dup;
         // the reverse sequency
-        tempArgs.reverse;
+        version(Tango){
+            tempArgs.reverse;
+        } else { // Phobos
+            std.algorithm.reverse(tempArgs);
+        }
         pDispParams.cNamedArgs = cast(int)/*64bit*/tempArgs.length;
         pDispParams.rgdispidNamedArgs = tempArgs.ptr;
     }

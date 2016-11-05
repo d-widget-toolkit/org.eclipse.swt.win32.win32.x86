@@ -1471,7 +1471,7 @@ int getClickCount (int type, int button, HWND hwnd, LPARAM lParam) {
             } else {
                 clickCount = 1;
             }
-            //FALL THROUGH
+            goto case SWT.MouseDoubleClick;
         case SWT.MouseDoubleClick:
             lastButton = button;
             lastClickHwnd = hwnd;
@@ -1480,7 +1480,7 @@ int getClickCount (int type, int button, HWND hwnd, LPARAM lParam) {
             int yInset = OS.GetSystemMetrics (OS.SM_CYDOUBLECLK) / 2;
             int x = OS.GET_X_LPARAM (lParam), y = OS.GET_Y_LPARAM (lParam);
             OS.SetRect (clickRect, x - xInset, y - yInset, x + xInset, y + yInset);
-            //FALL THROUGH
+            goto case SWT.MouseUp;
         case SWT.MouseUp:
             return clickCount;
         default:
@@ -2058,12 +2058,13 @@ static extern(Windows) .LRESULT getMsgFunc (int code, WPARAM wParam, LPARAM lPar
     }
     if (code >= 0 && (wParam & OS.PM_REMOVE) !is 0) {
         MSG* msg = cast(MSG*)lParam;
+        Control control = null;
         switch (msg.message) {
             case OS.WM_KEYDOWN:
             case OS.WM_KEYUP:
             case OS.WM_SYSKEYDOWN:
             case OS.WM_SYSKEYUP: {
-                Control control = findControl (msg.hwnd);
+                control = findControl (msg.hwnd);
                 if (control !is null) {
                     auto hHeap = OS.GetProcessHeap ();
                     MSG* keyMsg = cast(MSG*) OS.HeapAlloc (hHeap, OS.HEAP_ZERO_MEMORY, MSG.sizeof);
@@ -2082,7 +2083,9 @@ static extern(Windows) .LRESULT getMsgFunc (int code, WPARAM wParam, LPARAM lPar
                             //OS.MoveMemory (lParam, msg, MSG.sizeof);
                     }
                 }
+                break;
             default:
+                break;
             }
         }
     }
@@ -3043,8 +3046,10 @@ private static extern(Windows) .LRESULT messageProcFunc (HWND hwnd, uint msg, WP
                                 break;
                             }
                         }
+                        break;
                     }
                     default:
+                        break;
                 }
             }
             switch (keyMsg.wParam) {
@@ -3055,7 +3060,9 @@ private static extern(Windows) .LRESULT messageProcFunc (HWND hwnd, uint msg, WP
                 case OS.VK_NUMLOCK:
                 case OS.VK_SCROLL:
                     consumed = true;
+                    break;
                 default:
+                    break;
             }
             if (consumed) {
                 auto hHeap = OS.GetProcessHeap ();
@@ -3154,7 +3161,9 @@ private static extern(Windows) .LRESULT messageProcFunc (HWND hwnd, uint msg, WP
                 case 1:
                 case OS.SPI_SETHIGHCONTRAST:
                     OS.SetTimer (hwndMessage, SETTINGS_ID, SETTINGS_DELAY, null);
+                    break;
                 default:
+                    break;
             }
             break;
         }

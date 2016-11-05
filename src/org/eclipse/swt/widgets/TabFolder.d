@@ -1030,7 +1030,9 @@ override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
                 event.item = item;
                 postEvent (SWT.Selection, event);
             }
+            break;
         default:
+            break;
     }
     return super.wmNotifyChild (hdr, wParam, lParam);
 }

@@ -1526,25 +1526,25 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         /* Keyboard messages */
         case OS.WM_KEYDOWN:
             if (wParam is OS.VK_CONTROL || wParam is OS.VK_SHIFT) break;
-            //FALL THROUGH
+            goto case OS.WM_CHAR;
         case OS.WM_CHAR:
         case OS.WM_IME_CHAR:
         case OS.WM_KEYUP:
         case OS.WM_SYSCHAR:
         case OS.WM_SYSKEYDOWN:
         case OS.WM_SYSKEYUP:
-            //FALL THROUGH
+            goto case OS.WM_HSCROLL;
 
         /* Scroll messages */
         case OS.WM_HSCROLL:
         case OS.WM_VSCROLL:
-            //FALL THROUGH
+            goto case OS.WM_SIZE;
 
         /* Resize messages */
         case OS.WM_SIZE:
             redraw = findImageControl () !is null && drawCount is 0 && OS.IsWindowVisible (handle);
             if (redraw) OS.DefWindowProc (handle, OS.WM_SETREDRAW, 0, 0);
-            //FALL THROUGH
+            goto case OS.WM_LBUTTONDBLCLK;
 
         /* Mouse messages */
         case OS.WM_LBUTTONDBLCLK:
@@ -1563,7 +1563,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         case OS.WM_XBUTTONDBLCLK:
         case OS.WM_XBUTTONDOWN:
         case OS.WM_XBUTTONUP:
-            //FALL THROUGH
+            goto case OS.WM_SETFONT;
 
         /* Other messages */
         case OS.WM_SETFONT:
@@ -1580,19 +1580,19 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         /* Keyboard messages */
         case OS.WM_KEYDOWN:
             if (wParam is OS.VK_CONTROL || wParam is OS.VK_SHIFT) break;
-            //FALL THROUGH
+            goto case OS.WM_CHAR;
         case OS.WM_CHAR:
         case OS.WM_IME_CHAR:
         case OS.WM_KEYUP:
         case OS.WM_SYSCHAR:
         case OS.WM_SYSKEYDOWN:
         case OS.WM_SYSKEYUP:
-            //FALL THROUGH
+            goto case OS.WM_HSCROLL;
 
         /* Scroll messages */
         case OS.WM_HSCROLL:
         case OS.WM_VSCROLL:
-            //FALL THROUGH
+            goto case OS.WM_SIZE;
 
         /* Resize messages */
         case OS.WM_SIZE:
@@ -1601,7 +1601,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
                 OS.InvalidateRect (handle, null, true);
                 if (hwndHeader !is null) OS.InvalidateRect (hwndHeader, null, true);
             }
-            //FALL THROUGH
+            goto case OS.WM_LBUTTONDBLCLK;
 
         /* Mouse messages */
         case OS.WM_LBUTTONDBLCLK:
@@ -1620,7 +1620,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         case OS.WM_XBUTTONDBLCLK:
         case OS.WM_XBUTTONDOWN:
         case OS.WM_XBUTTONUP:
-            //FALL THROUGH
+            goto case OS.WM_SETFONT;
 
         /* Other messages */
         case OS.WM_SETFONT:
@@ -7384,7 +7384,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
                 runExpanded = hFirstItem is null;
             }
             if (!runExpanded) break;
-            //FALL THROUGH
+            goto case OS.TVN_ITEMEXPANDEDA;
         }
         case OS.TVN_ITEMEXPANDEDA:
         case OS.TVN_ITEMEXPANDEDW: {
@@ -7433,7 +7433,7 @@ override LRESULT wmNotifyChild (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
         case OS.TVN_BEGINDRAGA:
         case OS.TVN_BEGINDRAGW:
             if (OS.GetKeyState (OS.VK_LBUTTON) >= 0) break;
-            //FALL THROUGH
+            goto case OS.TVN_BEGINRDRAGA;
         case OS.TVN_BEGINRDRAGA:
         case OS.TVN_BEGINRDRAGW: {
             dragStarted = true;
@@ -7512,7 +7512,9 @@ LRESULT wmNotifyHeader (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
                 case OS.HDN_DIVIDERDBLCLICKW:
                 case OS.HDN_DIVIDERDBLCLICKA:
                     if (column !is null) column.pack ();
+                    break;
                 default:
+                    break;
             }
             break;
         }

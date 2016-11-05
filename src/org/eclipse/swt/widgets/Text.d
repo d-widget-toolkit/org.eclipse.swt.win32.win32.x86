@@ -1417,7 +1417,7 @@ override bool sendKeyEvent (int type, int msg, WPARAM wParam, LPARAM lParam, Eve
     switch (msg) {
         case OS.WM_CHAR:
             if (key !is 0x08 && key !is 0x7F && key !is '\r' && key !is '\t' && key !is '\n') break;
-            // FALL THROUGH
+            goto case OS.WM_KEYDOWN;
         case OS.WM_KEYDOWN:
             if ((stateMask & (SWT.ALT | SWT.SHIFT | SWT.CONTROL)) !is 0) return false;
             break;
@@ -2124,7 +2124,9 @@ override LRESULT WM_CHAR (WPARAM wParam, LPARAM lParam) {
             if (OS.GetKeyState (OS.VK_CONTROL) < 0) {
                 return LRESULT.ZERO;
             }
+            break;
         default:
+            break;
     }
 
     /*
@@ -2138,7 +2140,7 @@ override LRESULT WM_CHAR (WPARAM wParam, LPARAM lParam) {
         switch (wParam) {
             case SWT.CR:
                 postEvent (SWT.DefaultSelection);
-                // FALL THROUGH
+                goto case SWT.TAB;
             case SWT.TAB:
             case SWT.ESC: return LRESULT.ZERO;
             default:

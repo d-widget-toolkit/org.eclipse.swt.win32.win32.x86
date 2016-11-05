@@ -216,7 +216,9 @@ void checkGC(int mask) {
                             if (brush is null) SWT.error(SWT.ERROR_NO_HANDLES);
                             Gdip.TextureBrush_ScaleTransform( cast(Gdip.TextureBrush) brush, -1, 1, Gdip.MatrixOrderPrepend);
                             data.gdipFgBrush = cast(Gdip.SolidBrush)brush;
+                            break;
                         default:
+                            break;
                     }
                 }
             } else {
@@ -240,7 +242,9 @@ void checkGC(int mask) {
             switch (data.lineStyle) {
                 case SWT.LINE_CUSTOM:
                     state |= LINE_STYLE;
+                    break;
                 default:
+                    break;
             }
         }
         if ((state & LINE_STYLE) !is 0) {
@@ -264,8 +268,10 @@ void checkGC(int mask) {
                         }
                         dashes = dashes_;
                     }
+                    break;
                 }
                 default:
+                    break;
             }
             if (dashes !is null) {
                 Gdip.Pen_SetDashPattern(pen, dashes.ptr, cast(int)/*64bit*/dashes.length);
@@ -312,7 +318,9 @@ void checkGC(int mask) {
                             Gdip.TextureBrush_ScaleTransform( cast(Gdip.TextureBrush)brush, -1, 1, Gdip.MatrixOrderPrepend);
                             data.gdipBrush = brush;
                             data.gdipBgBrush = cast(Gdip.SolidBrush) brush;
+                            break;
                         default:
+                            break;
                     }
                 }
             } else {

@@ -112,7 +112,7 @@ public static PrinterData[] getPrinterList() {
             index = i + 1;
         }
     }
-    PrinterData printerList[] = new PrinterData[nameCount];
+    PrinterData[] printerList = new PrinterData[nameCount];
     for (int p = 0; p < nameCount; p++) {
         String device = deviceNames[p];
         String driver = ""; //$NON-NLS-1$
@@ -222,7 +222,7 @@ protected void create(DeviceData deviceData) {
     StringT driver = StrToTCHARs(0, data.driver, true);
     StringT device = StrToTCHARs(0, data.name, true);
     DEVMODE* lpInitData;
-    byte buffer [] = data.otherData;
+    byte[] buffer = data.otherData;
     auto hHeap = OS.GetProcessHeap();
     if (buffer !is null && buffer.length !is 0) {
         /* If user setup info from a print dialog was specified, restore the DEVMODE struct. */
