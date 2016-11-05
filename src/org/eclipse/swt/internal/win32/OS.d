@@ -419,10 +419,10 @@ BOOL function(
         pActCtx.lpResourceName = MANIFEST_RESOURCE_ID;
         HANDLE hActCtx = OS.CreateActCtx (&pActCtx);
         if (hActCtx is INVALID_HANDLE_VALUE){
-            printError("CreateActCtx failed, hence theme support will not be available\n"
-                    "Please check for:\n"
-                    " - missing link option -L/su:windows:5 or -L/su:console:5\n"
-                    " - missing link option -L/rc:org.eclipse.swt\n"
+            printError("CreateActCtx failed, hence theme support will not be available\n" ~
+                    "Please check for:\n" ~
+                    " - missing link option -L/su:windows:5 or -L/su:console:5\n" ~
+                    " - missing link option -L/rc:org.eclipse.swt\n" ~
                     " - resource file 'org.eclipse.swt.res' was not accessible by linker\n"
                     );
         }
@@ -3718,7 +3718,7 @@ public String MBCSzToStr(in PCHAR pString, int _length = -1, uint codepage = 0) 
     
     try {
         return String_valueOf(wcs);
-    } catch {
+    } catch (Exception) {
         return null;
     }
 }
@@ -3745,7 +3745,7 @@ public String WCHARzToStr(in LPCWSTR pString, int _length = -1)
 
     try {
         return String_valueOf(wcs);
-    } catch {
+    } catch (Exception) {
         return null;
     }
 }

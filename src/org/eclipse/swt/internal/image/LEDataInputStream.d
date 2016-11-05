@@ -92,7 +92,7 @@ final class LEDataInputStream : InputStream{
      * Don't imitate the JDK behaviour of reading a random number
      * of bytes when you can actually read them all.
      */
-    public override ptrdiff_t read(byte b[], ptrdiff_t off, ptrdiff_t len) {
+    public override ptrdiff_t read(byte[] b, ptrdiff_t off, ptrdiff_t len) {
         ptrdiff_t read = 0, count;
         while (read !is len && (count = readData(b, off, len - read)) !is -1) {
             off += count;

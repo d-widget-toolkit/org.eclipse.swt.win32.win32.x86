@@ -1469,7 +1469,9 @@ LRESULT wmKeyDown (HWND hwnd, WPARAM wParam, LPARAM lParam) {
         case OS.VK_NUMLOCK:
         case OS.VK_SCROLL:
             if ((lParam & 0x40000000) !is 0) return null;
+            break;
         default:
+            break;
     }
 
     /* Clear last key and last ascii because a new key has been typed */
@@ -2372,8 +2374,10 @@ LRESULT wmSysKeyDown (HWND hwnd, WPARAM wParam, LPARAM lParam) {
             }
             int bits = OS.GetWindowLong (hwndShell, OS.GWL_STYLE);
             if ((bits & OS.WS_SYSMENU) !is 0) return null;
+            break;
         }
         default:
+            break;
     }
 
     /* Ignore repeating modifier keys by testing key down state */
@@ -2385,7 +2389,9 @@ LRESULT wmSysKeyDown (HWND hwnd, WPARAM wParam, LPARAM lParam) {
         case OS.VK_NUMLOCK:
         case OS.VK_SCROLL:
             if ((lParam & 0x40000000) !is 0) return null;
+            break;
         default:
+            break;
     }
 
     /* Clear last key and last ascii because a new key has been typed */

@@ -61,10 +61,10 @@ this(Device device) {
 
 ~this(){
     if( globalDisposeChecking && disposeChecking && !isDisposed() ){
-        SWT.error( 0, null, " Resource deleted, but is not yet disposed. "
-                "This check can be disabled with "
-                "\"import org.eclipse.swt.graphics.Resource; "
-                "Resource.globalDisposeChecking = false; \". "
+        SWT.error( 0, null, " Resource deleted, but is not yet disposed. " ~
+                "This check can be disabled with " ~
+                "\"import org.eclipse.swt.graphics.Resource; " ~
+                "Resource.globalDisposeChecking = false; \". " ~
                 "This problem occured with type " ~ this.classinfo.name ~
                 " this.toString()=" ~ this.toString() );
     }

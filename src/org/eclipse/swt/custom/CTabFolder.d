@@ -149,7 +149,7 @@ public class CTabFolder : Composite {
     int minChars = 20;
 
     /* item management */
-    CTabItem items[];
+    CTabItem[] items;
     int firstIndex = -1; // index of the left most visible tab.
     int selectedIndex = -1;
     int[] priority;
@@ -1916,7 +1916,9 @@ void onKeyDown (Event event) {
             if (index < 0 || index >= count) return;
             setSelection (index, true);
             forceFocus();
+            break;
         default:
+            break;
     }
 }
 void onDispose(Event event) {
@@ -2003,6 +2005,7 @@ void onMouseDoubleClick(Event event) {
 }
 void onMouse(Event event) {
     int x = event.x, y = event.y;
+    CTabItem item = null;
     switch (event.type) {
         case SWT.MouseEnter: {
             setToolTipText(null);
@@ -2022,7 +2025,7 @@ void onMouse(Event event) {
                 redraw(chevronRect.x, chevronRect.y, chevronRect.width, chevronRect.height, false);
             }
             for (int i=0; i<items.length; i++) {
-                CTabItem item = items[i];
+                item = items[i];
                 if (i !is selectedIndex && item.closeImageState !is NONE) {
                     item.closeImageState = NONE;
                     redraw(item.closeRect.x, item.closeRect.y, item.closeRect.width, item.closeRect.height, false);
@@ -2060,7 +2063,7 @@ void onMouse(Event event) {
                 update();
                 return;
             }
-            CTabItem item = null;
+            item = null;
             if (single) {
                 if (selectedIndex !is -1) {
                     Rectangle bounds = items[selectedIndex].getBounds();
@@ -2129,7 +2132,7 @@ void onMouse(Event event) {
                 redraw(chevronRect.x, chevronRect.y, chevronRect.width, chevronRect.height, false);
             }
             for (int i=0; i<items.length; i++) {
-                CTabItem item = items[i];
+                item = items[i];
                 close = false;
                 if (item.getBounds().contains(x, y)) {
                     close = true;
@@ -2211,7 +2214,7 @@ void onMouse(Event event) {
                 }
                 return;
             }
-            CTabItem item = null;
+            item = null;
             if (single) {
                 if (selectedIndex !is -1) {
                     Rectangle bounds = items[selectedIndex].getBounds();
@@ -2269,7 +2272,9 @@ void onMouse(Event event) {
                     return;
                 }
             }
+            break;
         default:
+            break;
         }
     }
 }
@@ -2779,8 +2784,10 @@ void setButtonBounds() {
                 topRightRect.width = topRightSize.x;
                 topRightRect.y = onBottom ? size.y - borderBottom - tabHeight: borderTop + 1;
                 topRightRect.height = tabHeight - 1;
+                break;
             }
             default:
+                break;
         }
         topRight.setBounds(topRightRect);
     }

@@ -1488,7 +1488,9 @@ bool translateMDIAccelerator (MSG* msg) {
                     return true;
                 case OS.VK_F6:
                     if (traverseDecorations (true)) return true;
+                    break;
                 default:
+                    break;
             }
             return false;
         }

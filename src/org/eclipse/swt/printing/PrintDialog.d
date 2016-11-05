@@ -267,7 +267,7 @@ public PrinterData open() {
     void* lpInitData;
     auto hHeap = OS.GetProcessHeap();
     if (printerData !is null) {
-        byte buffer [] = printerData.otherData;
+        byte[] buffer = printerData.otherData;
         if (buffer !is null && buffer.length !is 0) {
             /* If user setup info from a previous print dialog was specified, restore the DEVMODE struct. */
             lpInitData = OS.HeapAlloc(hHeap, OS.HEAP_ZERO_MEMORY, buffer.length);

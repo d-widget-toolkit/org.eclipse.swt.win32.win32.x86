@@ -322,10 +322,11 @@ public void addVerifyListener (VerifyListener listener) {
 override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lParam) {
     if (handle is null) return 0;
     if (hwnd is handle) {
+        .LRESULT result = 0;
         switch (msg) {
             case OS.WM_SIZE: {
                 ignoreResize = true;
-                auto result = OS.CallWindowProc (ComboProc, hwnd, msg, wParam, lParam);
+                result = OS.CallWindowProc (ComboProc, hwnd, msg, wParam, lParam);
                 ignoreResize = false;
                 return result;
             default:
@@ -1351,7 +1352,7 @@ override bool sendKeyEvent (int type, int msg, WPARAM wParam, LPARAM lParam, Eve
     switch (msg) {
         case OS.WM_CHAR:
             if (key !is 0x08 && key !is 0x7F && key !is '\r' && key !is '\t' && key !is '\n') break;
-            // FALL THROUGH
+            goto case OS.WM_KEYDOWN;
         case OS.WM_KEYDOWN:
             if ((stateMask & (SWT.ALT | SWT.SHIFT | SWT.CONTROL)) !is 0) return false;
             break;
@@ -1918,7 +1919,9 @@ override bool translateTraversal (MSG* msg) {
                     return false;
                 }
             }
+            break;
         default:
+            break;
     }
     return super.translateTraversal (msg);
 }
@@ -2318,14 +2321,16 @@ override LRESULT wmChar (HWND hwnd, WPARAM wParam, LPARAM lParam) {
         case SWT.CR:
             if (!ignoreDefaultSelection) postEvent (SWT.DefaultSelection);
             ignoreDefaultSelection = false;
-            // FALL THROUGH
+            goto case SWT.ESC;
         case SWT.ESC:
             if ((style & SWT.DROP_DOWN) !is 0) {
                 if (OS.SendMessage (handle, OS.CB_GETDROPPEDSTATE, 0, 0) is 0) {
                     return LRESULT.ZERO;
                 }
             }
+            break;
         default:
+            break;
     }
     return result;
 }

@@ -312,8 +312,10 @@ static extern(Windows) .LRESULT getMsgProc(int code, WPARAM wParam, LPARAM lPara
                                     break;
                                 }
                             }
+                            break;
                         }
                         default:
+                            break;
                     }
 
                     if (consumed) {

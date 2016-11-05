@@ -908,7 +908,9 @@ private static extern(Windows) .LRESULT transparentFunc (HWND hwnd, int msg, WPA
                 OS.EndPaint (hwnd, &ps);
                 return 0;
             }
+            break;
         default:
+            break;
     }
     return OS.CallWindowProc( oldProc, hwnd, msg, wParam, lParam);
 }

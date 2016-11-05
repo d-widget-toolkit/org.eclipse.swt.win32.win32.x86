@@ -257,7 +257,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         */
         case OS.WM_KEYDOWN:
             checkActivate = true;
-            //FALL THROUGH
+            goto case OS.WM_CHAR;
         case OS.WM_CHAR:
         case OS.WM_IME_CHAR:
         case OS.WM_KEYUP:
@@ -284,7 +284,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
                 OS.DefWindowProc (handle, OS.WM_SETREDRAW, 0, 0);
                 OS.SendMessage (handle, OS.LVM_SETBKCOLOR, 0, 0xFFFFFF);
             }
-            //FALL THROUGH
+            goto case OS.WM_LBUTTONDBLCLK;
 
         /* Mouse messages */
         case OS.WM_LBUTTONDBLCLK:
@@ -304,7 +304,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         case OS.WM_XBUTTONDOWN:
         case OS.WM_XBUTTONUP:
             checkSelection = true;
-            //FALL THROUGH
+            goto case OS.WM_SETFONT;
 
         /* Other messages */
         case OS.WM_SETFONT:
@@ -312,8 +312,10 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
             if (findImageControl () !is null) {
                 topIndex = OS.SendMessage (handle, OS.LVM_GETTOPINDEX, 0, 0);
             }
+            break;
         }
         default:
+            break;
     }
     bool oldSelected = wasSelected;
     if (checkSelection) wasSelected = false;
@@ -361,8 +363,10 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
                     bits &= ~OS.WS_VSCROLL;
                 }
                 if (fixScroll) OS.SetWindowLong (handle, OS.GWL_STYLE, bits);
+                break;
             }
             default:
+                break;
         }
     }
     .LRESULT code = 0;
@@ -414,7 +418,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
                 auto hwndHeader = cast(HWND) OS.SendMessage (handle, OS.LVM_GETHEADER, 0, 0);
                 if (hwndHeader !is null) OS.InvalidateRect (hwndHeader, null, true);
             }
-            //FALL THROUGH
+            goto case OS.WM_LBUTTONDBLCLK;
 
         /* Mouse messages */
         case OS.WM_LBUTTONDBLCLK:
@@ -433,7 +437,7 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         case OS.WM_XBUTTONDBLCLK:
         case OS.WM_XBUTTONDOWN:
         case OS.WM_XBUTTONUP:
-            //FALL THROUGH
+            goto case OS.WM_SETFONT;
 
         /* Other messages */
         case OS.WM_SETFONT:
@@ -443,8 +447,10 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
                     OS.InvalidateRect (handle, null, true);
                 }
             }
+            break;
         }
         default:
+            break;
     }
     return code;
 }
@@ -5664,7 +5670,7 @@ override LRESULT WM_KEYDOWN (WPARAM wParam, LPARAM lParam) {
                 OS.SetWindowLongPtr (handle, OS.GWLP_WNDPROC, oldTableProc);
                 OS.SetWindowLongPtr (hwndHeader, OS.GWLP_WNDPROC, oldHeaderProc);
             }
-            //FALL THROUGH
+            goto case OS.VK_UP;
         case OS.VK_UP:
         case OS.VK_DOWN:
             OS.SendMessage (handle, OS.WM_CHANGEUISTATE, OS.UIS_INITIALIZE, 0);
@@ -6621,7 +6627,9 @@ LRESULT wmNotifyHeader (NMHDR* hdr, WPARAM wParam, LPARAM lParam) {
                         column.pack ();
                         return LRESULT.ONE;
                     }
+                    break;
                 default:
+                    break;
             }
             break;
         }
@@ -6937,8 +6945,10 @@ LRESULT wmNotifyToolTip (NMTTCUSTOMDRAW* nmcd, LPARAM lParam) {
                 OS.SelectObject (hDC, oldFont);
                 OS.ReleaseDC (handle, hDC);
             }
+            break;
         }
         default:
+            break;
     }
     return null;
 }

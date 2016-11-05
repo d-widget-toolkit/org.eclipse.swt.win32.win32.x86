@@ -28,12 +28,12 @@ import org.eclipse.swt.internal.image.PngChunk;
 
 final class PngEncoder {
 
-    static const byte SIGNATURE[] = [cast(byte) '\211', cast(byte) 'P', cast(byte) 'N', cast(byte) 'G', cast(byte) '\r', cast(byte) '\n', cast(byte) '\032', cast(byte) '\n'];
-    static const byte TAG_IHDR[] = [cast(byte) 'I', cast(byte) 'H', cast(byte) 'D', cast(byte) 'R'];
-    static const byte TAG_PLTE[] = [cast(byte) 'P', cast(byte) 'L', cast(byte) 'T', cast(byte) 'E'];
-    static const byte TAG_TRNS[] = [cast(byte) 't', cast(byte) 'R', cast(byte) 'N', cast(byte) 'S'];
-    static const byte TAG_IDAT[] = [cast(byte) 'I', cast(byte) 'D', cast(byte) 'A', cast(byte) 'T'];
-    static const byte TAG_IEND[] = [cast(byte) 'I', cast(byte) 'E', cast(byte) 'N', cast(byte) 'D'];
+    static const byte[] SIGNATURE = [cast(byte) '\211', cast(byte) 'P', cast(byte) 'N', cast(byte) 'G', cast(byte) '\r', cast(byte) '\n', cast(byte) '\032', cast(byte) '\n'];
+    static const byte[] TAG_IHDR = [cast(byte) 'I', cast(byte) 'H', cast(byte) 'D', cast(byte) 'R'];
+    static const byte[] TAG_PLTE = [cast(byte) 'P', cast(byte) 'L', cast(byte) 'T', cast(byte) 'E'];
+    static const byte[] TAG_TRNS = [cast(byte) 't', cast(byte) 'R', cast(byte) 'N', cast(byte) 'S'];
+    static const byte[] TAG_IDAT = [cast(byte) 'I', cast(byte) 'D', cast(byte) 'A', cast(byte) 'T'];
+    static const byte[] TAG_IEND = [cast(byte) 'I', cast(byte) 'E', cast(byte) 'N', cast(byte) 'D'];
 
     ByteArrayOutputStream bytes;
     PngChunk chunk;

@@ -1102,7 +1102,9 @@ override LRESULT WM_CHAR (WPARAM wParam, LPARAM lParam) {
                     return LRESULT.ZERO;
                 }
             }
+            break;
         default:
+            break;
     }
     return result;
 }

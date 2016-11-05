@@ -369,7 +369,7 @@ struct RemSNB
 {
 	ULONG ulCntStr;
 	ULONG ulCntChar;
-	OLECHAR rgString[];
+	OLECHAR[] rgString;
 }
 alias RemSNB * wireSNB;
 alias OLECHAR ** SNB;

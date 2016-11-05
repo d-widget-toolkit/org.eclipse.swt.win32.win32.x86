@@ -1634,6 +1634,7 @@ JPEGSegment processTables() {
         switch (marker) {
             case SOI: // there should only be one SOI per file
                 SWT.error(SWT.ERROR_INVALID_IMAGE);
+                break;
             case EOI:
             case SOS:
                 return jpegSegment;

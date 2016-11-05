@@ -142,7 +142,7 @@ int compressRLE8Data(byte[] src, int srcOffset, int numBytes, byte[] dest, bool 
                 dest[dp] = src[sp];
                 dp++; sp++;
                 size += 2;
-                /* don't break, fall through */
+                goto case 1;
             case 1: /* handled separately because 0,1 is a command */
                 dest[dp] = 1; dp++;
                 dest[dp] = src[sp];

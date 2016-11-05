@@ -508,14 +508,14 @@ String getCustomShortTimeFormat () {
 
 String getLongDateFormat () {
     //TODO: Not currently used, but may need for WinCE
-    TCHAR tchar[80];
+    TCHAR[80] tchar;
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_SLONGDATE, tchar.ptr, 80);
     return size > 0 ? TCHARsToStr(tchar[0..size - 1]) : "dddd, MMMM dd, yyyy"; //$NON-NLS-1$
 }
 
 String getShortDateFormat () {
     //TODO: Not currently used, but may need for WinCE
-    TCHAR tchar[80];
+    TCHAR[80] tchar;
     //TODO: May need to OR with LOCALE_ICENTURY
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_SSHORTDATE, tchar.ptr, 80);
     return size > 0 ? TCHARsToStr(tchar[0..size - 1]) : "M/d/yyyy"; //$NON-NLS-1$
@@ -523,7 +523,7 @@ String getShortDateFormat () {
 
 int getShortDateFormatOrdering () {
     //TODO: Not currently used, but may need for WinCE
-    TCHAR tchar[80];
+    TCHAR[80] tchar;
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_IDATE, tchar.ptr, 4);
     if (size > 0) {
         String number = TCHARsToStr(tchar[0..size - 1]);
@@ -533,13 +533,13 @@ int getShortDateFormatOrdering () {
 }
 
 String getTimeFormat () {
-    TCHAR tchar[80];
+    TCHAR[80] tchar;
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_STIMEFORMAT, tchar.ptr, 80);
     return size > 0 ? TCHARsToStr(tchar[0..size - 1]) : "h:mm:ss tt"; //$NON-NLS-1$
 }
 
 bool is24HourTime () {
-    TCHAR tchar[4];
+    TCHAR[4] tchar;
     int size = OS.GetLocaleInfo (OS.LOCALE_USER_DEFAULT, OS.LOCALE_ITIME, tchar.ptr, 4);
     if (size > 0) {
         String number = TCHARsToStr(tchar[0..size - 1]);

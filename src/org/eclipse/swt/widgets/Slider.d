@@ -192,7 +192,9 @@ override .LRESULT callWindowProc (HWND hwnd, int msg, WPARAM wParam, LPARAM lPar
         case OS.WM_LBUTTONDOWN:
         case OS.WM_LBUTTONDBLCLK:
             display.runDeferredEvents ();
+            break;
         default:
+            break;
     }
     return OS.CallWindowProc (ScrollBarProc, hwnd, msg, wParam, lParam);
 }

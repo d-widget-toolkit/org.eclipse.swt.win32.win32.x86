@@ -229,7 +229,7 @@ override protected void checkSubclass () {
 }
 
 override Control [] computeTabList () {
-    Control result [] = super.computeTabList ();
+    Control[] result = super.computeTabList ();
     if (result.length is 0) return result;
     Control [] list = tabList !is null ? _getTabList () : _getChildren ();
     for (int i=0; i<list.length; i++) {
@@ -342,7 +342,7 @@ Composite findDeferredControl () {
 
 override Menu [] findMenus (Control control) {
     if (control is this) return new Menu [0];
-    Menu result [] = super.findMenus (control);
+    Menu[] result = super.findMenus (control);
     Control [] children = _getChildren ();
     for (int i=0; i<children.length; i++) {
         Control child = children [i];

@@ -208,7 +208,7 @@ void _setImage (Image image) {
                                 fImageType = OS.IMAGE_ICON;
                                 break;
                             }
-                            //FALL THROUGH
+                            goto case SWT.TRANSPARENCY_ALPHA;
                         case SWT.TRANSPARENCY_ALPHA:
                             image2 = new Image (display, rect.width, rect.height);
                             GC gc = new GC (image2);
@@ -1341,7 +1341,9 @@ override LRESULT wmCommandChild (WPARAM wParam, LPARAM lParam) {
                 }
             }
             postEvent (SWT.Selection);
+            break;
         default:
+            break;
     }
     return super.wmCommandChild (wParam, lParam);
 }

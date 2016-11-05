@@ -41,7 +41,7 @@ public class AccessibleControlEvent : SWTEventObject {
     public int width, height;       // OUT
     public int detail;          // IN/OUT
     public String result;           // OUT
-    public Object children[];       // [OUT]
+    public Object[] children;       // [OUT]
 
     //static final long serialVersionUID = 3257281444169529141L;
 

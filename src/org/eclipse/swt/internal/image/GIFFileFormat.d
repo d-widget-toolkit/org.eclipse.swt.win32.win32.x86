@@ -476,7 +476,7 @@ final class GIFFileFormat : FileFormat {
                     SWT.error(SWT.ERROR_INVALID_IMAGE);
                 }
                 if (globalTable is 1) {
-                    RGB rgbs[] = data[i].palette.getRGBs();
+                    RGB[] rgbs = data[i].palette.getRGBs();
                     if (rgbs.length !is colors.length) {
                         globalTable = 0;
                     } else {
