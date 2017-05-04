@@ -4204,7 +4204,7 @@ LRESULT WM_MBUTTONUP (WPARAM wParam, LPARAM lParam) {
 }
 
 LRESULT WM_MEASUREITEM (WPARAM wParam, LPARAM lParam) {
-    MEASUREITEMSTRUCT* struct_ = cast(MEASUREITEMSTRUCT*)lParam;;
+    MEASUREITEMSTRUCT* struct_ = cast(MEASUREITEMSTRUCT*)lParam;
     if (struct_.CtlType is OS.ODT_MENU) {
         MenuItem item = display.getMenuItem (struct_.itemID);
         if (item is null) return null;
