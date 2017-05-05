@@ -23,7 +23,7 @@ interface nsIAuthInformation : nsISupports {
 
 extern(System):
   nsresult GetFlags(PRUint32 *aFlags);
-  nsresult GetRealm(nsAString * aRealm);;
+  nsresult GetRealm(nsAString * aRealm);
   nsresult GetAuthenticationScheme(nsACString * aAuthenticationScheme);
   nsresult GetUsername(nsAString * aUsername);
   nsresult SetUsername(nsAString * aUsername);

@@ -106,7 +106,7 @@ override public hash_t toHash () {
  * @return a string representation of the point
  */
 override public String toString () {
-    return Format( "Point {{{}, {}}", x, y );; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    return Format( "Point {{{}, {}}", x, y ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 }
 
 }

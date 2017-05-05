@@ -604,7 +604,7 @@ protected GUID* getClassID(String clientName) {
     // create a null terminated array of char
     LPCTSTR buffer = null;
     if (clientName !is null) {
-        buffer = StrToWCHARz(clientName);;
+        buffer = StrToWCHARz(clientName);
     }
     if (COM.CLSIDFromProgID(buffer, guid) !is COM.S_OK){
         HRESULT result = COM.CLSIDFromString(buffer, guid);
